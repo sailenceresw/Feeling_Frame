@@ -1,0 +1,28 @@
+com.example.video_editor_mobile_app-core-1.7.0-0 /Users/aashbinsunar/.gradle/caches/transforms-3/010b79dbae0a8b74028aa5645158e6aa/transformed/core-1.7.0/res
+com.example.video_editor_mobile_app-jetified-annotation-experimental-1.1.0-1 /Users/aashbinsunar/.gradle/caches/transforms-3/02315cc9f75263553d2042718fc375ee/transformed/jetified-annotation-experimental-1.1.0/res
+com.example.video_editor_mobile_app-jetified-window-1.0.0-beta04-2 /Users/aashbinsunar/.gradle/caches/transforms-3/076eb9235982ee06112d76594ea8585f/transformed/jetified-window-1.0.0-beta04/res
+com.example.video_editor_mobile_app-media-1.0.0-3 /Users/aashbinsunar/.gradle/caches/transforms-3/70730322cdbf54f0f648f383e00fc550/transformed/media-1.0.0/res
+com.example.video_editor_mobile_app-coordinatorlayout-1.0.0-4 /Users/aashbinsunar/.gradle/caches/transforms-3/7951461335356812448b46d1de8ae0fa/transformed/coordinatorlayout-1.0.0/res
+com.example.video_editor_mobile_app-jetified-exoplayer-core-2.18.7-5 /Users/aashbinsunar/.gradle/caches/transforms-3/98211325724c98e4e72cf2943cba61bf/transformed/jetified-exoplayer-core-2.18.7/res
+com.example.video_editor_mobile_app-jetified-window-java-1.0.0-beta04-6 /Users/aashbinsunar/.gradle/caches/transforms-3/99750bb863b6fe460a7b5da8686e778d/transformed/jetified-window-java-1.0.0-beta04/res
+com.example.video_editor_mobile_app-lifecycle-runtime-2.3.1-7 /Users/aashbinsunar/.gradle/caches/transforms-3/db4b39695b36fb6bc4e9dc229c8d81d0/transformed/lifecycle-runtime-2.3.1/res
+com.example.video_editor_mobile_app-jetified-core-ktx-1.5.0-8 /Users/aashbinsunar/.gradle/caches/transforms-3/e78ab8e2c5c80b864e1e82fc651c2a67/transformed/jetified-core-ktx-1.5.0/res
+com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9 /Users/aashbinsunar/.gradle/caches/transforms-3/f8f162053c6c189102fa73ab79b939f7/transformed/jetified-ffmpeg-kit-full-gpl-6.0-2/res
+com.example.video_editor_mobile_app-main-10 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/res
+com.example.video_editor_mobile_app-release-11 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/release/res
+com.example.video_editor_mobile_app-pngs-12 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/app/generated/res/pngs/release
+com.example.video_editor_mobile_app-resValues-13 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/app/generated/res/resValues/release
+com.example.video_editor_mobile_app-rs-14 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/app/generated/res/rs/release
+com.example.video_editor_mobile_app-mergeReleaseResources-15 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/app/intermediates/incremental/release/mergeReleaseResources/merged.dir
+com.example.video_editor_mobile_app-mergeReleaseResources-16 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/app/intermediates/incremental/release/mergeReleaseResources/stripped.dir
+com.example.video_editor_mobile_app-merged_res-17 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/app/intermediates/merged_res/release
+com.example.video_editor_mobile_app-packaged_res-18 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/ffmpeg_kit_flutter_full_gpl/intermediates/packaged_res/release
+com.example.video_editor_mobile_app-packaged_res-19 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/file_picker/intermediates/packaged_res/release
+com.example.video_editor_mobile_app-packaged_res-20 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/flutter_plugin_android_lifecycle/intermediates/packaged_res/release
+com.example.video_editor_mobile_app-packaged_res-21 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/fluttertoast/intermediates/packaged_res/release
+com.example.video_editor_mobile_app-packaged_res-22 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/gallery_saver_updated/intermediates/packaged_res/release
+com.example.video_editor_mobile_app-packaged_res-23 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/path_provider_android/intermediates/packaged_res/release
+com.example.video_editor_mobile_app-packaged_res-24 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/permission_handler_android/intermediates/packaged_res/release
+com.example.video_editor_mobile_app-packaged_res-25 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/share_extend/intermediates/packaged_res/release
+com.example.video_editor_mobile_app-packaged_res-26 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/video_player_android/intermediates/packaged_res/release
+com.example.video_editor_mobile_app-packaged_res-27 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/video_thumbnail/intermediates/packaged_res/release

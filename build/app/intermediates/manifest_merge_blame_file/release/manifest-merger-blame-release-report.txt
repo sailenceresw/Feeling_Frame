@@ -1,0 +1,144 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.video_editor_mobile_app"
+4    android:versionCode="4001"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="24"
+8-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml
+9        android:targetSdkVersion="33" />
+9-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:2:1-63
+11-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:2:18-60
+12    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+12-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:3:1-77
+12-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:3:18-74
+13    <uses-permission
+13-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:4:4-79
+14        android:name="android.permission.READ_EXTERNAL_STORAGE"
+14-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:4:21-76
+15        android:maxSdkVersion="32" />
+15-->[:file_picker] /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/file_picker/intermediates/merged_manifest/release/AndroidManifest.xml:11:9-35
+16    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+16-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:5:4-80
+16-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:5:21-78
+17    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+17-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:6:1-71
+17-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:6:18-69
+18    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+18-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:7:1-70
+18-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:7:18-68
+19    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+19-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:8:1-70
+19-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:8:18-68
+20
+21    <queries>
+21-->[:file_picker] /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/file_picker/intermediates/merged_manifest/release/AndroidManifest.xml:13:5-19:15
+22        <intent>
+22-->[:file_picker] /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/file_picker/intermediates/merged_manifest/release/AndroidManifest.xml:14:9-18:18
+23            <action android:name="android.intent.action.GET_CONTENT" />
+23-->[:file_picker] /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/file_picker/intermediates/merged_manifest/release/AndroidManifest.xml:15:13-72
+23-->[:file_picker] /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/file_picker/intermediates/merged_manifest/release/AndroidManifest.xml:15:21-69
+24
+25            <data android:mimeType="*/*" />
+25-->[:file_picker] /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/file_picker/intermediates/merged_manifest/release/AndroidManifest.xml:17:13-44
+25-->[:file_picker] /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/file_picker/intermediates/merged_manifest/release/AndroidManifest.xml:17:19-41
+26        </intent>
+27    </queries>
+28
+29    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+29-->[com.google.android.exoplayer:exoplayer-core:2.18.7] /Users/aashbinsunar/.gradle/caches/transforms-3/98211325724c98e4e72cf2943cba61bf/transformed/jetified-exoplayer-core-2.18.7/AndroidManifest.xml:24:5-79
+29-->[com.google.android.exoplayer:exoplayer-core:2.18.7] /Users/aashbinsunar/.gradle/caches/transforms-3/98211325724c98e4e72cf2943cba61bf/transformed/jetified-exoplayer-core-2.18.7/AndroidManifest.xml:24:22-76
+30
+31    <application
+32        android:name="android.app.Application"
+32-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:12:9-42
+33        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+33-->[androidx.core:core:1.7.0] /Users/aashbinsunar/.gradle/caches/transforms-3/010b79dbae0a8b74028aa5645158e6aa/transformed/core-1.7.0/AndroidManifest.xml:24:18-86
+34        android:extractNativeLibs="false"
+35        android:icon="@mipmap/ic_launcher"
+35-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:13:9-43
+36        android:label="Video Editor" >
+36-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:11:9-37
+37        <activity
+37-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:14:9-34:20
+38            android:name="com.example.video_editor_mobile_app.MainActivity"
+38-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:15:13-41
+39            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+39-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:19:13-163
+40            android:exported="true"
+40-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:16:13-36
+41            android:hardwareAccelerated="true"
+41-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:20:13-47
+42            android:launchMode="singleTop"
+42-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:17:13-43
+43            android:theme="@style/LaunchTheme"
+43-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:18:13-47
+44            android:windowSoftInputMode="adjustResize" >
+44-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:21:13-55
+45
+46            <!--
+47                 Specifies an Android theme to apply to this Activity as soon as
+48                 the Android process has started. This theme is visible to the user
+49                 while the Flutter UI initializes. After that, this theme continues
+50                 to determine the Window background behind the Flutter UI.
+51            -->
+52            <meta-data
+52-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:26:13-29:17
+53                android:name="io.flutter.embedding.android.NormalTheme"
+53-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:27:15-70
+54                android:resource="@style/NormalTheme" />
+54-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:28:15-52
+55
+56            <intent-filter>
+56-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:30:13-33:29
+57                <action android:name="android.intent.action.MAIN" />
+57-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:31:17-68
+57-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:31:25-66
+58
+59                <category android:name="android.intent.category.LAUNCHER" />
+59-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:32:17-76
+59-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:32:27-74
+60            </intent-filter>
+61        </activity>
+62        <!--
+63             Don't delete the meta-data below.
+64             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
+65        -->
+66        <meta-data
+66-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:37:9-39:33
+67            android:name="flutterEmbedding"
+67-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:38:13-44
+68            android:value="2" />
+68-->/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app/src/main/AndroidManifest.xml:39:13-30
+69
+70        <provider
+70-->[:share_extend] /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/share_extend/intermediates/merged_manifest/release/AndroidManifest.xml:10:9-15:20
+71            android:name="com.zt.shareextend.ShareExtendProvider"
+71-->[:share_extend] /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/share_extend/intermediates/merged_manifest/release/AndroidManifest.xml:11:13-66
+72            android:authorities="com.example.video_editor_mobile_app.shareextend.fileprovider"
+72-->[:share_extend] /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/share_extend/intermediates/merged_manifest/release/AndroidManifest.xml:12:13-76
+73            android:exported="false"
+73-->[:share_extend] /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/share_extend/intermediates/merged_manifest/release/AndroidManifest.xml:13:13-37
+74            android:grantUriPermissions="true" >
+74-->[:share_extend] /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/share_extend/intermediates/merged_manifest/release/AndroidManifest.xml:14:13-47
+75        </provider>
+76
+77        <uses-library
+77-->[androidx.window:window:1.0.0-beta04] /Users/aashbinsunar/.gradle/caches/transforms-3/076eb9235982ee06112d76594ea8585f/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:25:9-27:40
+78            android:name="androidx.window.extensions"
+78-->[androidx.window:window:1.0.0-beta04] /Users/aashbinsunar/.gradle/caches/transforms-3/076eb9235982ee06112d76594ea8585f/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:26:13-54
+79            android:required="false" />
+79-->[androidx.window:window:1.0.0-beta04] /Users/aashbinsunar/.gradle/caches/transforms-3/076eb9235982ee06112d76594ea8585f/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:27:13-37
+80        <uses-library
+80-->[androidx.window:window:1.0.0-beta04] /Users/aashbinsunar/.gradle/caches/transforms-3/076eb9235982ee06112d76594ea8585f/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:28:9-30:40
+81            android:name="androidx.window.sidecar"
+81-->[androidx.window:window:1.0.0-beta04] /Users/aashbinsunar/.gradle/caches/transforms-3/076eb9235982ee06112d76594ea8585f/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:29:13-51
+82            android:required="false" />
+82-->[androidx.window:window:1.0.0-beta04] /Users/aashbinsunar/.gradle/caches/transforms-3/076eb9235982ee06112d76594ea8585f/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:30:13-37
+83    </application>
+84
+85</manifest>

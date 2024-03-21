@@ -1,0 +1,12 @@
+com.zt.shareextend.share_extend-jetified-annotation-experimental-1.1.0-0 /Users/aashbinsunar/.gradle/caches/transforms-3/02315cc9f75263553d2042718fc375ee/transformed/jetified-annotation-experimental-1.1.0/res
+com.zt.shareextend.share_extend-jetified-window-1.0.0-beta04-1 /Users/aashbinsunar/.gradle/caches/transforms-3/076eb9235982ee06112d76594ea8585f/transformed/jetified-window-1.0.0-beta04/res
+com.zt.shareextend.share_extend-jetified-window-java-1.0.0-beta04-2 /Users/aashbinsunar/.gradle/caches/transforms-3/99750bb863b6fe460a7b5da8686e778d/transformed/jetified-window-java-1.0.0-beta04/res
+com.zt.shareextend.share_extend-core-1.6.0-3 /Users/aashbinsunar/.gradle/caches/transforms-3/d08c73bfb05384f2e52578171dbd141e/transformed/core-1.6.0/res
+com.zt.shareextend.share_extend-main-4 /Users/aashbinsunar/.pub-cache/hosted/pub.dev/share_extend-2.0.0/android/src/main/res
+com.zt.shareextend.share_extend-release-5 /Users/aashbinsunar/.pub-cache/hosted/pub.dev/share_extend-2.0.0/android/src/release/res
+com.zt.shareextend.share_extend-pngs-6 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/share_extend/generated/res/pngs/release
+com.zt.shareextend.share_extend-resValues-7 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/share_extend/generated/res/resValues/release
+com.zt.shareextend.share_extend-rs-8 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/share_extend/generated/res/rs/release
+com.zt.shareextend.share_extend-mergeReleaseResources-9 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/share_extend/intermediates/incremental/release/mergeReleaseResources/merged.dir
+com.zt.shareextend.share_extend-mergeReleaseResources-10 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/share_extend/intermediates/incremental/release/mergeReleaseResources/stripped.dir
+com.zt.shareextend.share_extend-merged_res-11 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/share_extend/intermediates/merged_res/release

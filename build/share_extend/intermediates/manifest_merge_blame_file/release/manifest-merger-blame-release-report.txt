@@ -1,0 +1,26 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.zt.shareextend" >
+4
+5    <uses-sdk
+6        android:minSdkVersion="19"
+6-->/Users/aashbinsunar/.pub-cache/hosted/pub.dev/share_extend-2.0.0/android/src/main/AndroidManifest.xml
+7        android:targetSdkVersion="19" />
+7-->/Users/aashbinsunar/.pub-cache/hosted/pub.dev/share_extend-2.0.0/android/src/main/AndroidManifest.xml
+8
+9    <application>
+9-->/Users/aashbinsunar/.pub-cache/hosted/pub.dev/share_extend-2.0.0/android/src/main/AndroidManifest.xml:4:5-13:19
+10        <provider
+10-->/Users/aashbinsunar/.pub-cache/hosted/pub.dev/share_extend-2.0.0/android/src/main/AndroidManifest.xml:6:9-11:20
+11            android:name="com.zt.shareextend.ShareExtendProvider"
+11-->/Users/aashbinsunar/.pub-cache/hosted/pub.dev/share_extend-2.0.0/android/src/main/AndroidManifest.xml:7:13-66
+12            android:authorities="${applicationId}.shareextend.fileprovider"
+12-->/Users/aashbinsunar/.pub-cache/hosted/pub.dev/share_extend-2.0.0/android/src/main/AndroidManifest.xml:8:13-76
+13            android:exported="false"
+13-->/Users/aashbinsunar/.pub-cache/hosted/pub.dev/share_extend-2.0.0/android/src/main/AndroidManifest.xml:9:13-37
+14            android:grantUriPermissions="true" >
+14-->/Users/aashbinsunar/.pub-cache/hosted/pub.dev/share_extend-2.0.0/android/src/main/AndroidManifest.xml:10:13-47
+15        </provider>
+16    </application>
+17
+18</manifest>

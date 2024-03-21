@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/drawable/notification_icon_background.xml",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-core-1.6.0-3:/drawable/notification_icon_background.xml"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/drawable/notification_bg.xml",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-core-1.6.0-3:/drawable/notification_bg.xml"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/drawable/notification_bg_low.xml",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-core-1.6.0-3:/drawable/notification_bg_low.xml"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/drawable/notification_tile_bg.xml",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-core-1.6.0-3:/drawable/notification_tile_bg.xml"
+    }
+]
