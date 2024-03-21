@@ -1,0 +1,422 @@
+[
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_giflib.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_giflib.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/layout_notification_template_media_custom.xml.flat",
+        "source": "com.example.video_editor_mobile_app-media-1.0.0-3:/layout/notification_template_media_custom.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/layout-v21_notification_template_custom_big.xml.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/layout-v21/notification_template_custom_big.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/layout_custom_dialog.xml.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/layout/custom_dialog.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable_notification_bg.xml.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable/notification_bg.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-xhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-xhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_opus.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_opus.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_libvidstab.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_libvidstab.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_freetype.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_freetype.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_libvpx.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_libvpx.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-mdpi_ic_launcher_foreground.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-mdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable-hdpi-v4_notification_bg_low_normal.9.png.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable-hdpi-v4/notification_bg_low_normal.9.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable_notification_bg_low.xml.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable/notification_bg_low.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/layout_notification_template_big_media_narrow.xml.flat",
+        "source": "com.example.video_editor_mobile_app-media-1.0.0-3:/layout/notification_template_big_media_narrow.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_libpng.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_libpng.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_shine.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_shine.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_libtheora.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_libtheora.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/layout_notification_template_big_media.xml.flat",
+        "source": "com.example.video_editor_mobile_app-media-1.0.0-3:/layout/notification_template_big_media.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_libilbc.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_libilbc.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_speex.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_speex.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable_toast_bg.xml.flat",
+        "source": "com.example.video_editor_mobile_app-packaged_res-21:/drawable/toast_bg.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-xxhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-xxhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable-xhdpi-v4_notification_bg_normal.9.png.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable-xhdpi-v4/notification_bg_normal.9.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-hdpi_ic_launcher_foreground.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-hdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/layout_notification_media_action.xml.flat",
+        "source": "com.example.video_editor_mobile_app-media-1.0.0-3:/layout/notification_media_action.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/layout_toast_custom.xml.flat",
+        "source": "com.example.video_editor_mobile_app-packaged_res-21:/layout/toast_custom.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable-xhdpi-v4_notification_bg_normal_pressed.9.png.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable-xhdpi-v4/notification_bg_normal_pressed.9.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_soxr.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_soxr.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-xhdpi_ic_launcher_background.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-xhdpi/ic_launcher_background.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_vo_amrwbenc.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_vo_amrwbenc.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_kvazaar.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_kvazaar.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_gnutls.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_gnutls.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_libvorbis.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_libvorbis.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/layout_notification_template_part_time.xml.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/layout/notification_template_part_time.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable-mdpi-v4_notify_panel_notification_icon_bg.png.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable-mdpi-v4/notify_panel_notification_icon_bg.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_gmp.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_gmp.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable-hdpi-v4_notification_bg_normal.9.png.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable-hdpi-v4/notification_bg_normal.9.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable-hdpi-v4_notification_bg_low_pressed.9.png.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable-hdpi-v4/notification_bg_low_pressed.9.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_source.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/source.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-xxhdpi_ic_launcher_monochrome.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-xxhdpi/ic_launcher_monochrome.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/layout-v21_notification_template_icon_group.xml.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/layout-v21/notification_template_icon_group.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/layout_notification_template_part_chronometer.xml.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/layout/notification_template_part_chronometer.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_x264.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_x264.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/layout_notification_template_lines_media.xml.flat",
+        "source": "com.example.video_editor_mobile_app-media-1.0.0-3:/layout/notification_template_lines_media.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_expat.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_expat.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_tiff.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_tiff.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-hdpi_ic_launcher_monochrome.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-hdpi/ic_launcher_monochrome.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_lame.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_lame.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-mdpi_ic_launcher_background.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-mdpi/ic_launcher_background.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_libiconv.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_libiconv.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_libwebp.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_libwebp.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable-v21_launch_background.xml.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/drawable-v21/launch_background.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_fontconfig.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_fontconfig.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/layout_notification_template_big_media_custom.xml.flat",
+        "source": "com.example.video_editor_mobile_app-media-1.0.0-3:/layout/notification_template_big_media_custom.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_x265.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_x265.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable_corner.xml.flat",
+        "source": "com.example.video_editor_mobile_app-packaged_res-21:/drawable/corner.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable_notification_tile_bg.xml.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable/notification_tile_bg.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_dav1d.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_dav1d.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable-mdpi-v4_notification_bg_low_normal.9.png.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable-mdpi-v4/notification_bg_low_normal.9.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_libogg.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_libogg.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_libuuid.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_libuuid.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable-xhdpi-v4_notify_panel_notification_icon_bg.png.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable-xhdpi-v4/notify_panel_notification_icon_bg.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-xxxhdpi_ic_launcher_monochrome.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-xxxhdpi/ic_launcher_monochrome.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/layout_notification_media_cancel_action.xml.flat",
+        "source": "com.example.video_editor_mobile_app-media-1.0.0-3:/layout/notification_media_cancel_action.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_cpu_features.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_cpu_features.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/layout_notification_template_big_media_narrow_custom.xml.flat",
+        "source": "com.example.video_editor_mobile_app-media-1.0.0-3:/layout/notification_template_big_media_narrow_custom.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/menu_example_menu2.xml.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/menu/example_menu2.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_libxml2.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_libxml2.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-xhdpi_ic_launcher_monochrome.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-xhdpi/ic_launcher_monochrome.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-xxxhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-xxxhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable-v21_notification_action_background.xml.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable-v21/notification_action_background.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/layout-v21_notification_action_tombstone.xml.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/layout-v21/notification_action_tombstone.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_snappy.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_snappy.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-hdpi_ic_launcher_background.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-hdpi/ic_launcher_background.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable-xhdpi-v4_notification_bg_low_normal.9.png.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable-xhdpi-v4/notification_bg_low_normal.9.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable-mdpi-v4_notification_bg_low_pressed.9.png.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable-mdpi-v4/notification_bg_low_pressed.9.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-mdpi_ic_launcher_monochrome.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-mdpi/ic_launcher_monochrome.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/layout_notification_template_media.xml.flat",
+        "source": "com.example.video_editor_mobile_app-media-1.0.0-3:/layout/notification_template_media.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_zimg.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_zimg.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_xvidcore.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_xvidcore.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable-xhdpi-v4_notification_bg_low_pressed.9.png.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable-xhdpi-v4/notification_bg_low_pressed.9.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_opencore_amr.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_opencore_amr.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable-hdpi-v4_notify_panel_notification_icon_bg.png.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable-hdpi-v4/notify_panel_notification_icon_bg.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_harfbuzz.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_harfbuzz.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_jpeg.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_jpeg.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable-mdpi-v4_notification_bg_normal.9.png.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable-mdpi-v4/notification_bg_normal.9.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable-hdpi-v4_notification_bg_normal_pressed.9.png.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable-hdpi-v4/notification_bg_normal_pressed.9.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/menu_example_menu.xml.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/menu/example_menu.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/layout-v21_notification_action.xml.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/layout-v21/notification_action.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable_notification_icon_background.xml.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable/notification_icon_background.xml"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/drawable-mdpi-v4_notification_bg_normal_pressed.9.png.flat",
+        "source": "com.example.video_editor_mobile_app-core-1.7.0-0:/drawable-mdpi-v4/notification_bg_normal_pressed.9.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_twolame.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_twolame.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-xxxhdpi_ic_launcher_background.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-xxxhdpi/ic_launcher_background.png"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_libass.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_libass.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_fribidi.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_fribidi.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_libsndfile.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_libsndfile.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/raw_license_nettle.txt.flat",
+        "source": "com.example.video_editor_mobile_app-jetified-ffmpeg-kit-full-gpl-6.0-2-9:/raw/license_nettle.txt"
+    },
+    {
+        "merged": "com.example.video_editor_mobile_app-merged_res-17:/mipmap-xxhdpi_ic_launcher_background.png.flat",
+        "source": "com.example.video_editor_mobile_app-main-10:/mipmap-xxhdpi/ic_launcher_background.png"
+    }
+]

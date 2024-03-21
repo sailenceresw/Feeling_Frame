@@ -1,0 +1,18 @@
+<lint-module
+    format="1"
+    dir="/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/android/app"
+    name=":app"
+    type="APP"
+    maven="android:app:"
+    gradle="7.3.0"
+    buildFolder="/Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/app"
+    bootClassPath="/Users/aashbinsunar/Library/Android/sdk/platforms/android-34/android.jar:/Users/aashbinsunar/Library/Android/sdk/build-tools/30.0.3/core-lambda-stubs.jar"
+    javaSourceLevel="1.8"
+    compileTarget="android-34">
+  <lintOptions
+      abortOnError="true"
+      absolutePaths="true"
+      checkReleaseBuilds="true"
+      explainIssues="true"/>
+  <variant name="release"/>
+</lint-module>

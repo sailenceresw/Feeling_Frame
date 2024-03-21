@@ -1,0 +1,170 @@
+[
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_speex.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_speex.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_libtheora.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_libtheora.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_opus.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_opus.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_libass.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_libass.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_snappy.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_snappy.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_gmp.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_gmp.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_libilbc.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_libilbc.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_libsndfile.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_libsndfile.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_lame.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_lame.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_libvorbis.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_libvorbis.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_xvidcore.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_xvidcore.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_kvazaar.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_kvazaar.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_libxml2.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_libxml2.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_cpu_features.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_cpu_features.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_libwebp.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_libwebp.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_jpeg.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_jpeg.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_libogg.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_libogg.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_giflib.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_giflib.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_tiff.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_tiff.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_libiconv.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_libiconv.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_vo_amrwbenc.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_vo_amrwbenc.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_libvidstab.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_libvidstab.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_twolame.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_twolame.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_libpng.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_libpng.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_x265.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_x265.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_zimg.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_zimg.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_fribidi.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_fribidi.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_libvpx.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_libvpx.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_opencore_amr.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_opencore_amr.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_fontconfig.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_fontconfig.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_soxr.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_soxr.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/source.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/source.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_shine.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_shine.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_dav1d.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_dav1d.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_x264.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_x264.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_harfbuzz.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_harfbuzz.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_libuuid.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_libuuid.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_freetype.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_freetype.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_gnutls.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_gnutls.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_expat.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_expat.txt"
+    },
+    {
+        "merged": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-merged_res-11:/raw/license_nettle.txt",
+        "source": "com.arthenica.ffmpegkit.flutter.ffmpeg_kit_flutter_full_gpl-jetified-ffmpeg-kit-full-gpl-6.0-2-4:/raw/license_nettle.txt"
+    }
+]

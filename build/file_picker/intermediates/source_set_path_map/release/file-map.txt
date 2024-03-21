@@ -1,0 +1,13 @@
+com.mr.flutter.plugin.filepicker.file_picker-jetified-annotation-experimental-1.1.0-0 /Users/aashbinsunar/.gradle/caches/transforms-3/02315cc9f75263553d2042718fc375ee/transformed/jetified-annotation-experimental-1.1.0/res
+com.mr.flutter.plugin.filepicker.file_picker-jetified-window-1.0.0-beta04-1 /Users/aashbinsunar/.gradle/caches/transforms-3/076eb9235982ee06112d76594ea8585f/transformed/jetified-window-1.0.0-beta04/res
+com.mr.flutter.plugin.filepicker.file_picker-jetified-window-java-1.0.0-beta04-2 /Users/aashbinsunar/.gradle/caches/transforms-3/99750bb863b6fe460a7b5da8686e778d/transformed/jetified-window-java-1.0.0-beta04/res
+com.mr.flutter.plugin.filepicker.file_picker-core-1.6.0-3 /Users/aashbinsunar/.gradle/caches/transforms-3/d08c73bfb05384f2e52578171dbd141e/transformed/core-1.6.0/res
+com.mr.flutter.plugin.filepicker.file_picker-main-4 /Users/aashbinsunar/.pub-cache/hosted/pub.dev/file_picker-6.2.0/android/src/main/res
+com.mr.flutter.plugin.filepicker.file_picker-release-5 /Users/aashbinsunar/.pub-cache/hosted/pub.dev/file_picker-6.2.0/android/src/release/res
+com.mr.flutter.plugin.filepicker.file_picker-pngs-6 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/file_picker/generated/res/pngs/release
+com.mr.flutter.plugin.filepicker.file_picker-resValues-7 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/file_picker/generated/res/resValues/release
+com.mr.flutter.plugin.filepicker.file_picker-rs-8 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/file_picker/generated/res/rs/release
+com.mr.flutter.plugin.filepicker.file_picker-mergeReleaseResources-9 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/file_picker/intermediates/incremental/release/mergeReleaseResources/merged.dir
+com.mr.flutter.plugin.filepicker.file_picker-mergeReleaseResources-10 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/file_picker/intermediates/incremental/release/mergeReleaseResources/stripped.dir
+com.mr.flutter.plugin.filepicker.file_picker-merged_res-11 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/file_picker/intermediates/merged_res/release
+com.mr.flutter.plugin.filepicker.file_picker-packaged_res-12 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/flutter_plugin_android_lifecycle/intermediates/packaged_res/release

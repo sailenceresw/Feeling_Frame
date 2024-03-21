@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "com.zt.shareextend.share_extend-merged_res-10:/drawable/notification_bg_low.xml",
+        "source": "com.zt.shareextend.share_extend-core-1.6.0-3:/drawable/notification_bg_low.xml"
+    },
+    {
+        "merged": "com.zt.shareextend.share_extend-merged_res-10:/drawable/notification_icon_background.xml",
+        "source": "com.zt.shareextend.share_extend-core-1.6.0-3:/drawable/notification_icon_background.xml"
+    },
+    {
+        "merged": "com.zt.shareextend.share_extend-merged_res-10:/drawable/notification_tile_bg.xml",
+        "source": "com.zt.shareextend.share_extend-core-1.6.0-3:/drawable/notification_tile_bg.xml"
+    },
+    {
+        "merged": "com.zt.shareextend.share_extend-merged_res-10:/drawable/notification_bg.xml",
+        "source": "com.zt.shareextend.share_extend-core-1.6.0-3:/drawable/notification_bg.xml"
+    }
+]

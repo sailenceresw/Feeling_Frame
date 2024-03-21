@@ -1,0 +1,14 @@
+io.flutter.plugins.videoplayer.video_player_android-core-1.7.0-0 /Users/aashbinsunar/.gradle/caches/transforms-3/010b79dbae0a8b74028aa5645158e6aa/transformed/core-1.7.0/res
+io.flutter.plugins.videoplayer.video_player_android-jetified-annotation-experimental-1.1.0-1 /Users/aashbinsunar/.gradle/caches/transforms-3/02315cc9f75263553d2042718fc375ee/transformed/jetified-annotation-experimental-1.1.0/res
+io.flutter.plugins.videoplayer.video_player_android-jetified-window-1.0.0-beta04-2 /Users/aashbinsunar/.gradle/caches/transforms-3/076eb9235982ee06112d76594ea8585f/transformed/jetified-window-1.0.0-beta04/res
+io.flutter.plugins.videoplayer.video_player_android-jetified-exoplayer-core-2.18.7-3 /Users/aashbinsunar/.gradle/caches/transforms-3/98211325724c98e4e72cf2943cba61bf/transformed/jetified-exoplayer-core-2.18.7/res
+io.flutter.plugins.videoplayer.video_player_android-jetified-window-java-1.0.0-beta04-4 /Users/aashbinsunar/.gradle/caches/transforms-3/99750bb863b6fe460a7b5da8686e778d/transformed/jetified-window-java-1.0.0-beta04/res
+io.flutter.plugins.videoplayer.video_player_android-lifecycle-runtime-2.3.1-5 /Users/aashbinsunar/.gradle/caches/transforms-3/db4b39695b36fb6bc4e9dc229c8d81d0/transformed/lifecycle-runtime-2.3.1/res
+io.flutter.plugins.videoplayer.video_player_android-main-6 /Users/aashbinsunar/.pub-cache/hosted/pub.dev/video_player_android-2.4.12/android/src/main/res
+io.flutter.plugins.videoplayer.video_player_android-release-7 /Users/aashbinsunar/.pub-cache/hosted/pub.dev/video_player_android-2.4.12/android/src/release/res
+io.flutter.plugins.videoplayer.video_player_android-pngs-8 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/video_player_android/generated/res/pngs/release
+io.flutter.plugins.videoplayer.video_player_android-resValues-9 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/video_player_android/generated/res/resValues/release
+io.flutter.plugins.videoplayer.video_player_android-rs-10 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/video_player_android/generated/res/rs/release
+io.flutter.plugins.videoplayer.video_player_android-mergeReleaseResources-11 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/video_player_android/intermediates/incremental/release/mergeReleaseResources/merged.dir
+io.flutter.plugins.videoplayer.video_player_android-mergeReleaseResources-12 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/video_player_android/intermediates/incremental/release/mergeReleaseResources/stripped.dir
+io.flutter.plugins.videoplayer.video_player_android-merged_res-13 /Users/aashbinsunar/Desktop/freelancing/students projects/video_editor_app/video_editor_mobile_app/build/video_player_android/intermediates/merged_res/release
