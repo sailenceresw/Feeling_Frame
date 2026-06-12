@@ -62,7 +62,106 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
         ),
       );
   String? selectedAudioPath;
+
+  /// Target output height in pixels; 0 keeps the source resolution.
+  /// Lets users shrink HD/2K/4K/8K sources to a smaller file size.
+  int exportHeight = 0;
+
+  /// x264 CRF: lower = better quality and larger file (18 high, 23 balanced,
+  /// 28 small).
+  int exportCrf = 23;
+
+  Future<bool> _showExportOptionsDialog() async {
+    const resolutions = <String, int>{
+      'Original': 0,
+      '2K (1440p)': 1440,
+      'FHD (1080p)': 1080,
+      'HD (720p)': 720,
+      'SD (480p)': 480,
+    };
+    const qualities = <String, int>{
+      'High quality': 18,
+      'Balanced': 23,
+      'Small size': 28,
+    };
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Export Settings'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Resolution'),
+                vSizedBox0,
+                Wrap(
+                  spacing: 6,
+                  children: resolutions.entries
+                      .map(
+                        (entry) => ChoiceChip(
+                          label: Text(entry.key),
+                          selected: exportHeight == entry.value,
+                          onSelected: (_) {
+                            setDialogState(() {
+                              exportHeight = entry.value;
+                            });
+                          },
+                        ),
+                      )
+                      .toList(),
+                ),
+                vSizedBox1,
+                const Text('Quality / file size'),
+                vSizedBox0,
+                Wrap(
+                  spacing: 6,
+                  children: qualities.entries
+                      .map(
+                        (entry) => ChoiceChip(
+                          label: Text(entry.key),
+                          selected: exportCrf == entry.value,
+                          onSelected: (_) {
+                            setDialogState(() {
+                              exportCrf = entry.value;
+                            });
+                          },
+                        ),
+                      )
+                      .toList(),
+                ),
+                vSizedBox1,
+                const Text(
+                  'Tip: lowering the resolution of HD/2K/4K/8K videos '
+                  'greatly reduces the exported file size.',
+                  style: TextStyle(fontSize: 11, color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Export'),
+            ),
+          ],
+        ),
+      ),
+    );
+    return confirmed ?? false;
+  }
+
   void _exportVideo() async {
+    // Let the user choose resolution and compression before exporting.
+    final proceed = await _showExportOptionsDialog();
+    if (!proceed || !mounted) return;
+
     _exportingProgress.value = 0;
     _isExporting.value = true;
 
@@ -75,7 +174,21 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
       builder: (_) => _exportProgressDialog(),
     );
 
-    final config = VideoFFmpegVideoEditorConfig(_controller);
+    final config = VideoFFmpegVideoEditorConfig(
+      _controller,
+      commandBuilder: (config, videoPath, outputPath) {
+        // Keep the editor's trim/crop/rotate filters and append an optional
+        // downscale, then re-encode with the chosen CRF to control file size.
+        final List<String> filters = config.getExportFilters();
+        if (exportHeight > 0) {
+          // -2 keeps the aspect ratio while forcing an even width (required
+          // by libx264).
+          filters.add('scale=-2:$exportHeight');
+        }
+        return '-y -i $videoPath ${config.filtersCmd(filters)} '
+            '-c:v libx264 -crf $exportCrf -preset fast -c:a aac $outputPath';
+      },
+    );
     await ExportService.runFFmpegCommand(
       await config.getExecuteConfig(),
       onProgress: (stats) {
@@ -344,6 +457,9 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                               if (selectedOption == 8) {
                                 return _transformWidget();
                               }
+                              if (selectedOption == 9) {
+                                return _stickerWidget();
+                              }
                               return Container();
                             },
                           ),
@@ -398,6 +514,11 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                                 Icons.flip_rounded,
                                 "Transform",
                                 8,
+                              ),
+                              _optionWidget(
+                                Icons.emoji_emotions_rounded,
+                                "Stickers",
+                                9,
                               ),
                             ],
                           ),
@@ -585,6 +706,41 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
               child: CircularProgressIndicator(),
             ),
           )
+      ],
+    );
+  }
+
+  /// Picks an image from the device and adds it as a draggable/resizable
+  /// sticker on top of the video preview (powered by the Lindi sticker
+  /// engine already used for text overlays).
+  Future<void> pickSticker() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      allowMultiple: false,
+    );
+    final path = result?.files.single.path;
+    if (path != null) {
+      EditorController.instance.lindiController.addWidget(
+        Image.file(
+          File(path),
+          width: 120,
+        ),
+      );
+    }
+  }
+
+  Widget _stickerWidget() {
+    return Column(
+      children: [
+        CustomText.ourText(
+          "Add image stickers on top of your video",
+        ),
+        vSizedBox2,
+        ElevatedButton.icon(
+          onPressed: pickSticker,
+          icon: const Icon(Icons.add_photo_alternate_rounded),
+          label: const Text('Add Sticker'),
+        ),
       ],
     );
   }
