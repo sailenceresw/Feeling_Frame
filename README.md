@@ -14,6 +14,23 @@ persistent **Recent Projects** list, and optional AI
 features (object detection and speech transcription) powered by Google Cloud
 Video Intelligence.
 
+## Project theme: AI-automated video editing
+
+This app is the artefact for the proposal *"Automated Video Editing Mobile
+Application Using AI"*. Feature ↔ proposal mapping:
+
+| Proposal theme | Implementation |
+| --- | --- |
+| Cross-platform Flutter app (Android + iOS) | Single codebase, both platforms configured |
+| Speech identification | Google Cloud Video Intelligence speech transcription |
+| Caption production | Word-level timings → auto-generated SRT, burned into the video |
+| Noise reduction | On-device FFmpeg FFT denoiser + high-pass filter (offline) |
+| Video stabilization | On-device two-pass vid.stab pipeline (offline) |
+| FFmpeg-automated compression | Export resolution/quality settings (CRF + downscale) |
+| "Keep the crucial sections" | Auto Highlights: scene detection keeps key moments (offline) |
+| Object recognition | Google Cloud Video Intelligence object tracking |
+| Instructional materials | In-app "How to use" guide |
+
 ## Requirements
 
 - Flutter SDK `>=3.2.6 <4.0.0`

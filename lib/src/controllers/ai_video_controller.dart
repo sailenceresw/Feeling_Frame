@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:googleapis/storage/v1.dart' as storage;
 import 'package:googleapis/videointelligence/v1.dart' as vi;
@@ -17,6 +18,9 @@ import 'package:video_player/video_player.dart';
 
 import '../screens/ai/object_detect_screen.dart';
 import '../screens/ai/transcribe_screen.dart';
+import '../screens/editor/video_result_popup.dart';
+import '../services/ai_video_service.dart';
+import '../utils/storage_path.dart';
 
 class AiVideoController extends GetxController {
   static final AiVideoController instance = Get.find();
@@ -328,6 +332,7 @@ class AiVideoController extends GetxController {
         log("Data $decodedJson");
         transcribeText = decodedJson['response']['annotationResults'][0]
             ['speechTranscriptions'][0]['alternatives'][0]['transcript'];
+        _collectTranscribedWords(decodedJson);
         update();
       } else {
         print("Not till yet");
@@ -338,6 +343,138 @@ class AiVideoController extends GetxController {
       if (Get.isDialogOpen == true) {
         Get.back();
       }
+    }
+  }
+
+  /// Word-level transcript with timings, used to generate captions.
+  /// Each entry: {'word': String, 'start': double, 'end': double} (seconds).
+  List<Map<String, dynamic>> transcribedWords = [];
+
+  // GCP encodes durations as strings like "1.400s".
+  double _parseGcpDuration(dynamic value) {
+    if (value is String && value.endsWith('s')) {
+      return double.tryParse(value.substring(0, value.length - 1)) ?? 0;
+    }
+    return 0;
+  }
+
+  void _collectTranscribedWords(dynamic decodedJson) {
+    transcribedWords = [];
+    try {
+      final transcriptions = decodedJson['response']['annotationResults'][0]
+              ['speechTranscriptions'] ??
+          [];
+      for (final st in transcriptions) {
+        final alts = st['alternatives'];
+        if (alts is List && alts.isNotEmpty) {
+          for (final w in (alts[0]['words'] ?? [])) {
+            transcribedWords.add({
+              'word': "${w['word'] ?? ''}",
+              'start': _parseGcpDuration(w['startTime']),
+              'end': _parseGcpDuration(w['endTime']),
+            });
+          }
+        }
+      }
+    } catch (e) {
+      log("Failed to collect word timings: $e");
+    }
+  }
+
+  String _srtTimestamp(double seconds) {
+    final d = Duration(milliseconds: (seconds * 1000).round());
+    final h = d.inHours.toString().padLeft(2, '0');
+    final m = d.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final s = d.inSeconds.remainder(60).toString().padLeft(2, '0');
+    final ms = d.inMilliseconds.remainder(1000).toString().padLeft(3, '0');
+    return '$h:$m:$s,$ms';
+  }
+
+  /// Groups the word timings into short caption chunks and writes an SRT file.
+  Future<String?> _writeSrtFile() async {
+    if (transcribedWords.isEmpty) return null;
+    final buffer = StringBuffer();
+    int index = 1;
+    List<Map<String, dynamic>> chunk = [];
+
+    void flushChunk() {
+      if (chunk.isEmpty) return;
+      buffer
+        ..writeln(index++)
+        ..writeln('${_srtTimestamp(chunk.first['start'])} --> '
+            '${_srtTimestamp(chunk.last['end'])}')
+        ..writeln(chunk.map((w) => w['word']).join(' '))
+        ..writeln();
+      chunk = [];
+    }
+
+    for (final w in transcribedWords) {
+      chunk.add(w);
+      final span = (w['end'] as double) - (chunk.first['start'] as double);
+      if (chunk.length >= 7 || span >= 3.5) flushChunk();
+    }
+    flushChunk();
+
+    final path = "${await getOutputDirectoryPath()}captions.srt";
+    await File(path).writeAsString(buffer.toString());
+    return path;
+  }
+
+  /// Generates captions from the transcription and burns them into the video.
+  Future<void> burnCaptionsIntoVideo(String videoPath) async {
+    String? output;
+    try {
+      CustomDialogs.fullLoadingDialog(
+        data: "Generating captions, please wait...",
+      );
+      final srtPath = await _writeSrtFile();
+      if (srtPath != null) {
+        output = await AiVideoService.burnCaptions(videoPath, srtPath);
+      }
+    } catch (e) {
+      log(e.toString());
+    } finally {
+      // Close the loading dialog before showing any result.
+      if (Get.isDialogOpen == true) Get.back();
+    }
+
+    if (output != null) {
+      Get.dialog(Material(
+        color: Colors.transparent,
+        child: VideoResultPopup(video: File(output), aspectRatio: 16 / 9),
+      ));
+    } else if (transcribedWords.isEmpty) {
+      errorToast(msg: "No word timings available to build captions");
+    } else {
+      errorToast(msg: "Couldn't burn captions into the video");
+    }
+  }
+
+  /// Runs one of the local (offline) AI features with loading/result UX.
+  Future<void> runLocalAiFeature({
+    required String path,
+    required Future<String?> Function(String input) feature,
+    required String loadingMessage,
+    required String failureMessage,
+  }) async {
+    String? output;
+    try {
+      CustomDialogs.fullLoadingDialog(data: loadingMessage);
+      output = await feature(path);
+    } catch (e) {
+      log(e.toString());
+    } finally {
+      // Close the loading dialog before showing any result.
+      if (Get.isDialogOpen == true) Get.back();
+    }
+
+    if (output != null) {
+      Get.dialog(Material(
+        color: Colors.transparent,
+        child: VideoResultPopup(video: File(output), aspectRatio: 16 / 9),
+      ));
+    } else {
+      errorToast(msg: failureMessage);
     }
   }
 }
