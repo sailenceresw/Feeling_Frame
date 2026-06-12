@@ -7,6 +7,7 @@ import 'package:gallery_saver_updated/gallery_saver.dart';
 import 'package:path/path.dart' as path;
 import 'package:share_extend/share_extend.dart';
 import 'package:video_editor_mobile_app/src/constant/dimension.dart';
+import 'package:video_editor_mobile_app/src/controllers/project_controller.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_toast.dart';
 import 'package:video_player/video_player.dart';
 
@@ -62,9 +63,15 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
   }
 
   void saveVideo() async {
-    String path = widget.video.path;
-    bool? data = await GallerySaver.saveVideo(path);
+    String videoPath = widget.video.path;
+    bool? data = await GallerySaver.saveVideo(videoPath);
     if (data == true) {
+      // Record the edited video as a recent project so it appears on the
+      // project screen and survives app restarts.
+      await ProjectController.instance.addProject(
+        path: videoPath,
+        durationSeconds: _controller?.value.duration.inSeconds ?? 0,
+      );
       successToast(msg: "Saved successfully");
     } else {
       errorToast(msg: "Couldn't save");

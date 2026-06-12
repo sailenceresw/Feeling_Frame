@@ -1,17 +1,72 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_editor_mobile_app/src/constant/dimension.dart';
 import 'package:video_editor_mobile_app/src/constant/medias.dart';
 import 'package:video_editor_mobile_app/src/controllers/editor_controller.dart';
 import 'package:video_editor_mobile_app/src/controllers/login_controller.dart';
+import 'package:video_editor_mobile_app/src/controllers/project_controller.dart';
+import 'package:video_editor_mobile_app/src/models/project_model.dart';
+import 'package:video_editor_mobile_app/src/screens/editor/video_result_popup.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_text.dart';
 
 import '../../widgets/custom_toast.dart';
 
 class ProjectScreen extends StatelessWidget {
   const ProjectScreen({super.key});
+
+  void _openProject(BuildContext context, ProjectModel project) {
+    if (!File(project.path).existsSync()) {
+      errorToast(msg: "File no longer exists, removing from list");
+      ProjectController.instance.deleteProject(project);
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (_) => VideoResultPopup(
+        video: File(project.path),
+        aspectRatio: 9 / 16,
+      ),
+    );
+  }
+
+  void _confirmDelete(BuildContext context, ProjectModel project) {
+    Get.dialog(
+      AlertDialog(
+        title: const Text("Delete Project"),
+        content: const Text(
+            "Remove this project? You can also delete the video file."),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back();
+              ProjectController.instance.deleteProject(project);
+            },
+            child: const Text("Remove"),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back();
+              ProjectController.instance
+                  .deleteProject(project, deleteFile: true);
+            },
+            child: const Text(
+              "Delete file",
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,54 +224,85 @@ class ProjectScreen extends StatelessWidget {
                 constraints: const BoxConstraints(
                   minHeight: 100,
                 ),
-                child: ListView.separated(
-                  separatorBuilder: (__, ___) => const Divider(),
-                  itemCount: 5,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (BuildContext context, int index) {
-                    return ListTile(
-                      dense: true,
-                      trailing: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.delete_outline_outlined,
-                          color: Colors.red,
-                        ),
-                      ),
-                      leading: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
+                child: GetBuilder<ProjectController>(
+                  builder: (controller) {
+                    if (controller.isLoading) {
+                      return const Padding(
+                        padding: EdgeInsets.all(24),
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+                    if (controller.projects.isEmpty) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 24),
+                        child: Center(
+                          child: CustomText.ourText(
+                            "No projects yet.\nCreate a new project to get started.",
+                            textAlign: TextAlign.center,
                             color: Colors.grey,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(
-                            kBg,
+                            maxLines: 2,
                           ),
                         ),
-                      ),
-                      title: CustomText.ourText("Project Title $index"),
-                      isThreeLine: true,
-                      subtitle: const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "20 March 2023 at 11:00 PM",
-                            style: TextStyle(
-                              fontSize: 10,
+                      );
+                    }
+                    return ListView.separated(
+                      separatorBuilder: (__, ___) => const Divider(),
+                      itemCount: controller.projects.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (BuildContext context, int index) {
+                        final project = controller.projects[index];
+                        return ListTile(
+                          dense: true,
+                          onTap: () => _openProject(context, project),
+                          trailing: IconButton(
+                            onPressed: () =>
+                                _confirmDelete(context, project),
+                            icon: const Icon(
+                              Icons.delete_outline_outlined,
+                              color: Colors.red,
                             ),
                           ),
-                          Row(
+                          leading: Container(
+                            width: 56,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.grey,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.asset(
+                                kBg,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          title: CustomText.ourText(project.title),
+                          isThreeLine: true,
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Expanded(child: Text("30 MB")),
-                              Expanded(child: Text("00:10s")),
+                              Text(
+                                DateFormat('dd MMM yyyy, hh:mm a')
+                                    .format(project.createdAt),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                      child: Text(project.formattedSize)),
+                                  Expanded(
+                                      child: Text(project.formattedDuration)),
+                                ],
+                              ),
                             ],
                           ),
-                        ],
-                      ),
+                        );
+                      },
                     );
                   },
                 ),
