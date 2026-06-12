@@ -19,51 +19,6 @@ import '../screens/ai/transcribe_screen.dart';
 
 class AiVideoController extends GetxController {
   static final AiVideoController instance = Get.find();
-  // Future<void> analyzeVideo() async {
-  //   // Load the service account key JSON file.
-  //   var credentials = auth.ServiceAccountCredentials.fromJson({
-  //     "type": "service_account",
-  //     "project_id": "video-editor-417510",
-  //     "private_key_id": "20d1f38cb1480df5974118dddfdec6568a429fe3",
-  //     "private_key":
-  //         "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCvyuKXMT4NaKN8\n0RXd4O5jsYTUyRTom6LbI6an/V7KITDtuX5oLxWdM5l3vKB4DzrpM4MAXz5lT0Wf\nov+MrBZSCkJWmm/DENzKTi5ok4u/1XmgoaWFarJ6iL+DbZGkgi/WREkKXwT2bDhE\ndGmBiZ1O9ubrNfw4mEDpTZy51k2wXeEq67Iky8eAeACcr4pnFJBeaeqHASdqWmjp\njVabRPKVGNFR8p76JZvTfhdPV0h6JYDhCvJAESoNHCIxILEMtl/bOCpzmZSp6om1\nSvcQl0359yyey+2N27wrTyroGNykuOqKk0fmu4OoQVoBYs7AAGks16EJyiiw3xMg\nPM+gja59AgMBAAECggEABX44eYVD9meV7oJjxYgiOJAgxk32PJTIa9TbNrqcPBT5\nttrOkDxHRVYcbkJlpmh5I37pkb2MukuxaEG9fsyEqOPmmw3i7G7HvkaWRhVr6lo4\nVE2h7AQNW/aPX7nVeoLtMlBjpQl2NTx3CH/+u2w12E/4MdLKK9aOGvwwlWMnEFC4\nMRy2gDV882FYYmn4Kx14HhNlOUGCYC2vgKnwSTrqZd/0PBi4Y6oU1GkGpsx9Qjb6\nPMk4/sAeDJHH7AeFe8KXQ8k+ys2s2DVCyTTu6L4jzIMCzL2qCZpicz4V9WipxQqb\nnvB986NpI+SqW7DiqZnauGi1cO+UewP9Fb0Pe5F34QKBgQDsKHT8ndWpju2IwpOk\nXi7LDu4JXOW8aq5B9I5zjH9H6liqN8RtU8PwrpRWuHgg4/u4F+PgKzJfyAjo3/5M\n9iRFGPL5Ys99pmxKV1cMoAs6IrmfzRDi7uyePgspTQ+7tDAnMaxyaBjvolRpAjWw\nnr0uuwLMs5aAfWniAf3TB22ceQKBgQC+kAVtmnbR/YpazwKpzkKa9CVDwCs3EeFf\n0/lSRslbNJvsF4HfBk+/lYvPOCs99uP0fzcHFYjqlD6ly20+KFALEVraX/f59Gzj\n0eyvvnB435824Ufmg3NnuoQ8UNPn/YqgeQzwhBcUDDNFov8bI+4qEkDR6qx9CMVq\nw2+R0NBZJQKBgQDIG/wNdvzu4aLbqO0McZY7EFqZ6nLtNoSUdNMkjF/qI2SgUAMN\nFNbKolQmK8f3LthEhVHdyRy1Vr5d/jfxJP1U47A3rAfgE95dHCcyFoeM6pHaHBz7\n/rLX4AD7LUZwql3HSGs0woqmvCnElU/Daq8p4uOba23TUPIgxck8QWYbGQKBgCVZ\newbhaHp99BkaS85WU+2k/ozJ5G51vbOXi11Z7GtI42qhrN22kfjd6boiqy8I7eLk\n8DcePGilx6WdOnsdUZrpuuHkP2kpRBJe+cH0VH0Mb1tFSl9e0ka5YuOjf/UPV5Ve\nRG/7o75VKdNzQAbkwvBSBYxfL5GOH4tuZLays7NVAoGBAM7VArzFIppQW6aFNoT7\nhn841GDh8EVzbtxMBhKd2zyl16K3xkq7OhI8psai1bOySOamof8YHjXeYGzr2H4a\nuTFDJfs6ObIF41BgdKWb4XdO3XW85deiX95O+s2YuAwT5MLcx7YBGrBiHVA1SLQ+\nNOOUPamHsI6HlI+WB+2ePcrY\n-----END PRIVATE KEY-----\n",
-  //     "client_email":
-  //         "video-editor-service@video-editor-417510.iam.gserviceaccount.com",
-  //     "client_id": "117364698981048412120",
-  //     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  //     "token_uri": "https://oauth2.googleapis.com/token",
-  //     "auth_provider_x509_cert_url":
-  //         "https://www.googleapis.com/oauth2/v1/certs",
-  //     "client_x509_cert_url":
-  //         "https://www.googleapis.com/robot/v1/metadata/x509/video-editor-service%40video-editor-417510.iam.gserviceaccount.com",
-  //     "universe_domain": "googleapis.com"
-  //   });
-
-  //   final scopes = [vi.CloudVideoIntelligenceApi.cloudPlatformScope];
-  //   final client = await clientViaServiceAccount(credentials, scopes);
-
-  //   final videoIntelligence = vi.CloudVideoIntelligenceApi(client);
-
-  //   final features = [
-  //     'LABEL_DETECTION',
-  //     'SHOT_CHANGE_DETECTION'
-  //   ]; // Add other features as needed
-
-  //   final request =
-  //       vi.GoogleCloudVideointelligenceV1AnnotateVideoRequest.fromJson({
-  //     'inputUri': "gs://videoeditor/video.mp4",
-  //     'features': features,
-  //   });
-  //   print(request);
-  //   try {
-  //     final response = await videoIntelligence.videos.annotate(request);
-  //     // await _waitForOperation(response.name.toString(), videoIntelligence);
-  //     // Handle the response, extract labels, shot changes, etc.
-  //     print(response.done);
-  //   } catch (e) {
-  //     print('Error analyzing video: $e');
-  //   }
-  // }
 
   Future<void> _waitForOperation(
       String operationName, vi.CloudVideoIntelligenceApi videoI) async {
@@ -81,27 +36,28 @@ class AiVideoController extends GetxController {
     print(response);
   }
 
-  final apiKey = 'AIzaSyB0_VO2Dhr43qv85_iGiU_X6uf5P84IeNM';
   String? operationName;
   AutoRefreshingAuthClient? client;
+
+  // The Google Cloud service account JSON must NOT be hardcoded in source.
+  // Provide it at build/run time, e.g.:
+  //   flutter run --dart-define=GCP_SERVICE_ACCOUNT_JSON='{ ... }'
+  static const String _serviceAccountJson =
+      String.fromEnvironment('GCP_SERVICE_ACCOUNT_JSON');
+
   Future<void> init() async {
-    var credentials = auth.ServiceAccountCredentials.fromJson({
-      "type": "service_account",
-      "project_id": "video-editor-417510",
-      "private_key_id": "20d1f38cb1480df5974118dddfdec6568a429fe3",
-      "private_key":
-          "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCvyuKXMT4NaKN8\n0RXd4O5jsYTUyRTom6LbI6an/V7KITDtuX5oLxWdM5l3vKB4DzrpM4MAXz5lT0Wf\nov+MrBZSCkJWmm/DENzKTi5ok4u/1XmgoaWFarJ6iL+DbZGkgi/WREkKXwT2bDhE\ndGmBiZ1O9ubrNfw4mEDpTZy51k2wXeEq67Iky8eAeACcr4pnFJBeaeqHASdqWmjp\njVabRPKVGNFR8p76JZvTfhdPV0h6JYDhCvJAESoNHCIxILEMtl/bOCpzmZSp6om1\nSvcQl0359yyey+2N27wrTyroGNykuOqKk0fmu4OoQVoBYs7AAGks16EJyiiw3xMg\nPM+gja59AgMBAAECggEABX44eYVD9meV7oJjxYgiOJAgxk32PJTIa9TbNrqcPBT5\nttrOkDxHRVYcbkJlpmh5I37pkb2MukuxaEG9fsyEqOPmmw3i7G7HvkaWRhVr6lo4\nVE2h7AQNW/aPX7nVeoLtMlBjpQl2NTx3CH/+u2w12E/4MdLKK9aOGvwwlWMnEFC4\nMRy2gDV882FYYmn4Kx14HhNlOUGCYC2vgKnwSTrqZd/0PBi4Y6oU1GkGpsx9Qjb6\nPMk4/sAeDJHH7AeFe8KXQ8k+ys2s2DVCyTTu6L4jzIMCzL2qCZpicz4V9WipxQqb\nnvB986NpI+SqW7DiqZnauGi1cO+UewP9Fb0Pe5F34QKBgQDsKHT8ndWpju2IwpOk\nXi7LDu4JXOW8aq5B9I5zjH9H6liqN8RtU8PwrpRWuHgg4/u4F+PgKzJfyAjo3/5M\n9iRFGPL5Ys99pmxKV1cMoAs6IrmfzRDi7uyePgspTQ+7tDAnMaxyaBjvolRpAjWw\nnr0uuwLMs5aAfWniAf3TB22ceQKBgQC+kAVtmnbR/YpazwKpzkKa9CVDwCs3EeFf\n0/lSRslbNJvsF4HfBk+/lYvPOCs99uP0fzcHFYjqlD6ly20+KFALEVraX/f59Gzj\n0eyvvnB435824Ufmg3NnuoQ8UNPn/YqgeQzwhBcUDDNFov8bI+4qEkDR6qx9CMVq\nw2+R0NBZJQKBgQDIG/wNdvzu4aLbqO0McZY7EFqZ6nLtNoSUdNMkjF/qI2SgUAMN\nFNbKolQmK8f3LthEhVHdyRy1Vr5d/jfxJP1U47A3rAfgE95dHCcyFoeM6pHaHBz7\n/rLX4AD7LUZwql3HSGs0woqmvCnElU/Daq8p4uOba23TUPIgxck8QWYbGQKBgCVZ\newbhaHp99BkaS85WU+2k/ozJ5G51vbOXi11Z7GtI42qhrN22kfjd6boiqy8I7eLk\n8DcePGilx6WdOnsdUZrpuuHkP2kpRBJe+cH0VH0Mb1tFSl9e0ka5YuOjf/UPV5Ve\nRG/7o75VKdNzQAbkwvBSBYxfL5GOH4tuZLays7NVAoGBAM7VArzFIppQW6aFNoT7\nhn841GDh8EVzbtxMBhKd2zyl16K3xkq7OhI8psai1bOySOamof8YHjXeYGzr2H4a\nuTFDJfs6ObIF41BgdKWb4XdO3XW85deiX95O+s2YuAwT5MLcx7YBGrBiHVA1SLQ+\nNOOUPamHsI6HlI+WB+2ePcrY\n-----END PRIVATE KEY-----\n",
-      "client_email":
-          "video-editor-service@video-editor-417510.iam.gserviceaccount.com",
-      "client_id": "117364698981048412120",
-      "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-      "token_uri": "https://oauth2.googleapis.com/token",
-      "auth_provider_x509_cert_url":
-          "https://www.googleapis.com/oauth2/v1/certs",
-      "client_x509_cert_url":
-          "https://www.googleapis.com/robot/v1/metadata/x509/video-editor-service%40video-editor-417510.iam.gserviceaccount.com",
-      "universe_domain": "googleapis.com"
-    });
+    // Reuse the existing authenticated client if it was already created.
+    if (client != null) return;
+
+    if (_serviceAccountJson.isEmpty) {
+      log('GCP_SERVICE_ACCOUNT_JSON is not configured. Pass the service '
+          'account credentials with --dart-define=GCP_SERVICE_ACCOUNT_JSON=...');
+      return;
+    }
+
+    final credentials = auth.ServiceAccountCredentials.fromJson(
+      jsonDecode(_serviceAccountJson) as Map<String, dynamic>,
+    );
 
     final scopes = [
       vi.CloudVideoIntelligenceApi.cloudPlatformScope,
@@ -112,7 +68,7 @@ class AiVideoController extends GetxController {
 
   void callVideoIntelligence() async {
     try {
-      init();
+      await init();
       var response = await client?.post(
           Uri.parse(
               "https://videointelligence.googleapis.com/v1/videos:annotate"),
