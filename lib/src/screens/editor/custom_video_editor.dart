@@ -43,10 +43,13 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   }
 
   @override
-  void dispose() async {
+  void dispose() {
     _exportingProgress.dispose();
     _isExporting.dispose();
-    await _controller.dispose();
+    // Fire-and-forget: dispose() must remain synchronous and call
+    // super.dispose() without awaiting, otherwise the framework throws
+    // "dispose() did not call super.dispose()".
+    _controller.dispose();
     ExportService.dispose();
     super.dispose();
   }
@@ -64,6 +67,14 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
     _isExporting.value = true;
 
     FFmpegKit.cancel();
+
+    // Give the user visible export feedback with a live progress bar.
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => _exportProgressDialog(),
+    );
+
     final config = VideoFFmpegVideoEditorConfig(_controller);
     await ExportService.runFFmpegCommand(
       await config.getExecuteConfig(),
@@ -74,10 +85,13 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
       onError: (e, s) {
         log("Export Error $e");
         log("Export Stack $s");
+        _isExporting.value = false;
+        _closeExportDialog();
         _showErrorSnackBar("Error on export video :(");
       },
       onCompleted: (file) {
         _isExporting.value = false;
+        _closeExportDialog();
         if (!mounted) return;
 
         showDialog(
@@ -88,6 +102,38 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
           ),
         );
       },
+    );
+  }
+
+  void _closeExportDialog() {
+    if (mounted && Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+  }
+
+  Widget _exportProgressDialog() {
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: AlertDialog(
+        content: ValueListenableBuilder<double>(
+          valueListenable: _exportingProgress,
+          builder: (_, value, __) {
+            final clamped = value.clamp(0.0, 1.0);
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text("Exporting video..."),
+                vSizedBox2,
+                LinearProgressIndicator(
+                  value: clamped == 0 ? null : clamped,
+                ),
+                vSizedBox1,
+                Text("${(clamped * 100).toStringAsFixed(0)}%"),
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -295,6 +341,9 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                               if (selectedOption == 7) {
                                 return _audioWidget();
                               }
+                              if (selectedOption == 8) {
+                                return _transformWidget();
+                              }
                               return Container();
                             },
                           ),
@@ -345,6 +394,11 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                                 "Audio",
                                 7,
                               ),
+                              _optionWidget(
+                                Icons.flip_rounded,
+                                "Transform",
+                                8,
+                              ),
                             ],
                           ),
                         ),
@@ -362,9 +416,11 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   Widget _filterWidget() {
     return Stack(
       children: [
-        Wrap(
-          spacing: 10,
-          children: [
+        SingleChildScrollView(
+          child: Wrap(
+            spacing: 10,
+            runSpacing: 8,
+            children: [
             ElevatedButton(
               onPressed: filterOption == 0
                   ? null
@@ -402,9 +458,128 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                     },
               child: const Text("Grayscale"),
             ),
-          ],
+            ElevatedButton(
+              onPressed: filterOption == 4
+                  ? null
+                  : () {
+                      applyFilter(
+                          '-y -i ${_controller.file.path} -vf "eq=gamma_r=1.1:gamma_b=0.9:saturation=1.2"',
+                          4);
+                    },
+              child: const Text("Warm"),
+            ),
+            ElevatedButton(
+              onPressed: filterOption == 5
+                  ? null
+                  : () {
+                      applyFilter(
+                          '-y -i ${_controller.file.path} -vf "eq=gamma_b=1.1:gamma_r=0.9:saturation=1.1"',
+                          5);
+                    },
+              child: const Text("Cool"),
+            ),
+            ElevatedButton(
+              onPressed: filterOption == 6
+                  ? null
+                  : () {
+                      applyFilter(
+                          '-y -i ${_controller.file.path} -vf "eq=saturation=0.6:contrast=1.2:brightness=0.05"',
+                          6);
+                    },
+              child: const Text("Vintage"),
+            ),
+            ElevatedButton(
+              onPressed: filterOption == 7
+                  ? null
+                  : () {
+                      applyFilter(
+                          '-y -i ${_controller.file.path} -vf negate', 7);
+                    },
+              child: const Text("Invert"),
+            ),
+            ],
+          ),
         ),
         if (isApplyingFilter)
+          const Positioned.fill(
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          )
+      ],
+    );
+  }
+
+  bool isTransforming = false;
+  void applyTransform(String videoFilter, {String audioFilter = ''}) async {
+    setState(() {
+      isTransforming = true;
+    });
+    String basePath = await getOutputDirectoryPath();
+    String outputPath = "${basePath}transform.mp4";
+    String command =
+        '-y -i ${_controller.file.path} $videoFilter $audioFilter $outputPath';
+    print(command);
+    await FFmpegKit.execute(command).then((session) async {
+      final returnCode = await session.getReturnCode();
+      final output = await session.getOutput();
+      if (ReturnCode.isSuccess(returnCode)) {
+        print("Successfully transformed");
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (_) => VideoResultPopup(
+              video: File(outputPath),
+              aspectRatio: aspectRatio,
+            ),
+          );
+        }
+      } else {
+        log("Transform error: ${output.toString()}");
+        _showErrorSnackBar("Couldn't apply transform");
+      }
+    });
+    if (mounted) {
+      setState(() {
+        isTransforming = false;
+      });
+    }
+  }
+
+  Widget _transformWidget() {
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => applyTransform('-vf hflip'),
+                icon: const Icon(Icons.flip),
+                label: const Text("Flip Horizontal"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => applyTransform('-vf vflip'),
+                icon: const Icon(Icons.flip),
+                label: const Text("Flip Vertical"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => applyTransform('-vf reverse',
+                        audioFilter: '-af areverse'),
+                icon: const Icon(Icons.fast_rewind_rounded),
+                label: const Text("Reverse"),
+              ),
+            ],
+          ),
+        ),
+        if (isTransforming)
           const Positioned.fill(
             child: Center(
               child: CircularProgressIndicator(),
@@ -417,17 +592,35 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   Widget _audioWidget() {
     return Stack(
       children: [
-        Column(
-          children: [
-            CustomText.ourText(
-              "Add your audio from your files system",
-            ),
-            vSizedBox2,
-            ElevatedButton(
-              onPressed: pickAudio,
-              child: const Text('Select Audio'),
-            ),
-          ],
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              CustomText.ourText(
+                "Add your audio from your files system",
+              ),
+              vSizedBox1,
+              ElevatedButton(
+                onPressed: pickAudio,
+                child: const Text('Select Audio'),
+              ),
+              vSizedBox1,
+              CustomText.ourText("Video volume: ${(videoVolume * 100).round()}%"),
+              Slider(
+                value: videoVolume,
+                min: 0.0,
+                max: 1.0,
+                divisions: 10,
+                label: "${(videoVolume * 100).round()}%",
+                onChanged: (val) {
+                  setState(() {
+                    videoVolume = val;
+                    isAudioMute = val == 0;
+                  });
+                  _controller.video.setVolume(val);
+                },
+              ),
+            ],
+          ),
         ),
         if (isAudioSynchronizing)
           const Positioned.fill(
@@ -507,6 +700,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   }
 
   final TextEditingController? textController = TextEditingController();
+  double textFontSize = 24;
   Widget _textWidget() {
     return GetBuilder<EditorController>(builder: (_) {
       return Padding(
@@ -547,6 +741,29 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                             ],
                           ),
                         ),
+                        const SizedBox(height: 10),
+                        StatefulBuilder(
+                          builder: (context, setDialogState) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Font size: ${textFontSize.round()}'),
+                                Slider(
+                                  value: textFontSize,
+                                  min: 12,
+                                  max: 80,
+                                  divisions: 34,
+                                  label: textFontSize.round().toString(),
+                                  onChanged: (val) {
+                                    setDialogState(() {
+                                      textFontSize = val;
+                                    });
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       ],
                     ),
                     actions: [
@@ -564,6 +781,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                               "${textController?.text.trim()}",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
+                                fontSize: textFontSize,
                                 color: _.selectedColor,
                               ),
                             ),
@@ -585,12 +803,15 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   }
 
   bool isAudioMute = false;
+  double videoVolume = 1.0;
   void disavleAudio() async {
     if (isAudioMute) {
-      _controller.video.setVolume(1);
+      // Restore to full volume when unmuting.
+      videoVolume = 1.0;
     } else {
-      _controller.video.setVolume(0);
+      videoVolume = 0.0;
     }
+    _controller.video.setVolume(videoVolume);
     setState(() {
       isAudioMute = !isAudioMute;
     });
