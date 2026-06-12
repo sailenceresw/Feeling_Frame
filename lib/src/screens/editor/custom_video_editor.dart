@@ -63,17 +63,12 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
     _isExporting.value = true;
 
     FFmpegKit.cancel();
-    final config = VideoFFmpegVideoEditorConfig(
-      _controller,
-      commandBuilder: (config, videoPath, outputPath) {
-        return '-y -i $videoPath -vf "eq=brightness=0.3:contrast=1.5:saturation=1.5,hue=s=0" $outputPath';
-      },
-    );
+    final config = VideoFFmpegVideoEditorConfig(_controller);
     await ExportService.runFFmpegCommand(
       await config.getExecuteConfig(),
       onProgress: (stats) {
         _exportingProgress.value =
-            config.getFFmpegProgress(stats.getTime() as int);
+            config.getFFmpegProgress(stats.getTime().toInt());
       },
       onError: (e, s) {
         log("Export Error $e");
@@ -126,7 +121,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   }
 
   Future<bool> _showExitConfirmationDialog(BuildContext context) async {
-    return await showDialog(
+    final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Close Editor?'),
@@ -143,6 +138,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
         ],
       ),
     );
+    return confirmed ?? false;
   }
 
   @override
@@ -150,7 +146,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
     return GetBuilder<EditorController>(
       didChangeDependencies: (_) {
         _controller = VideoEditorController.file(
-          File(_.controller?.currentPlayablePath ?? widget.file!.path),
+          File(_.currentPlayablePath ?? widget.file!.path),
           minDuration: const Duration(seconds: 1),
           maxDuration: const Duration(seconds: 10),
         )..initialize().then((_) => setState(() {})).catchError((error) {
@@ -875,7 +871,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
     return 0;
   }
 
-  double speed = 0.0;
+  double speed = 1.0;
   Widget _speedAdjustment() {
     return Column(
       children: [
@@ -890,13 +886,16 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
           onChangeEnd: (val) {
             _controller.video.setPlaybackSpeed(val);
           },
-          min: -1.0,
+          min: 0.25,
           max: 2.0,
           divisions: 7,
           label: speed.toStringAsFixed(2),
         ),
         ElevatedButton(
           onPressed: () {
+            setState(() {
+              speed = 1.0;
+            });
             _controller.video.setPlaybackSpeed(1);
           },
           child: const Text("Reset to Normal"),

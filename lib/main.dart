@@ -30,10 +30,10 @@ class _VideoEditorAppState extends State<VideoEditorApp> {
   @override
   void initState() {
     // TODO: implement initState
-    FFmpegKitConfig.init().then((value) {
+    FFmpegKitConfig.init().then((value) async {
       // FFmpegKitConfig.setLogLevel(0);
       FFmpegKitConfig.enableLogs();
-      prepareAssets();
+      await prepareAssets();
       registerApplicationFonts();
     });
 
@@ -68,7 +68,7 @@ class _VideoEditorAppState extends State<VideoEditorApp> {
     });
   }
 
-  void prepareAssets() async {
+  Future<void> prepareAssets() async {
     await assetToFile('Quicksand-Regular.ttf');
   }
 
