@@ -17,6 +17,7 @@ import 'package:video_editor_mobile_app/src/screens/editor/crop_screen.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_text.dart';
 
 import '../../services/export_services.dart';
+import '../../utils/storage_path.dart';
 import 'video_result_popup.dart';
 
 class CustomVideoEditor extends StatefulWidget {
@@ -765,7 +766,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
     setState(() {
       isAudioSynchronizing = true;
     });
-    String basePath = "/storage/emulated/0/Download/";
+    String basePath = await getOutputDirectoryPath();
     String outputPath = "${basePath}audio.mp4";
 
     String command =
@@ -805,11 +806,21 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   bool isApplyingFilter = false;
   void applyFilter(String command, int index) async {
     print("Applying filter");
+    // "Original" passes an empty command: there is nothing to render, just
+    // reset the selected filter and exit without running FFmpeg.
+    if (command.trim().isEmpty) {
+      setState(() {
+        filterOption = index;
+        isApplyingFilter = false;
+      });
+      return;
+    }
+
     setState(() {
       filterOption = index;
       isApplyingFilter = true;
     });
-    String basePath = "/storage/emulated/0/Download/";
+    String basePath = await getOutputDirectoryPath();
     String outputPath = "${basePath}filter.mp4";
 
     //high quality filter
@@ -818,12 +829,6 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
 
     command += " $outputPath";
     print(command);
-    if (command == "") {
-      setState(() {
-        isApplyingFilter = false;
-      });
-      return;
-    }
     await FFmpegKit.execute(command).then((session) async {
       final returnCode = await session.getReturnCode();
       final state =
@@ -1001,7 +1006,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
       isAdjusting = true;
     });
     print("Applying adjustment");
-    String basePath = "/storage/emulated/0/Download/";
+    String basePath = await getOutputDirectoryPath();
     String outputPath = "${basePath}adjustment.mp4";
 
     //high quality filter

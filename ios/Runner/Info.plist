@@ -45,5 +45,21 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to your photo library to import videos for editing.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs permission to save edited videos to your photo library.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs microphone access to process audio in your videos.</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>This app needs access to your media library to add audio to your videos.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access to record videos for editing.</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>This app needs access to documents to import and export your videos.</string>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
 </dict>
 </plist>

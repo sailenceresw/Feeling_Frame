@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_dialogs.dart';
+import 'package:video_editor_mobile_app/src/widgets/custom_toast.dart';
 import 'package:video_player/video_player.dart';
 
 import '../screens/ai/object_detect_screen.dart';
@@ -213,7 +214,15 @@ class AiVideoController extends GetxController {
     }
   }
 
+  /// Whether the Google Cloud credentials have been provided at build time.
+  bool get isConfigured => _serviceAccountJson.isNotEmpty;
+
   Future<bool> uploadVideoToGCS(String filePath) async {
+    if (!isConfigured) {
+      errorToast(
+          msg: "AI features are not configured. Provide GCP credentials.");
+      return false;
+    }
     try {
       CustomDialogs.fullLoadingDialog(
         data: "Uploading video, please wait...",

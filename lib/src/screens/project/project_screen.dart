@@ -5,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:video_editor_mobile_app/src/constant/dimension.dart';
 import 'package:video_editor_mobile_app/src/constant/medias.dart';
 import 'package:video_editor_mobile_app/src/controllers/editor_controller.dart';
+import 'package:video_editor_mobile_app/src/controllers/login_controller.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_text.dart';
 
 import '../../widgets/custom_toast.dart';
@@ -63,6 +64,31 @@ class ProjectScreen extends StatelessWidget {
               );
             },
             icon: const Icon(CupertinoIcons.info_circle),
+          ),
+          IconButton(
+            tooltip: "Logout",
+            onPressed: () {
+              Get.dialog(
+                AlertDialog(
+                  title: const Text("Logout"),
+                  content: const Text("Are you sure you want to logout?"),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Get.back(),
+                      child: const Text("Cancel"),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Get.back();
+                        LoginController.instance.logout();
+                      },
+                      child: const Text("Logout"),
+                    ),
+                  ],
+                ),
+              );
+            },
+            icon: const Icon(Icons.logout),
           ),
         ],
       ),

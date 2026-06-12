@@ -1,22 +1,56 @@
 # Feeling_Frame
 
-# video_editor_mobile_app
+A Flutter video editor mobile app that runs on **both Android and iOS**. It
+supports trimming, cropping, rotation, filters, color adjustments, playback
+speed, text overlays, aspect-ratio changes, audio replacement, cover
+selection, multi-video merging, and optional AI features (object detection and
+speech transcription) powered by Google Cloud Video Intelligence.
 
-A new Flutter project.
+## Requirements
 
-## Getting Started
+- Flutter SDK `>=3.2.6 <4.0.0`
+- Android: `minSdkVersion 24`, `compileSdkVersion 34`
+- iOS: deployment target `13.0+`
 
-This project is a starting point for a Flutter application.
+## Getting started
 
-A few resources to get you started if this is your first Flutter project:
+```bash
+flutter pub get
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+# Android
+flutter run
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# iOS
+cd ios && pod install && cd ..
+flutter run
+```
 
-Login credentials :
-Email : test@gmail.com
+## Login credentials
+
+```
+Email    : test@gmail.com
 Password : 123456
+```
+
+## AI features (optional)
+
+The Google Cloud service-account credentials are **no longer hardcoded** in the
+source. To enable the AI object-detection and transcription features, pass the
+service-account JSON at build/run time with a `--dart-define`:
+
+```bash
+flutter run --dart-define=GCP_SERVICE_ACCOUNT_JSON="$(cat service_account.json)"
+```
+
+If the credentials are not provided, the rest of the app works normally and the
+AI screens show a clear "not configured" message instead of failing silently.
+
+> Never commit credentials or private keys to the repository.
+
+## Exported files
+
+- **Android:** processed videos are written to the public `Download` folder
+  (falling back to app storage if unavailable).
+- **iOS:** processed videos are written to the app's documents directory and are
+  accessible through the Files app (file sharing is enabled).
+</content>
