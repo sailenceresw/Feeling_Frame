@@ -4,9 +4,12 @@ A Flutter video editor mobile app that runs on **both Android and iOS**. It
 supports trimming, cropping, rotation, **flip (horizontal/vertical) and
 reverse** transforms, filters (Sepia, High Saturation, Grayscale, Warm, Cool,
 Vintage, Invert), color adjustments, playback speed, **volume control**, text
-overlays (with adjustable font size and color), aspect-ratio changes, audio
-replacement, cover selection, multi-video merging, **export with a live
-progress indicator**, a persistent **Recent Projects** list, and optional AI
+overlays (with adjustable font size and color), **image sticker overlays**,
+aspect-ratio changes, audio replacement, cover selection, multi-video merging,
+**export with a live progress indicator and selectable resolution/quality**
+(downscale HD/2K/4K/8K sources to 1440p/1080p/720p/480p with high/balanced/
+small-size compression to dramatically reduce file size), a persistent
+**Recent Projects** list, and optional AI
 features (object detection and speech transcription) powered by Google Cloud
 Video Intelligence.
 
