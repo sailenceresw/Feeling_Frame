@@ -157,6 +157,13 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
     return confirmed ?? false;
   }
 
+  /// Post-processing is only needed when the user wants to downscale, change
+  /// compression, or burn text/sticker overlays into the video.
+  bool get _needsPostProcess =>
+      exportHeight > 0 ||
+      exportCrf != 23 ||
+      EditorController.instance.lindiController.widgets.isNotEmpty;
+
   void _exportVideo() async {
     // Let the user choose resolution and compression before exporting.
     final proceed = await _showExportOptionsDialog();
@@ -174,48 +181,108 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
       builder: (_) => _exportProgressDialog(),
     );
 
-    final config = VideoFFmpegVideoEditorConfig(
-      _controller,
-      commandBuilder: (config, videoPath, outputPath) {
-        // Keep the editor's trim/crop/rotate filters and append an optional
-        // downscale, then re-encode with the chosen CRF to control file size.
-        final List<String> filters = config.getExportFilters();
-        if (exportHeight > 0) {
-          // -2 keeps the aspect ratio while forcing an even width (required
-          // by libx264).
-          filters.add('scale=-2:$exportHeight');
-        }
-        return '-y -i $videoPath ${config.filtersCmd(filters)} '
-            '-c:v libx264 -crf $exportCrf -preset fast -c:a aac $outputPath';
-      },
-    );
+    final needsPost = _needsPostProcess;
+
+    // Pass 1: let the package build a correctly trimmed/cropped/rotated file
+    // (this keeps trim + audio handling exactly as the library intends).
+    final config = VideoFFmpegVideoEditorConfig(_controller);
     await ExportService.runFFmpegCommand(
       await config.getExecuteConfig(),
       onProgress: (stats) {
-        _exportingProgress.value =
-            config.getFFmpegProgress(stats.getTime().toInt());
+        final progress = config.getFFmpegProgress(stats.getTime().toInt());
+        // Leave headroom on the bar for the post-processing pass.
+        _exportingProgress.value = needsPost ? progress * 0.85 : progress;
       },
       onError: (e, s) {
         log("Export Error $e");
         log("Export Stack $s");
-        _isExporting.value = false;
-        _closeExportDialog();
-        _showErrorSnackBar("Error on export video :(");
+        _failExport();
       },
-      onCompleted: (file) {
-        _isExporting.value = false;
-        _closeExportDialog();
-        if (!mounted) return;
-
-        showDialog(
-          context: context,
-          builder: (_) => VideoResultPopup(
-            video: file,
-            aspectRatio: aspectRatio,
-          ),
-        );
+      onCompleted: (file) async {
+        if (needsPost) {
+          await _postProcessExport(file);
+        } else {
+          _finishExport(file);
+        }
       },
     );
+  }
+
+  void _failExport() {
+    _isExporting.value = false;
+    _closeExportDialog();
+    _showErrorSnackBar("Error on export video :(");
+  }
+
+  void _finishExport(File file) {
+    _exportingProgress.value = 1.0;
+    _isExporting.value = false;
+    _closeExportDialog();
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      builder: (_) => VideoResultPopup(
+        video: file,
+        aspectRatio: aspectRatio,
+      ),
+    );
+  }
+
+  int _evenWidthForHeight(int height) {
+    int w = (height * aspectRatio).round();
+    if (w.isOdd) w += 1;
+    return w;
+  }
+
+  String _scaleAndCompressCommand(String input, String output) {
+    final scale = exportHeight > 0 ? '-vf scale=-2:$exportHeight ' : '';
+    return '-y -i $input $scale-c:v libx264 -crf $exportCrf '
+        '-preset fast -c:a aac $output';
+  }
+
+  // Pass 2: optionally downscale/compress and burn in text + sticker overlays.
+  Future<void> _postProcessExport(File editedFile) async {
+    _exportingProgress.value = 0.9;
+    final basePath = await getOutputDirectoryPath();
+    final outputPath = "${basePath}export_final.mp4";
+    final overlays = EditorController.instance.lindiController.widgets;
+
+    String command;
+    if (overlays.isNotEmpty) {
+      // Capture the (transparent) sticker/text layer as a PNG and overlay it.
+      final bytes =
+          await EditorController.instance.lindiController.saveAsUint8List();
+      if (bytes != null) {
+        final overlayPath = "${basePath}overlay.png";
+        await File(overlayPath).writeAsBytes(bytes);
+
+        final h = exportHeight > 0 ? exportHeight : 720;
+        final w = _evenWidthForHeight(h);
+        command = '-y -i ${editedFile.path} -i $overlayPath -filter_complex '
+            '"[0:v]scale=$w:$h:force_original_aspect_ratio=increase,'
+            'crop=$w:$h[base];[1:v]scale=$w:$h[ovr];'
+            '[base][ovr]overlay=0:0[outv]" -map "[outv]" -map 0:a? '
+            '-c:v libx264 -crf $exportCrf -preset fast -c:a aac -shortest '
+            '$outputPath';
+      } else {
+        command = _scaleAndCompressCommand(editedFile.path, outputPath);
+      }
+    } else {
+      command = _scaleAndCompressCommand(editedFile.path, outputPath);
+    }
+
+    log("Post-process command: $command");
+    await FFmpegKit.execute(command).then((session) async {
+      final returnCode = await session.getReturnCode();
+      if (ReturnCode.isSuccess(returnCode)) {
+        _finishExport(File(outputPath));
+      } else {
+        log("Post-process error: ${(await session.getOutput()).toString()}");
+        // Fall back to the un-processed (but correctly edited) file so the
+        // user still gets a usable export.
+        _finishExport(editedFile);
+      }
+    });
   }
 
   void _closeExportDialog() {
@@ -308,7 +375,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
         _controller = VideoEditorController.file(
           File(_.currentPlayablePath ?? widget.file!.path),
           minDuration: const Duration(seconds: 1),
-          maxDuration: const Duration(seconds: 10),
+          maxDuration: const Duration(minutes: 10),
         )..initialize().then((_) => setState(() {})).catchError((error) {
             // handle minumum duration bigger than video duration error
             Navigator.pop(context);
@@ -377,13 +444,23 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                                       //     // ),
                                       //   ],
                                       // ),
-                                      LindiStickerWidget(
-                                        controller: _.lindiController,
-                                        child: AspectRatio(
-                                          aspectRatio: aspectRatio,
-                                          child: CropGridViewer.preview(
-                                            controller: _controller,
-                                          ),
+                                      AspectRatio(
+                                        aspectRatio: aspectRatio,
+                                        child: Stack(
+                                          fit: StackFit.expand,
+                                          children: [
+                                            // Video preview sits behind the
+                                            // sticker layer so the Lindi canvas
+                                            // can be captured with a transparent
+                                            // background for export burn-in.
+                                            CropGridViewer.preview(
+                                              controller: _controller,
+                                            ),
+                                            LindiStickerWidget(
+                                              controller: _.lindiController,
+                                              child: const SizedBox.expand(),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                       CoverViewer(controller: _controller),
