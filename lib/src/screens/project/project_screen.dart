@@ -12,6 +12,7 @@ import 'package:video_editor_mobile_app/src/controllers/login_controller.dart';
 import 'package:video_editor_mobile_app/src/controllers/project_controller.dart';
 import 'package:video_editor_mobile_app/src/models/project_model.dart';
 import 'package:video_editor_mobile_app/src/screens/editor/video_result_popup.dart';
+import 'package:video_editor_mobile_app/src/screens/help/help_screen.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_text.dart';
 
 import '../../widgets/custom_toast.dart';
@@ -119,6 +120,13 @@ class ProjectScreen extends StatelessWidget {
               );
             },
             icon: const Icon(CupertinoIcons.info_circle),
+          ),
+          IconButton(
+            tooltip: "How to use",
+            onPressed: () {
+              Get.to(() => const HelpScreen());
+            },
+            icon: const Icon(Icons.help_outline_rounded),
           ),
           IconButton(
             tooltip: "Logout",
