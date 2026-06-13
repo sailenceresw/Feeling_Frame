@@ -259,6 +259,27 @@ class AiVideoController extends GetxController {
   }
 
   String? transcribedOperationName;
+  /// BCP-47 language code used for speech transcription (AI refinement:
+  /// supports videos in different languages).
+  String transcribeLanguageCode = 'en-US';
+
+  /// Languages offered in the transcription language picker.
+  static const Map<String, String> transcribeLanguages = {
+    'en-US': 'English (US)',
+    'en-GB': 'English (UK)',
+    'es-ES': 'Spanish',
+    'fr-FR': 'French',
+    'hi-IN': 'Hindi',
+    'ne-NP': 'Nepali',
+    'de-DE': 'German',
+    'ja-JP': 'Japanese',
+  };
+
+  void setTranscribeLanguage(String code) {
+    transcribeLanguageCode = code;
+    update();
+  }
+
   void transcribeOperation(String fileName) async {
     try {
       CustomDialogs.fullLoadingDialog(
@@ -275,7 +296,7 @@ class AiVideoController extends GetxController {
             "features": ["SPEECH_TRANSCRIPTION"],
             "videoContext": {
               "speechTranscriptionConfig": {
-                "languageCode": "en",
+                "languageCode": transcribeLanguageCode,
                 "enableAutomaticPunctuation": true,
                 "filterProfanity": true
               }
