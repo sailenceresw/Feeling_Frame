@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:video_editor_mobile_app/src/constant/dimension.dart';
 import 'package:video_editor_mobile_app/src/constant/medias.dart';
@@ -33,9 +34,9 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    kMainLogo,
-                    width: appWidth(context) * 0.5,
+                  SvgPicture.asset(
+                    kAppIconSvg,
+                    width: appWidth(context) * 0.4,
                   ),
                   vSizedBox2,
                   CustomText.ourText(
