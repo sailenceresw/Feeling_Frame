@@ -62,9 +62,10 @@ Store / Play Store SDKs and store configuration.
 
 ## Branding
 
-The app opens with a publisher-style **intro animation** showing the
-*feeling frame — edit with emotion* company logo (scale-in + heartbeat pulse,
-cross-fading from white into the dark app) before the splash screen.
+The app is **feelm** (published under the *feeling frame* brand). It opens
+with a publisher-style **intro animation** showing the *feeling frame — edit
+with emotion* company logo (scale-in + heartbeat pulse, cross-fading from
+white into the dark app), followed by the **feelm** splash screen.
 
 The launcher icon is generated from `assets/images/app_logo.png`. After
 `flutter pub get`, run it once:

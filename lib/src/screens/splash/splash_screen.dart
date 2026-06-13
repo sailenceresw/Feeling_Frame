@@ -40,8 +40,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                   vSizedBox2,
                   CustomText.ourText(
-                    "Feeling Frame",
-                    fontSize: 26,
+                    "feelm",
+                    fontSize: 30,
                     fontWeight: FontWeight.bold,
                   ),
                   vSizedBox0,

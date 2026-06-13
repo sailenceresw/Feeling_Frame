@@ -87,7 +87,7 @@ class SettingsScreen extends StatelessWidget {
                 leading: const Icon(Icons.info_outline_rounded),
                 title: CustomText.ourText('about'.tr),
                 subtitle: CustomText.ourText(
-                  "Feeling Frame • v1.0.0",
+                  "feelm • v1.0.0",
                   fontSize: 12,
                   color: Colors.grey,
                 ),

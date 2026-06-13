@@ -78,7 +78,7 @@ class _VideoEditorAppState extends State<VideoEditorApp> {
     return GetBuilder<SettingsController>(
       builder: (settings) {
         return GetMaterialApp(
-          title: 'Feeling Frame',
+          title: 'feelm',
           debugShowCheckedModeBanner: false,
           theme: buildAppTheme(highContrast: settings.highContrast),
           translations: AppTranslations(),
