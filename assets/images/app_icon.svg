@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240" role="img" aria-label="Feeling Frame app icon">
+  <defs>
+    <linearGradient id="graphite" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#262B33"/>
+      <stop offset="100%" stop-color="#14171C"/>
+    </linearGradient>
+    <linearGradient id="coral" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B5E"/>
+      <stop offset="100%" stop-color="#E14B6A"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="240" height="240" rx="54" fill="url(#graphite)"/>
+  <rect x="38" y="56" width="164" height="128" rx="18" fill="none" stroke="#E8E6E1" stroke-width="11"/>
+  <g fill="#E8E6E1">
+    <rect x="58" y="70" width="14" height="11" rx="3.5"/>
+    <rect x="90" y="70" width="14" height="11" rx="3.5"/>
+    <rect x="136" y="70" width="14" height="11" rx="3.5"/>
+    <rect x="168" y="70" width="14" height="11" rx="3.5"/>
+    <rect x="58" y="159" width="14" height="11" rx="3.5"/>
+    <rect x="90" y="159" width="14" height="11" rx="3.5"/>
+    <rect x="136" y="159" width="14" height="11" rx="3.5"/>
+    <rect x="168" y="159" width="14" height="11" rx="3.5"/>
+  </g>
+  <g transform="translate(120,120) rotate(-90) scale(2.1) translate(-12,-11.7)">
+    <path fill="url(#coral)" d="M12 21.35 C 6.4 17.2 2.6 13.1 1.5 9.4 C 0.4 5.6 2.6 2.6 5.6 2 C 8 1.5 10.5 2.9 12 4.9 C 13.5 2.9 16 1.5 18.4 2 C 21.4 2.6 23.6 5.6 22.5 9.4 C 21.4 13.1 17.6 17.2 12 21.35 Z"/>
+  </g>
+</svg>

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:video_editor_mobile_app/src/constant/dimension.dart';
 import 'package:video_editor_mobile_app/src/constant/medias.dart';
 import 'package:video_editor_mobile_app/src/controllers/login_controller.dart';
@@ -23,8 +24,8 @@ class LoginScreen extends StatelessWidget {
             alignment: Alignment.centerRight,
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
-              Colors.black,
-              BlendMode.difference,
+              Colors.black54,
+              BlendMode.darken,
             ),
           ),
         ),
@@ -32,20 +33,22 @@ class LoginScreen extends StatelessWidget {
           children: [
             vSizedBox3,
             Center(
-              child: Image.asset(
-                kMainLogo,
-                width: appWidth(context) * 0.2,
+              child: SvgPicture.asset(
+                kAppIconSvg,
+                width: appWidth(context) * 0.28,
               ),
             ),
             vSizedBox2,
             CustomText.ourText(
-              "Login",
+              "Welcome back",
               fontWeight: FontWeight.bold,
-              fontSize: 25,
+              fontSize: 26,
             ),
+            vSizedBox0,
             CustomText.ourText(
-              "Please authencate yourself with credentials",
+              "Sign in to continue editing your videos",
               fontSize: 15,
+              color: Colors.grey,
             ),
             vSizedBox2,
             Form(

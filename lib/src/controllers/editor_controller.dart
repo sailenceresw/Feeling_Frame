@@ -7,11 +7,13 @@ import 'package:ffmpeg_kit_flutter_full_gpl/return_code.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lindi_sticker_widget/lindi_controller.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_dialogs.dart';
 
 import '../screens/editor/custom_video_editor.dart';
+import '../utils/storage_path.dart';
 
 class EditorController extends GetxController {
   static final EditorController instance = Get.find();
@@ -55,7 +57,29 @@ class EditorController extends GetxController {
     }
   }
 
+  /// Records a new video with the device camera and opens it in the editor
+  /// ("capture them live inside the app" — report feature 2).
+  void recordVideo() async {
+    final XFile? captured = await ImagePicker().pickVideo(
+      source: ImageSource.camera,
+      maxDuration: const Duration(minutes: 10),
+    );
+    if (captured != null) {
+      editingVideoFile = File(captured.path);
+      update();
+      Get.to(() => CustomVideoEditor(file: editingVideoFile));
+    } else {
+      log("User cancelled camera capture");
+    }
+  }
+
   Future<bool> requestPermission() async {
+    // On iOS file access goes through the document/photo picker, which does
+    // not require the Android-only manageExternalStorage permission.
+    if (!Platform.isAndroid) {
+      return true;
+    }
+
     final request = await Permission.manageExternalStorage.request();
     log("Permmission status :$request");
     if (request == PermissionStatus.granted) {
@@ -65,7 +89,9 @@ class EditorController extends GetxController {
   }
 
   void mergeVideos() async {
-    String basePath = "/storage/emulated/0/Download/";
+    isCombining = true;
+    update();
+    String basePath = await getOutputDirectoryPath();
     String outputPath = "concat.mp4";
     // String command =
     //     '-y -i "concat:${selectedVideoPaths.join('|')}" -c copy $outputFilePath';
@@ -130,6 +156,8 @@ class EditorController extends GetxController {
         log("Cancelled merged");
 
         Get.back();
+        isCombining = false;
+        update();
         log(state.toString());
         log(output.toString());
         Get.snackbar("Error", "Something messed up:$returnCode ");
@@ -137,6 +165,8 @@ class EditorController extends GetxController {
         log("Error merged : $returnCode");
 
         Get.back();
+        isCombining = false;
+        update();
         log(state.toString());
         log(output.toString());
         Get.snackbar("Error", "Something messed up:$returnCode");
