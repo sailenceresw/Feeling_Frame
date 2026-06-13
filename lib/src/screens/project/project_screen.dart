@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -13,6 +12,7 @@ import 'package:video_editor_mobile_app/src/controllers/project_controller.dart'
 import 'package:video_editor_mobile_app/src/models/project_model.dart';
 import 'package:video_editor_mobile_app/src/screens/editor/video_result_popup.dart';
 import 'package:video_editor_mobile_app/src/screens/help/help_screen.dart';
+import 'package:video_editor_mobile_app/src/screens/settings/settings_screen.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_text.dart';
 
 import '../../widgets/custom_toast.dart';
@@ -51,7 +51,7 @@ class ProjectScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               CustomText.ourText(
-                "New Project",
+                'new_project'.tr,
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
               ),
@@ -59,7 +59,7 @@ class ProjectScreen extends StatelessWidget {
               ListTile(
                 leading: const Icon(Icons.video_library_rounded,
                     color: Colors.yellow),
-                title: CustomText.ourText("Pick from device"),
+                title: CustomText.ourText('pick_from_device'.tr),
                 subtitle: CustomText.ourText(
                   "Select one or more videos (multiple are merged)",
                   fontSize: 12,
@@ -81,7 +81,7 @@ class ProjectScreen extends StatelessWidget {
               ListTile(
                 leading:
                     const Icon(Icons.videocam_rounded, color: Colors.yellow),
-                title: CustomText.ourText("Record with camera"),
+                title: CustomText.ourText('record_with_camera'.tr),
                 subtitle: CustomText.ourText(
                   "Capture a new video live inside the app",
                   fontSize: 12,
@@ -133,94 +133,97 @@ class ProjectScreen extends StatelessWidget {
     );
   }
 
+  void _showInfoDialog(BuildContext context) {
+    Get.dialog(
+      Dialog(
+        insetPadding: screenPadding,
+        child: Padding(
+          padding: screenPadding,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CustomText.ourText(
+                "Information",
+                fontWeight: FontWeight.bold,
+                fontSize: 22,
+              ),
+              vSizedBox1,
+              const Text(
+                """Empower your creativity with our user-friendly video editor app! Edit, enhance, and personalize your videos effortlessly. From trimming to adding effects, music, and more, bring your vision to life in just a few taps. Download now and make every moment unforgettable!""",
+              ),
+              vSizedBox2,
+              SizedBox(
+                width: appWidth(context),
+                child: ElevatedButton(
+                  onPressed: () => Get.back(),
+                  child: const Text("Done"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showLogoutDialog() {
+    Get.dialog(
+      AlertDialog(
+        title: Text('logout'.tr),
+        content: const Text("Are you sure you want to logout?"),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back();
+              LoginController.instance.logout();
+            },
+            child: Text('logout'.tr),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: const Icon(Icons.video_camera_front_outlined),
-        title: const Text("Projects"),
+        title: Text('projects'.tr),
         actions: [
           IconButton(
-            onPressed: () {
-              Get.dialog(
-                Dialog(
-                  insetPadding: screenPadding,
-                  child: Padding(
-                    padding: screenPadding,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CustomText.ourText(
-                          "Information",
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22,
-                        ),
-                        vSizedBox1,
-                        const Text(
-                          """Empower your creativity with our user-friendly video editor app! Edit, enhance, and personalize your videos effortlessly. From trimming to adding effects, music, and more, bring your vision to life in just a few taps. Download now and make every moment unforgettable!""",
-                        ),
-                        vSizedBox2,
-                        SizedBox(
-                          width: appWidth(context),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.yellow,
-                            ),
-                            onPressed: () {
-                              Get.back();
-                            },
-                            child: const Text(
-                              "Done",
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
-            icon: const Icon(CupertinoIcons.info_circle),
+            tooltip: 'settings'.tr,
+            onPressed: () => Get.to(() => const SettingsScreen()),
+            icon: const Icon(Icons.settings_outlined),
           ),
-          IconButton(
-            tooltip: "How to use",
-            onPressed: () {
-              Get.to(() => const HelpScreen());
+          PopupMenuButton<String>(
+            tooltip: "More",
+            onSelected: (value) {
+              switch (value) {
+                case 'how':
+                  Get.to(() => const HelpScreen());
+                  break;
+                case 'feedback':
+                  FeedbackDialog.show();
+                  break;
+                case 'info':
+                  _showInfoDialog(context);
+                  break;
+                case 'logout':
+                  _showLogoutDialog();
+                  break;
+              }
             },
-            icon: const Icon(Icons.help_outline_rounded),
-          ),
-          IconButton(
-            tooltip: "Send feedback",
-            onPressed: FeedbackDialog.show,
-            icon: const Icon(Icons.feedback_outlined),
-          ),
-          IconButton(
-            tooltip: "Logout",
-            onPressed: () {
-              Get.dialog(
-                AlertDialog(
-                  title: const Text("Logout"),
-                  content: const Text("Are you sure you want to logout?"),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Get.back(),
-                      child: const Text("Cancel"),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Get.back();
-                        LoginController.instance.logout();
-                      },
-                      child: const Text("Logout"),
-                    ),
-                  ],
-                ),
-              );
-            },
-            icon: const Icon(Icons.logout),
+            itemBuilder: (context) => [
+              PopupMenuItem(value: 'how', child: Text('how_to_use'.tr)),
+              PopupMenuItem(value: 'feedback', child: Text('send_feedback'.tr)),
+              const PopupMenuItem(value: 'info', child: Text('Information')),
+              PopupMenuItem(value: 'logout', child: Text('logout'.tr)),
+            ],
           ),
         ],
       ),
@@ -275,7 +278,7 @@ class ProjectScreen extends StatelessWidget {
                         ),
                         vSizedBox1,
                         CustomText.ourText(
-                          "New Project",
+                          'new_project'.tr,
                           fontWeight: FontWeight.bold,
                           fontSize: 24,
                           color: Colors.white,
@@ -293,7 +296,7 @@ class ProjectScreen extends StatelessWidget {
               ),
               vSizedBox2,
               CustomText.ourText(
-                "Recent Projects",
+                'recent_projects'.tr,
                 fontWeight: FontWeight.bold,
               ),
               vSizedBox2,
@@ -314,7 +317,7 @@ class ProjectScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 24),
                         child: Center(
                           child: CustomText.ourText(
-                            "No projects yet.\nCreate a new project to get started.",
+                            'no_projects'.tr,
                             textAlign: TextAlign.center,
                             color: Colors.grey,
                             maxLines: 2,

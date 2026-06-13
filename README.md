@@ -35,13 +35,30 @@ Application Using AI"*. Feature ↔ proposal mapping:
 | Feedback loops (report methodology) | In-app feedback panel (rating + message, stored locally) |
 | Audio waveform visualization | Waveform image rendered in the editor's Audio tab |
 | Unit testing (report methodology) | `flutter test` suite for SRT building and project persistence |
+| Accessibility (WCAG) | Settings: high-contrast theme + app-wide text-size scaling |
+| Localization / globalization | 5 languages (EN/ES/HI/NE/FR) via a settings language picker |
+| AI integration refinement | Selectable transcription language (8 locales) |
+| Monetization | Premium screen with plans; free exports get a watermark, premium removes it |
+| Security & privacy | No bundled credentials; explicit-consent cloud features; in-app privacy policy |
+| Continuous user feedback | In-app feedback panel (rating + message) |
 
 The editor also includes a CapCut-style "Blur Pad 9:16" transform that fits
 any clip into a vertical frame over a blurred copy of itself.
 
-Phase Two items from the report that remain future work: keyframe animation,
-masking tools, cloud collaboration/version control, motion tracking, and 3D
-effects.
+### Genuinely out of scope for this app artefact
+
+These report "future enhancements" require infrastructure beyond the on-device
+app and are intentionally **not** stubbed/faked:
+
+- **Cloud collaboration & version control** — needs an authenticated backend
+  with real-time sync.
+- **Motion tracking** and **3D effects** — need an on-device computer-vision /
+  3D render pipeline.
+- **Keyframe animation timeline** — needs a dedicated animation/render engine.
+- **LSTM model training** — an ML research/training effort, not an app feature.
+
+In-app purchases use a mock unlock; wiring real billing needs the App
+Store / Play Store SDKs and store configuration.
 
 ## Requirements
 

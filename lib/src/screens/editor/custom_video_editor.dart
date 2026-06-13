@@ -12,6 +12,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:video_editor/video_editor.dart';
 import 'package:video_editor_mobile_app/src/constant/dimension.dart';
 import 'package:video_editor_mobile_app/src/controllers/editor_controller.dart';
+import 'package:video_editor_mobile_app/src/controllers/settings_controller.dart';
 import 'package:video_editor_mobile_app/src/screens/ai/ai_screen.dart';
 import 'package:video_editor_mobile_app/src/screens/editor/crop_screen.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_text.dart';
@@ -159,11 +160,22 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   }
 
   /// Post-processing is only needed when the user wants to downscale, change
-  /// compression, or burn text/sticker overlays into the video.
+  /// compression, or burn text/sticker overlays into the video. Free
+  /// (non-premium) exports also need a pass to stamp the watermark.
   bool get _needsPostProcess =>
       exportHeight > 0 ||
       exportCrf != 23 ||
+      !SettingsController.instance.isPremium ||
       EditorController.instance.lindiController.widgets.isNotEmpty;
+
+  /// Watermark drawtext filter for free users (empty for premium). FFmpeg
+  /// failures here fall back gracefully to an un-watermarked export.
+  String _watermarkFilter() {
+    if (SettingsController.instance.isPremium) return '';
+    return "drawtext=text='Feeling Frame':fontcolor=white@0.75:"
+        "fontsize=h/22:x=w-tw-20:y=h-th-20:box=1:boxcolor=black@0.35:"
+        "boxborderw=8";
+  }
 
   void _exportVideo() async {
     // Let the user choose resolution and compression before exporting.
@@ -236,8 +248,12 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   }
 
   String _scaleAndCompressCommand(String input, String output) {
-    final scale = exportHeight > 0 ? '-vf scale=-2:$exportHeight ' : '';
-    return '-y -i $input $scale-c:v libx264 -crf $exportCrf '
+    final filters = <String>[];
+    if (exportHeight > 0) filters.add('scale=-2:$exportHeight');
+    final watermark = _watermarkFilter();
+    if (watermark.isNotEmpty) filters.add(watermark);
+    final vf = filters.isEmpty ? '' : '-vf "${filters.join(',')}" ';
+    return '-y -i $input ${vf}-c:v libx264 -crf $exportCrf '
         '-preset fast -c:a aac $output';
   }
 
@@ -259,10 +275,14 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
 
         final h = exportHeight > 0 ? exportHeight : 720;
         final w = _evenWidthForHeight(h);
+        final watermark = _watermarkFilter();
+        final overlayNode = watermark.isEmpty
+            ? '[base][ovr]overlay=0:0[outv]'
+            : '[base][ovr]overlay=0:0,$watermark[outv]';
         command = '-y -i ${editedFile.path} -i $overlayPath -filter_complex '
             '"[0:v]scale=$w:$h:force_original_aspect_ratio=increase,'
             'crop=$w:$h[base];[1:v]scale=$w:$h[ovr];'
-            '[base][ovr]overlay=0:0[outv]" -map "[outv]" -map 0:a? '
+            '$overlayNode" -map "[outv]" -map 0:a? '
             '-c:v libx264 -crf $exportCrf -preset fast -c:a aac -shortest '
             '$outputPath';
       } else {
