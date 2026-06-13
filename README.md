@@ -30,6 +30,13 @@ Application Using AI"*. Feature ↔ proposal mapping:
 | "Keep the crucial sections" | Auto Highlights: scene detection keeps key moments (offline) |
 | Object recognition | Google Cloud Video Intelligence object tracking |
 | Instructional materials | In-app "How to use" guide |
+| In-app capture (report feature 2) | Record videos with the camera from "New Project" |
+| Green screen editing (Phase Two) | Chroma-key background replacement in the editor |
+| Feedback loops (report methodology) | In-app feedback panel (rating + message, stored locally) |
+
+Phase Two items from the report that remain future work: keyframe animation,
+masking tools, cloud collaboration/version control, motion tracking, audio
+waveform visualization, and 3D effects.
 
 ## Requirements
 

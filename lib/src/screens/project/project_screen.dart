@@ -16,6 +16,7 @@ import 'package:video_editor_mobile_app/src/screens/help/help_screen.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_text.dart';
 
 import '../../widgets/custom_toast.dart';
+import '../../widgets/feedback_dialog.dart';
 
 class ProjectScreen extends StatelessWidget {
   const ProjectScreen({super.key});
@@ -31,6 +32,69 @@ class ProjectScreen extends StatelessWidget {
       builder: (_) => VideoResultPopup(
         video: File(project.path),
         aspectRatio: 9 / 16,
+      ),
+    );
+  }
+
+  /// Lets the user start a project from existing videos or capture a new
+  /// one live with the camera.
+  void _showNewProjectSourceSheet(BuildContext context) {
+    Get.bottomSheet(
+      SafeArea(
+        child: Container(
+          padding: screenPadding,
+          decoration: const BoxDecoration(
+            color: Color.fromARGB(255, 28, 44, 67),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CustomText.ourText(
+                "New Project",
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+              vSizedBox1,
+              ListTile(
+                leading: const Icon(Icons.video_library_rounded,
+                    color: Colors.yellow),
+                title: CustomText.ourText("Pick from device"),
+                subtitle: CustomText.ourText(
+                  "Select one or more videos (multiple are merged)",
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+                onTap: () async {
+                  Get.back();
+                  if (await EditorController.instance.requestPermission()) {
+                    EditorController.instance.pickVideo();
+                  } else {
+                    warningToast(msg: "Give storage permision");
+                    final status = await Permission.storage.request();
+                    if (status == PermissionStatus.granted) {
+                      EditorController.instance.pickVideo();
+                    }
+                  }
+                },
+              ),
+              ListTile(
+                leading:
+                    const Icon(Icons.videocam_rounded, color: Colors.yellow),
+                title: CustomText.ourText("Record with camera"),
+                subtitle: CustomText.ourText(
+                  "Capture a new video live inside the app",
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+                onTap: () {
+                  Get.back();
+                  EditorController.instance.recordVideo();
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -129,6 +193,11 @@ class ProjectScreen extends StatelessWidget {
             icon: const Icon(Icons.help_outline_rounded),
           ),
           IconButton(
+            tooltip: "Send feedback",
+            onPressed: FeedbackDialog.show,
+            icon: const Icon(Icons.feedback_outlined),
+          ),
+          IconButton(
             tooltip: "Logout",
             onPressed: () {
               Get.dialog(
@@ -175,18 +244,7 @@ class ProjectScreen extends StatelessWidget {
               //     },
               //     child: const Text("Try ai")),
               InkWell(
-                onTap: () async {
-                  if (await EditorController.instance.requestPermission()) {
-                    EditorController.instance.pickVideo();
-                  } else {
-                    Get.back();
-                    warningToast(msg: "Give storage permision");
-                    final status = await Permission.storage.request();
-                    if (status == PermissionStatus.granted) {
-                      EditorController.instance.pickVideo();
-                    }
-                  }
-                },
+                onTap: () => _showNewProjectSourceSheet(context),
                 child: Container(
                   width: appWidth(context),
                   height: 150,
