@@ -10,9 +10,9 @@ class HelpScreen extends StatelessWidget {
   static const List<Map<String, String>> _guides = [
     {
       'title': 'Create a project',
-      'body': 'Tap "New Project" on the home screen and pick one or more '
-          'videos. Selecting multiple videos merges them into a single clip '
-          'automatically.',
+      'body': 'Tap "New Project" on the home screen, then pick one or more '
+          'videos (multiple are merged automatically) or record a new one '
+          'live with the camera.',
     },
     {
       'title': 'Trim & crop',
@@ -35,7 +35,14 @@ class HelpScreen extends StatelessWidget {
     {
       'title': 'Audio',
       'body': 'Replace or add a music track from your files, adjust the '
-          'video volume, or mute it entirely from the Audio tab.',
+          'video volume, mute it entirely, or visualize the audio waveform '
+          'from the Audio tab.',
+    },
+    {
+      'title': 'Transform & green screen',
+      'body': 'Flip or reverse your clip, fit it to 9:16 with a blurred '
+          'background (Blur Pad), or replace a green backdrop with any '
+          'image from the Green Screen tab.',
     },
     {
       'title': 'AI tools',

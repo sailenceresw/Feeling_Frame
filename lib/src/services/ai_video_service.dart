@@ -114,6 +114,17 @@ class AiVideoService {
     return ok ? out : null;
   }
 
+  /// Renders the audio track's waveform to a PNG image (audio waveform
+  /// visualization — report future enhancement). Returns the image path.
+  static Future<String?> generateWaveform(String inputPath) async {
+    final out = "${await getOutputDirectoryPath()}"
+        "waveform_${DateTime.now().millisecondsSinceEpoch}.png";
+    final ok = await _run(
+        '-y -i $inputPath -filter_complex "showwavespic=s=1080x240:colors=yellow" '
+        '-frames:v 1 $out');
+    return ok ? out : null;
+  }
+
   /// Burns an SRT subtitle file into the video (caption production).
   static Future<String?> burnCaptions(String inputPath, String srtPath) async {
     final out = "${await getOutputDirectoryPath()}captioned.mp4";

@@ -26,22 +26,6 @@ import '../utils/storage_path.dart';
 class AiVideoController extends GetxController {
   static final AiVideoController instance = Get.find();
 
-  Future<void> _waitForOperation(
-      String operationName, vi.CloudVideoIntelligenceApi videoI) async {
-    vi.GoogleLongrunningOperation? operation;
-    do {
-      await Future.delayed(const Duration(seconds: 5)); // Poll every 5 seconds
-      operation = await videoI.operations.projects.locations.operations
-          .get(operationName);
-      print(operation);
-    } while (operation.done != true);
-
-    final response = await videoI.operations.projects.locations.operations
-        .get(operationName);
-    // Handle the response, extract labels, shot changes, etc.
-    print(response);
-  }
-
   String? operationName;
   AutoRefreshingAuthClient? client;
 

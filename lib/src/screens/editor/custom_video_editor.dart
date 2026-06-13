@@ -16,6 +16,7 @@ import 'package:video_editor_mobile_app/src/screens/ai/ai_screen.dart';
 import 'package:video_editor_mobile_app/src/screens/editor/crop_screen.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_text.dart';
 
+import '../../services/ai_video_service.dart';
 import '../../services/export_services.dart';
 import '../../utils/storage_path.dart';
 import 'video_result_popup.dart';
@@ -782,6 +783,16 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                 icon: const Icon(Icons.fast_rewind_rounded),
                 label: const Text("Reverse"),
               ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    // Fits any clip into a 9:16 frame with a blurred,
+                    // zoomed copy of itself as the background padding.
+                    : () => applyTransform(
+                        '-filter_complex "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=20:5[bg];[0:v]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2" -c:a copy'),
+                icon: const Icon(Icons.blur_on_rounded),
+                label: const Text("Blur Pad 9:16"),
+              ),
             ],
           ),
         ),
@@ -945,6 +956,26 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                   _controller.video.setVolume(val);
                 },
               ),
+              vSizedBox1,
+              if (waveformPath != null)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.file(
+                    File(waveformPath!),
+                    height: 56,
+                    width: appWidth(context),
+                    fit: BoxFit.fill,
+                  ),
+                )
+              else
+                OutlinedButton.icon(
+                  onPressed:
+                      isGeneratingWaveform ? null : _generateWaveform,
+                  icon: const Icon(Icons.graphic_eq_rounded),
+                  label: Text(isGeneratingWaveform
+                      ? 'Generating waveform...'
+                      : 'Visualize Audio Waveform'),
+                ),
             ],
           ),
         ),
@@ -1130,6 +1161,26 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
 
   bool isAudioMute = false;
   double videoVolume = 1.0;
+  String? waveformPath;
+  bool isGeneratingWaveform = false;
+
+  /// Renders the audio waveform of the current clip and shows it in the
+  /// Audio tab.
+  Future<void> _generateWaveform() async {
+    setState(() {
+      isGeneratingWaveform = true;
+    });
+    final path = await AiVideoService.generateWaveform(_controller.file.path);
+    if (mounted) {
+      setState(() {
+        waveformPath = path;
+        isGeneratingWaveform = false;
+      });
+    }
+    if (path == null) {
+      _showErrorSnackBar("Couldn't generate the audio waveform");
+    }
+  }
   void disavleAudio() async {
     if (isAudioMute) {
       // Restore to full volume when unmuting.
