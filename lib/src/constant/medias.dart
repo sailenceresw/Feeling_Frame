@@ -7,4 +7,5 @@ const kAppLogo = "assets/images/app.svg";
 const kMainLogo = "assets/images/logo.png";
 // Brand assets
 const kCompanyLogo = "assets/images/company_logo.png"; // "feeling frame" wordmark
-const kAppLogoPng = "assets/images/app_logo.png"; // square app icon
+const kAppLogoPng = "assets/images/app_logo.png"; // square app icon (raster)
+const kAppIconSvg = "assets/images/app_icon.svg"; // crisp vector app icon
