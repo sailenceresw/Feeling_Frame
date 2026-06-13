@@ -45,20 +45,12 @@ Application Using AI"*. Feature ↔ proposal mapping:
 The editor also includes a CapCut-style "Blur Pad 9:16" transform that fits
 any clip into a vertical frame over a blurred copy of itself.
 
-### Genuinely out of scope for this app artefact
+### Later work
 
-These report "future enhancements" require infrastructure beyond the on-device
-app and are intentionally **not** stubbed/faked:
-
-- **Cloud collaboration & version control** — needs an authenticated backend
-  with real-time sync.
-- **Motion tracking** and **3D effects** — need an on-device computer-vision /
-  3D render pipeline.
-- **Keyframe animation timeline** — needs a dedicated animation/render engine.
-- **LSTM model training** — an ML research/training effort, not an app feature.
-
-In-app purchases use a mock unlock; wiring real billing needs the App
-Store / Play Store SDKs and store configuration.
+Remaining tasks — both the SDK-dependent steps to run locally and the larger
+deferred features (cloud collaboration/version control, motion tracking, 3D
+effects, keyframe timeline, LSTM training) — are tracked in
+[`FUTURE_WORK.md`](FUTURE_WORK.md).
 
 ## Branding
 
