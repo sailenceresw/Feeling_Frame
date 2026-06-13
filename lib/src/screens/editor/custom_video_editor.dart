@@ -537,6 +537,9 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                               if (selectedOption == 9) {
                                 return _stickerWidget();
                               }
+                              if (selectedOption == 10) {
+                                return _greenScreenWidget();
+                              }
                               return Container();
                             },
                           ),
@@ -596,6 +599,11 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                                 Icons.emoji_emotions_rounded,
                                 "Stickers",
                                 9,
+                              ),
+                              _optionWidget(
+                                Icons.movie_filter_rounded,
+                                "Green Screen",
+                                10,
                               ),
                             ],
                           ),
@@ -818,6 +826,91 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
           icon: const Icon(Icons.add_photo_alternate_rounded),
           label: const Text('Add Sticker'),
         ),
+      ],
+    );
+  }
+
+  bool isChromaKeying = false;
+
+  /// Replaces the green background of the video with a user-picked image
+  /// using FFmpeg's chromakey filter (Phase Two: green screen editing).
+  Future<void> applyGreenScreen() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      allowMultiple: false,
+    );
+    final bgPath = result?.files.single.path;
+    if (bgPath == null) return;
+
+    setState(() {
+      isChromaKeying = true;
+    });
+    final basePath = await getOutputDirectoryPath();
+    final outputPath = "${basePath}greenscreen.mp4";
+
+    // chromakey removes the green pixels, scale2ref sizes the background to
+    // the video, and overlay composites the keyed footage on top.
+    final command = '-y -i ${_controller.file.path} -i $bgPath '
+        '-filter_complex "[0:v]chromakey=green:0.3:0.1[ckout];'
+        '[1:v][ckout]scale2ref[bg][ck];[bg][ck]overlay=shortest=1[outv]" '
+        '-map "[outv]" -map 0:a? -c:v libx264 -crf 23 -preset fast '
+        '-c:a copy $outputPath';
+    print(command);
+    await FFmpegKit.execute(command).then((session) async {
+      final returnCode = await session.getReturnCode();
+      if (ReturnCode.isSuccess(returnCode)) {
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (_) => VideoResultPopup(
+              video: File(outputPath),
+              aspectRatio: aspectRatio,
+            ),
+          );
+        }
+      } else {
+        log("Green screen error: ${(await session.getOutput()).toString()}");
+        _showErrorSnackBar(
+            "Couldn't apply green screen (is the background green?)");
+      }
+    });
+    if (mounted) {
+      setState(() {
+        isChromaKeying = false;
+      });
+    }
+  }
+
+  Widget _greenScreenWidget() {
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              CustomText.ourText(
+                "Replace a green background with any image",
+              ),
+              vSizedBox1,
+              CustomText.ourText(
+                "Works best on footage shot in front of a green screen",
+                fontSize: 12,
+                color: Colors.grey,
+              ),
+              vSizedBox1,
+              ElevatedButton.icon(
+                onPressed: isChromaKeying ? null : applyGreenScreen,
+                icon: const Icon(Icons.image_rounded),
+                label: const Text('Pick Background & Apply'),
+              ),
+            ],
+          ),
+        ),
+        if (isChromaKeying)
+          const Positioned.fill(
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          )
       ],
     );
   }

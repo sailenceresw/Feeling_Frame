@@ -7,6 +7,7 @@ import 'package:ffmpeg_kit_flutter_full_gpl/return_code.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lindi_sticker_widget/lindi_controller.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_dialogs.dart';
@@ -53,6 +54,22 @@ class EditorController extends GetxController {
     } else {
       // User canceled the picker
       log("User canceled the picker");
+    }
+  }
+
+  /// Records a new video with the device camera and opens it in the editor
+  /// ("capture them live inside the app" — report feature 2).
+  void recordVideo() async {
+    final XFile? captured = await ImagePicker().pickVideo(
+      source: ImageSource.camera,
+      maxDuration: const Duration(minutes: 10),
+    );
+    if (captured != null) {
+      editingVideoFile = File(captured.path);
+      update();
+      Get.to(() => CustomVideoEditor(file: editingVideoFile));
+    } else {
+      log("User cancelled camera capture");
     }
   }
 
