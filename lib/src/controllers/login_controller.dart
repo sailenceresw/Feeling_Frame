@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:video_editor_mobile_app/src/screens/login/login_screen.dart';
 import 'package:video_editor_mobile_app/src/screens/project/project_screen.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_dialogs.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_toast.dart';
@@ -26,5 +27,12 @@ class LoginController extends GetxController {
       CustomDialogs.cancelDialog();
       errorToast(msg: "Credentials not matched");
     }
+  }
+
+  void logout() {
+    emailController.clear();
+    passwordController.clear();
+    Get.offAll(() => const LoginScreen());
+    successToast(msg: "Logged out successfully");
   }
 }

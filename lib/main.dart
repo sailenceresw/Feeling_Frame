@@ -4,13 +4,14 @@ import 'dart:io';
 import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_kit_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_editor_mobile_app/di_init.dart';
-import 'package:video_editor_mobile_app/src/screens/splash/splash_screen.dart';
-
-import 'src/constant/color.dart';
+import 'package:video_editor_mobile_app/src/constant/app_theme.dart';
+import 'package:video_editor_mobile_app/src/controllers/settings_controller.dart';
+import 'package:video_editor_mobile_app/src/screens/intro/intro_screen.dart';
+import 'package:video_editor_mobile_app/src/utils/app_translations.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,10 +31,10 @@ class _VideoEditorAppState extends State<VideoEditorApp> {
   @override
   void initState() {
     // TODO: implement initState
-    FFmpegKitConfig.init().then((value) {
+    FFmpegKitConfig.init().then((value) async {
       // FFmpegKitConfig.setLogLevel(0);
       FFmpegKitConfig.enableLogs();
-      prepareAssets();
+      await prepareAssets();
       registerApplicationFonts();
     });
 
@@ -68,21 +69,34 @@ class _VideoEditorAppState extends State<VideoEditorApp> {
     });
   }
 
-  void prepareAssets() async {
+  Future<void> prepareAssets() async {
     await assetToFile('Quicksand-Regular.ttf');
   }
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'Video Editor',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: 'Quicksand',
-        primaryColor: AppColor.kPrimaryMain,
-        brightness: Brightness.dark,
-      ),
-      home: const SplashScreen(),
+    return GetBuilder<SettingsController>(
+      builder: (settings) {
+        return GetMaterialApp(
+          title: 'feelm',
+          debugShowCheckedModeBanner: false,
+          theme: buildAppTheme(highContrast: settings.highContrast),
+          translations: AppTranslations(),
+          locale: Locale(settings.localeCode),
+          fallbackLocale: const Locale('en'),
+          // Apply the user's accessibility text-scale preference app-wide.
+          builder: (context, child) {
+            final mq = MediaQuery.of(context);
+            return MediaQuery(
+              data: mq.copyWith(
+                textScaler: TextScaler.linear(settings.textScale),
+              ),
+              child: child ?? const SizedBox.shrink(),
+            );
+          },
+          home: const IntroScreen(),
+        );
+      },
     );
   }
 }

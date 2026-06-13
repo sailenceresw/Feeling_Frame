@@ -1,5 +1,5 @@
 name: video_editor_mobile_app
-description: "A new Flutter project."
+description: "feelm — AI-powered video editor. Edit with emotion."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -43,6 +43,7 @@ dependencies:
   video_player: ^2.8.3
   path: ^1.8.3
   file_picker: ^6.2.0
+  image_picker: ^1.0.7
   permission_handler: ^11.3.0
   googleapis: ^13.1.0
   googleapis_auth: ^1.5.0
@@ -63,6 +64,16 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
+
+# Generates Android/iOS launcher icons from the app logo.
+# Run once after `flutter pub get`:  dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_logo.png"
+  remove_alpha_ios: true
+  min_sdk_android: 24
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

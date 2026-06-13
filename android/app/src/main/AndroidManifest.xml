@@ -8,7 +8,7 @@
 <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
 
     <application
-        android:label="Video Editor"
+        android:label="feelm"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

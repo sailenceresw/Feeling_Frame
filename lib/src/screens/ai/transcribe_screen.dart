@@ -22,6 +22,8 @@ class _TranscribeScreenState extends State<TranscribeScreen> {
       onWillPop: () async {
         AiVideoController.instance.videoPlayerController?.pause();
         AiVideoController.instance.transcribedOperationName = null;
+        AiVideoController.instance.transcribeText = null;
+        AiVideoController.instance.transcribedWords = [];
         AiVideoController.instance.update();
         return true;
       },
@@ -69,7 +71,32 @@ class _TranscribeScreenState extends State<TranscribeScreen> {
                       ),
                     ],
                   ),
-                  if (_.transcribedOperationName == null)
+                  if (_.transcribedOperationName == null) ...[
+                    vSizedBox1,
+                    Row(
+                      children: [
+                        const Icon(Icons.language, size: 20),
+                        hSizedBox1,
+                        Expanded(
+                          child: DropdownButton<String>(
+                            isExpanded: true,
+                            value: _.transcribeLanguageCode,
+                            dropdownColor: const Color(0xFF1C2C43),
+                            items: AiVideoController.transcribeLanguages.entries
+                                .map(
+                                  (e) => DropdownMenuItem(
+                                    value: e.key,
+                                    child: Text(e.value),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (code) {
+                              if (code != null) _.setTranscribeLanguage(code);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                     SizedBox(
                       width: appWidth(context),
                       child: ElevatedButton(
@@ -87,7 +114,8 @@ class _TranscribeScreenState extends State<TranscribeScreen> {
                           ),
                         ),
                       ),
-                    )
+                    ),
+                  ]
                   else if (_.transcribeText == null)
                     SizedBox(
                       width: appWidth(context),
@@ -127,6 +155,31 @@ class _TranscribeScreenState extends State<TranscribeScreen> {
                         ),
                       ),
                     ),
+                  if (_.transcribedWords.isNotEmpty) ...[
+                    vSizedBox1,
+                    SizedBox(
+                      width: appWidth(context),
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          _.burnCaptionsIntoVideo(widget.path!);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.yellow,
+                        ),
+                        icon: const Icon(
+                          Icons.closed_caption_rounded,
+                          color: Colors.black,
+                        ),
+                        label: const Text(
+                          "Burn Captions into Video",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                   vSizedBox2,
                   CustomText.ourText(
                     "Transcribed Words",

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:googleapis/storage/v1.dart' as storage;
 import 'package:googleapis/videointelligence/v1.dart' as vi;
@@ -12,96 +13,41 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_dialogs.dart';
+import 'package:video_editor_mobile_app/src/widgets/custom_toast.dart';
 import 'package:video_player/video_player.dart';
 
 import '../screens/ai/object_detect_screen.dart';
 import '../screens/ai/transcribe_screen.dart';
+import '../screens/editor/video_result_popup.dart';
+import '../services/ai_video_service.dart';
+import '../utils/srt_builder.dart';
+import '../utils/storage_path.dart';
 
 class AiVideoController extends GetxController {
   static final AiVideoController instance = Get.find();
-  // Future<void> analyzeVideo() async {
-  //   // Load the service account key JSON file.
-  //   var credentials = auth.ServiceAccountCredentials.fromJson({
-  //     "type": "service_account",
-  //     "project_id": "video-editor-417510",
-  //     "private_key_id": "20d1f38cb1480df5974118dddfdec6568a429fe3",
-  //     "private_key":
-  //         "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCvyuKXMT4NaKN8\n0RXd4O5jsYTUyRTom6LbI6an/V7KITDtuX5oLxWdM5l3vKB4DzrpM4MAXz5lT0Wf\nov+MrBZSCkJWmm/DENzKTi5ok4u/1XmgoaWFarJ6iL+DbZGkgi/WREkKXwT2bDhE\ndGmBiZ1O9ubrNfw4mEDpTZy51k2wXeEq67Iky8eAeACcr4pnFJBeaeqHASdqWmjp\njVabRPKVGNFR8p76JZvTfhdPV0h6JYDhCvJAESoNHCIxILEMtl/bOCpzmZSp6om1\nSvcQl0359yyey+2N27wrTyroGNykuOqKk0fmu4OoQVoBYs7AAGks16EJyiiw3xMg\nPM+gja59AgMBAAECggEABX44eYVD9meV7oJjxYgiOJAgxk32PJTIa9TbNrqcPBT5\nttrOkDxHRVYcbkJlpmh5I37pkb2MukuxaEG9fsyEqOPmmw3i7G7HvkaWRhVr6lo4\nVE2h7AQNW/aPX7nVeoLtMlBjpQl2NTx3CH/+u2w12E/4MdLKK9aOGvwwlWMnEFC4\nMRy2gDV882FYYmn4Kx14HhNlOUGCYC2vgKnwSTrqZd/0PBi4Y6oU1GkGpsx9Qjb6\nPMk4/sAeDJHH7AeFe8KXQ8k+ys2s2DVCyTTu6L4jzIMCzL2qCZpicz4V9WipxQqb\nnvB986NpI+SqW7DiqZnauGi1cO+UewP9Fb0Pe5F34QKBgQDsKHT8ndWpju2IwpOk\nXi7LDu4JXOW8aq5B9I5zjH9H6liqN8RtU8PwrpRWuHgg4/u4F+PgKzJfyAjo3/5M\n9iRFGPL5Ys99pmxKV1cMoAs6IrmfzRDi7uyePgspTQ+7tDAnMaxyaBjvolRpAjWw\nnr0uuwLMs5aAfWniAf3TB22ceQKBgQC+kAVtmnbR/YpazwKpzkKa9CVDwCs3EeFf\n0/lSRslbNJvsF4HfBk+/lYvPOCs99uP0fzcHFYjqlD6ly20+KFALEVraX/f59Gzj\n0eyvvnB435824Ufmg3NnuoQ8UNPn/YqgeQzwhBcUDDNFov8bI+4qEkDR6qx9CMVq\nw2+R0NBZJQKBgQDIG/wNdvzu4aLbqO0McZY7EFqZ6nLtNoSUdNMkjF/qI2SgUAMN\nFNbKolQmK8f3LthEhVHdyRy1Vr5d/jfxJP1U47A3rAfgE95dHCcyFoeM6pHaHBz7\n/rLX4AD7LUZwql3HSGs0woqmvCnElU/Daq8p4uOba23TUPIgxck8QWYbGQKBgCVZ\newbhaHp99BkaS85WU+2k/ozJ5G51vbOXi11Z7GtI42qhrN22kfjd6boiqy8I7eLk\n8DcePGilx6WdOnsdUZrpuuHkP2kpRBJe+cH0VH0Mb1tFSl9e0ka5YuOjf/UPV5Ve\nRG/7o75VKdNzQAbkwvBSBYxfL5GOH4tuZLays7NVAoGBAM7VArzFIppQW6aFNoT7\nhn841GDh8EVzbtxMBhKd2zyl16K3xkq7OhI8psai1bOySOamof8YHjXeYGzr2H4a\nuTFDJfs6ObIF41BgdKWb4XdO3XW85deiX95O+s2YuAwT5MLcx7YBGrBiHVA1SLQ+\nNOOUPamHsI6HlI+WB+2ePcrY\n-----END PRIVATE KEY-----\n",
-  //     "client_email":
-  //         "video-editor-service@video-editor-417510.iam.gserviceaccount.com",
-  //     "client_id": "117364698981048412120",
-  //     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  //     "token_uri": "https://oauth2.googleapis.com/token",
-  //     "auth_provider_x509_cert_url":
-  //         "https://www.googleapis.com/oauth2/v1/certs",
-  //     "client_x509_cert_url":
-  //         "https://www.googleapis.com/robot/v1/metadata/x509/video-editor-service%40video-editor-417510.iam.gserviceaccount.com",
-  //     "universe_domain": "googleapis.com"
-  //   });
 
-  //   final scopes = [vi.CloudVideoIntelligenceApi.cloudPlatformScope];
-  //   final client = await clientViaServiceAccount(credentials, scopes);
-
-  //   final videoIntelligence = vi.CloudVideoIntelligenceApi(client);
-
-  //   final features = [
-  //     'LABEL_DETECTION',
-  //     'SHOT_CHANGE_DETECTION'
-  //   ]; // Add other features as needed
-
-  //   final request =
-  //       vi.GoogleCloudVideointelligenceV1AnnotateVideoRequest.fromJson({
-  //     'inputUri': "gs://videoeditor/video.mp4",
-  //     'features': features,
-  //   });
-  //   print(request);
-  //   try {
-  //     final response = await videoIntelligence.videos.annotate(request);
-  //     // await _waitForOperation(response.name.toString(), videoIntelligence);
-  //     // Handle the response, extract labels, shot changes, etc.
-  //     print(response.done);
-  //   } catch (e) {
-  //     print('Error analyzing video: $e');
-  //   }
-  // }
-
-  Future<void> _waitForOperation(
-      String operationName, vi.CloudVideoIntelligenceApi videoI) async {
-    vi.GoogleLongrunningOperation? operation;
-    do {
-      await Future.delayed(const Duration(seconds: 5)); // Poll every 5 seconds
-      operation = await videoI.operations.projects.locations.operations
-          .get(operationName);
-      print(operation);
-    } while (operation.done != true);
-
-    final response = await videoI.operations.projects.locations.operations
-        .get(operationName);
-    // Handle the response, extract labels, shot changes, etc.
-    print(response);
-  }
-
-  final apiKey = 'AIzaSyB0_VO2Dhr43qv85_iGiU_X6uf5P84IeNM';
   String? operationName;
   AutoRefreshingAuthClient? client;
+
+  // The Google Cloud service account JSON must NOT be hardcoded in source.
+  // Provide it at build/run time, e.g.:
+  //   flutter run --dart-define=GCP_SERVICE_ACCOUNT_JSON='{ ... }'
+  static const String _serviceAccountJson =
+      String.fromEnvironment('GCP_SERVICE_ACCOUNT_JSON');
+
   Future<void> init() async {
-    var credentials = auth.ServiceAccountCredentials.fromJson({
-      "type": "service_account",
-      "project_id": "video-editor-417510",
-      "private_key_id": "20d1f38cb1480df5974118dddfdec6568a429fe3",
-      "private_key":
-          "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCvyuKXMT4NaKN8\n0RXd4O5jsYTUyRTom6LbI6an/V7KITDtuX5oLxWdM5l3vKB4DzrpM4MAXz5lT0Wf\nov+MrBZSCkJWmm/DENzKTi5ok4u/1XmgoaWFarJ6iL+DbZGkgi/WREkKXwT2bDhE\ndGmBiZ1O9ubrNfw4mEDpTZy51k2wXeEq67Iky8eAeACcr4pnFJBeaeqHASdqWmjp\njVabRPKVGNFR8p76JZvTfhdPV0h6JYDhCvJAESoNHCIxILEMtl/bOCpzmZSp6om1\nSvcQl0359yyey+2N27wrTyroGNykuOqKk0fmu4OoQVoBYs7AAGks16EJyiiw3xMg\nPM+gja59AgMBAAECggEABX44eYVD9meV7oJjxYgiOJAgxk32PJTIa9TbNrqcPBT5\nttrOkDxHRVYcbkJlpmh5I37pkb2MukuxaEG9fsyEqOPmmw3i7G7HvkaWRhVr6lo4\nVE2h7AQNW/aPX7nVeoLtMlBjpQl2NTx3CH/+u2w12E/4MdLKK9aOGvwwlWMnEFC4\nMRy2gDV882FYYmn4Kx14HhNlOUGCYC2vgKnwSTrqZd/0PBi4Y6oU1GkGpsx9Qjb6\nPMk4/sAeDJHH7AeFe8KXQ8k+ys2s2DVCyTTu6L4jzIMCzL2qCZpicz4V9WipxQqb\nnvB986NpI+SqW7DiqZnauGi1cO+UewP9Fb0Pe5F34QKBgQDsKHT8ndWpju2IwpOk\nXi7LDu4JXOW8aq5B9I5zjH9H6liqN8RtU8PwrpRWuHgg4/u4F+PgKzJfyAjo3/5M\n9iRFGPL5Ys99pmxKV1cMoAs6IrmfzRDi7uyePgspTQ+7tDAnMaxyaBjvolRpAjWw\nnr0uuwLMs5aAfWniAf3TB22ceQKBgQC+kAVtmnbR/YpazwKpzkKa9CVDwCs3EeFf\n0/lSRslbNJvsF4HfBk+/lYvPOCs99uP0fzcHFYjqlD6ly20+KFALEVraX/f59Gzj\n0eyvvnB435824Ufmg3NnuoQ8UNPn/YqgeQzwhBcUDDNFov8bI+4qEkDR6qx9CMVq\nw2+R0NBZJQKBgQDIG/wNdvzu4aLbqO0McZY7EFqZ6nLtNoSUdNMkjF/qI2SgUAMN\nFNbKolQmK8f3LthEhVHdyRy1Vr5d/jfxJP1U47A3rAfgE95dHCcyFoeM6pHaHBz7\n/rLX4AD7LUZwql3HSGs0woqmvCnElU/Daq8p4uOba23TUPIgxck8QWYbGQKBgCVZ\newbhaHp99BkaS85WU+2k/ozJ5G51vbOXi11Z7GtI42qhrN22kfjd6boiqy8I7eLk\n8DcePGilx6WdOnsdUZrpuuHkP2kpRBJe+cH0VH0Mb1tFSl9e0ka5YuOjf/UPV5Ve\nRG/7o75VKdNzQAbkwvBSBYxfL5GOH4tuZLays7NVAoGBAM7VArzFIppQW6aFNoT7\nhn841GDh8EVzbtxMBhKd2zyl16K3xkq7OhI8psai1bOySOamof8YHjXeYGzr2H4a\nuTFDJfs6ObIF41BgdKWb4XdO3XW85deiX95O+s2YuAwT5MLcx7YBGrBiHVA1SLQ+\nNOOUPamHsI6HlI+WB+2ePcrY\n-----END PRIVATE KEY-----\n",
-      "client_email":
-          "video-editor-service@video-editor-417510.iam.gserviceaccount.com",
-      "client_id": "117364698981048412120",
-      "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-      "token_uri": "https://oauth2.googleapis.com/token",
-      "auth_provider_x509_cert_url":
-          "https://www.googleapis.com/oauth2/v1/certs",
-      "client_x509_cert_url":
-          "https://www.googleapis.com/robot/v1/metadata/x509/video-editor-service%40video-editor-417510.iam.gserviceaccount.com",
-      "universe_domain": "googleapis.com"
-    });
+    // Reuse the existing authenticated client if it was already created.
+    if (client != null) return;
+
+    if (_serviceAccountJson.isEmpty) {
+      log('GCP_SERVICE_ACCOUNT_JSON is not configured. Pass the service '
+          'account credentials with --dart-define=GCP_SERVICE_ACCOUNT_JSON=...');
+      return;
+    }
+
+    final credentials = auth.ServiceAccountCredentials.fromJson(
+      jsonDecode(_serviceAccountJson) as Map<String, dynamic>,
+    );
 
     final scopes = [
       vi.CloudVideoIntelligenceApi.cloudPlatformScope,
@@ -112,7 +58,7 @@ class AiVideoController extends GetxController {
 
   void callVideoIntelligence() async {
     try {
-      init();
+      await init();
       var response = await client?.post(
           Uri.parse(
               "https://videointelligence.googleapis.com/v1/videos:annotate"),
@@ -257,7 +203,15 @@ class AiVideoController extends GetxController {
     }
   }
 
+  /// Whether the Google Cloud credentials have been provided at build time.
+  bool get isConfigured => _serviceAccountJson.isNotEmpty;
+
   Future<bool> uploadVideoToGCS(String filePath) async {
+    if (!isConfigured) {
+      errorToast(
+          msg: "AI features are not configured. Provide GCP credentials.");
+      return false;
+    }
     try {
       CustomDialogs.fullLoadingDialog(
         data: "Uploading video, please wait...",
@@ -305,6 +259,27 @@ class AiVideoController extends GetxController {
   }
 
   String? transcribedOperationName;
+  /// BCP-47 language code used for speech transcription (AI refinement:
+  /// supports videos in different languages).
+  String transcribeLanguageCode = 'en-US';
+
+  /// Languages offered in the transcription language picker.
+  static const Map<String, String> transcribeLanguages = {
+    'en-US': 'English (US)',
+    'en-GB': 'English (UK)',
+    'es-ES': 'Spanish',
+    'fr-FR': 'French',
+    'hi-IN': 'Hindi',
+    'ne-NP': 'Nepali',
+    'de-DE': 'German',
+    'ja-JP': 'Japanese',
+  };
+
+  void setTranscribeLanguage(String code) {
+    transcribeLanguageCode = code;
+    update();
+  }
+
   void transcribeOperation(String fileName) async {
     try {
       CustomDialogs.fullLoadingDialog(
@@ -321,7 +296,7 @@ class AiVideoController extends GetxController {
             "features": ["SPEECH_TRANSCRIPTION"],
             "videoContext": {
               "speechTranscriptionConfig": {
-                "languageCode": "en",
+                "languageCode": transcribeLanguageCode,
                 "enableAutomaticPunctuation": true,
                 "filterProfanity": true
               }
@@ -363,6 +338,7 @@ class AiVideoController extends GetxController {
         log("Data $decodedJson");
         transcribeText = decodedJson['response']['annotationResults'][0]
             ['speechTranscriptions'][0]['alternatives'][0]['transcript'];
+        _collectTranscribedWords(decodedJson);
         update();
       } else {
         print("Not till yet");
@@ -373,6 +349,108 @@ class AiVideoController extends GetxController {
       if (Get.isDialogOpen == true) {
         Get.back();
       }
+    }
+  }
+
+  /// Word-level transcript with timings, used to generate captions.
+  /// Each entry: {'word': String, 'start': double, 'end': double} (seconds).
+  List<Map<String, dynamic>> transcribedWords = [];
+
+  // GCP encodes durations as strings like "1.400s".
+  double _parseGcpDuration(dynamic value) {
+    if (value is String && value.endsWith('s')) {
+      return double.tryParse(value.substring(0, value.length - 1)) ?? 0;
+    }
+    return 0;
+  }
+
+  void _collectTranscribedWords(dynamic decodedJson) {
+    transcribedWords = [];
+    try {
+      final transcriptions = decodedJson['response']['annotationResults'][0]
+              ['speechTranscriptions'] ??
+          [];
+      for (final st in transcriptions) {
+        final alts = st['alternatives'];
+        if (alts is List && alts.isNotEmpty) {
+          for (final w in (alts[0]['words'] ?? [])) {
+            transcribedWords.add({
+              'word': "${w['word'] ?? ''}",
+              'start': _parseGcpDuration(w['startTime']),
+              'end': _parseGcpDuration(w['endTime']),
+            });
+          }
+        }
+      }
+    } catch (e) {
+      log("Failed to collect word timings: $e");
+    }
+  }
+
+  /// Groups the word timings into short caption chunks and writes an SRT file.
+  Future<String?> _writeSrtFile() async {
+    final content = buildSrt(transcribedWords);
+    if (content.isEmpty) return null;
+    final path = "${await getOutputDirectoryPath()}captions.srt";
+    await File(path).writeAsString(content);
+    return path;
+  }
+
+  /// Generates captions from the transcription and burns them into the video.
+  Future<void> burnCaptionsIntoVideo(String videoPath) async {
+    String? output;
+    try {
+      CustomDialogs.fullLoadingDialog(
+        data: "Generating captions, please wait...",
+      );
+      final srtPath = await _writeSrtFile();
+      if (srtPath != null) {
+        output = await AiVideoService.burnCaptions(videoPath, srtPath);
+      }
+    } catch (e) {
+      log(e.toString());
+    } finally {
+      // Close the loading dialog before showing any result.
+      if (Get.isDialogOpen == true) Get.back();
+    }
+
+    if (output != null) {
+      Get.dialog(Material(
+        color: Colors.transparent,
+        child: VideoResultPopup(video: File(output), aspectRatio: 16 / 9),
+      ));
+    } else if (transcribedWords.isEmpty) {
+      errorToast(msg: "No word timings available to build captions");
+    } else {
+      errorToast(msg: "Couldn't burn captions into the video");
+    }
+  }
+
+  /// Runs one of the local (offline) AI features with loading/result UX.
+  Future<void> runLocalAiFeature({
+    required String path,
+    required Future<String?> Function(String input) feature,
+    required String loadingMessage,
+    required String failureMessage,
+  }) async {
+    String? output;
+    try {
+      CustomDialogs.fullLoadingDialog(data: loadingMessage);
+      output = await feature(path);
+    } catch (e) {
+      log(e.toString());
+    } finally {
+      // Close the loading dialog before showing any result.
+      if (Get.isDialogOpen == true) Get.back();
+    }
+
+    if (output != null) {
+      Get.dialog(Material(
+        color: Colors.transparent,
+        child: VideoResultPopup(video: File(output), aspectRatio: 16 / 9),
+      ));
+    } else {
+      errorToast(msg: failureMessage);
     }
   }
 }

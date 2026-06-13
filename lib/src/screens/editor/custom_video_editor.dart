@@ -12,11 +12,14 @@ import 'package:path_provider/path_provider.dart';
 import 'package:video_editor/video_editor.dart';
 import 'package:video_editor_mobile_app/src/constant/dimension.dart';
 import 'package:video_editor_mobile_app/src/controllers/editor_controller.dart';
+import 'package:video_editor_mobile_app/src/controllers/settings_controller.dart';
 import 'package:video_editor_mobile_app/src/screens/ai/ai_screen.dart';
 import 'package:video_editor_mobile_app/src/screens/editor/crop_screen.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_text.dart';
 
+import '../../services/ai_video_service.dart';
 import '../../services/export_services.dart';
+import '../../utils/storage_path.dart';
 import 'video_result_popup.dart';
 
 class CustomVideoEditor extends StatefulWidget {
@@ -42,10 +45,13 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   }
 
   @override
-  void dispose() async {
+  void dispose() {
     _exportingProgress.dispose();
     _isExporting.dispose();
-    await _controller.dispose();
+    // Fire-and-forget: dispose() must remain synchronous and call
+    // super.dispose() without awaiting, otherwise the framework throws
+    // "dispose() did not call super.dispose()".
+    _controller.dispose();
     ExportService.dispose();
     super.dispose();
   }
@@ -58,40 +64,277 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
         ),
       );
   String? selectedAudioPath;
+
+  /// Target output height in pixels; 0 keeps the source resolution.
+  /// Lets users shrink HD/2K/4K/8K sources to a smaller file size.
+  int exportHeight = 0;
+
+  /// x264 CRF: lower = better quality and larger file (18 high, 23 balanced,
+  /// 28 small).
+  int exportCrf = 23;
+
+  Future<bool> _showExportOptionsDialog() async {
+    const resolutions = <String, int>{
+      'Original': 0,
+      '2K (1440p)': 1440,
+      'FHD (1080p)': 1080,
+      'HD (720p)': 720,
+      'SD (480p)': 480,
+    };
+    const qualities = <String, int>{
+      'High quality': 18,
+      'Balanced': 23,
+      'Small size': 28,
+    };
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Export Settings'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Resolution'),
+                vSizedBox0,
+                Wrap(
+                  spacing: 6,
+                  children: resolutions.entries
+                      .map(
+                        (entry) => ChoiceChip(
+                          label: Text(entry.key),
+                          selected: exportHeight == entry.value,
+                          onSelected: (_) {
+                            setDialogState(() {
+                              exportHeight = entry.value;
+                            });
+                          },
+                        ),
+                      )
+                      .toList(),
+                ),
+                vSizedBox1,
+                const Text('Quality / file size'),
+                vSizedBox0,
+                Wrap(
+                  spacing: 6,
+                  children: qualities.entries
+                      .map(
+                        (entry) => ChoiceChip(
+                          label: Text(entry.key),
+                          selected: exportCrf == entry.value,
+                          onSelected: (_) {
+                            setDialogState(() {
+                              exportCrf = entry.value;
+                            });
+                          },
+                        ),
+                      )
+                      .toList(),
+                ),
+                vSizedBox1,
+                const Text(
+                  'Tip: lowering the resolution of HD/2K/4K/8K videos '
+                  'greatly reduces the exported file size.',
+                  style: TextStyle(fontSize: 11, color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Export'),
+            ),
+          ],
+        ),
+      ),
+    );
+    return confirmed ?? false;
+  }
+
+  /// Post-processing is only needed when the user wants to downscale, change
+  /// compression, or burn text/sticker overlays into the video. Free
+  /// (non-premium) exports also need a pass to stamp the watermark.
+  bool get _needsPostProcess =>
+      exportHeight > 0 ||
+      exportCrf != 23 ||
+      !SettingsController.instance.isPremium ||
+      EditorController.instance.lindiController.widgets.isNotEmpty;
+
+  /// Watermark drawtext filter for free users (empty for premium). FFmpeg
+  /// failures here fall back gracefully to an un-watermarked export.
+  String _watermarkFilter() {
+    if (SettingsController.instance.isPremium) return '';
+    return "drawtext=text='feelm':fontcolor=white@0.75:"
+        "fontsize=h/22:x=w-tw-20:y=h-th-20:box=1:boxcolor=black@0.35:"
+        "boxborderw=8";
+  }
+
   void _exportVideo() async {
+    // Let the user choose resolution and compression before exporting.
+    final proceed = await _showExportOptionsDialog();
+    if (!proceed || !mounted) return;
+
     _exportingProgress.value = 0;
     _isExporting.value = true;
 
     FFmpegKit.cancel();
-    final config = VideoFFmpegVideoEditorConfig(
-      _controller,
-      commandBuilder: (config, videoPath, outputPath) {
-        return '-y -i $videoPath -vf "eq=brightness=0.3:contrast=1.5:saturation=1.5,hue=s=0" $outputPath';
-      },
+
+    // Give the user visible export feedback with a live progress bar.
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => _exportProgressDialog(),
     );
+
+    final needsPost = _needsPostProcess;
+
+    // Pass 1: let the package build a correctly trimmed/cropped/rotated file
+    // (this keeps trim + audio handling exactly as the library intends).
+    final config = VideoFFmpegVideoEditorConfig(_controller);
     await ExportService.runFFmpegCommand(
       await config.getExecuteConfig(),
       onProgress: (stats) {
-        _exportingProgress.value =
-            config.getFFmpegProgress(stats.getTime() as int);
+        final progress = config.getFFmpegProgress(stats.getTime().toInt());
+        // Leave headroom on the bar for the post-processing pass.
+        _exportingProgress.value = needsPost ? progress * 0.85 : progress;
       },
       onError: (e, s) {
         log("Export Error $e");
         log("Export Stack $s");
-        _showErrorSnackBar("Error on export video :(");
+        _failExport();
       },
-      onCompleted: (file) {
-        _isExporting.value = false;
-        if (!mounted) return;
+      onCompleted: (file) async {
+        if (needsPost) {
+          await _postProcessExport(file);
+        } else {
+          _finishExport(file);
+        }
+      },
+    );
+  }
 
-        showDialog(
-          context: context,
-          builder: (_) => VideoResultPopup(
-            video: file,
-            aspectRatio: aspectRatio,
-          ),
-        );
-      },
+  void _failExport() {
+    _isExporting.value = false;
+    _closeExportDialog();
+    _showErrorSnackBar("Error on export video :(");
+  }
+
+  void _finishExport(File file) {
+    _exportingProgress.value = 1.0;
+    _isExporting.value = false;
+    _closeExportDialog();
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      builder: (_) => VideoResultPopup(
+        video: file,
+        aspectRatio: aspectRatio,
+      ),
+    );
+  }
+
+  int _evenWidthForHeight(int height) {
+    int w = (height * aspectRatio).round();
+    if (w.isOdd) w += 1;
+    return w;
+  }
+
+  String _scaleAndCompressCommand(String input, String output) {
+    final filters = <String>[];
+    if (exportHeight > 0) filters.add('scale=-2:$exportHeight');
+    final watermark = _watermarkFilter();
+    if (watermark.isNotEmpty) filters.add(watermark);
+    final vf = filters.isEmpty ? '' : '-vf "${filters.join(',')}" ';
+    return '-y -i $input ${vf}-c:v libx264 -crf $exportCrf '
+        '-preset fast -c:a aac $output';
+  }
+
+  // Pass 2: optionally downscale/compress and burn in text + sticker overlays.
+  Future<void> _postProcessExport(File editedFile) async {
+    _exportingProgress.value = 0.9;
+    final basePath = await getOutputDirectoryPath();
+    final outputPath = "${basePath}export_final.mp4";
+    final overlays = EditorController.instance.lindiController.widgets;
+
+    String command;
+    if (overlays.isNotEmpty) {
+      // Capture the (transparent) sticker/text layer as a PNG and overlay it.
+      final bytes =
+          await EditorController.instance.lindiController.saveAsUint8List();
+      if (bytes != null) {
+        final overlayPath = "${basePath}overlay.png";
+        await File(overlayPath).writeAsBytes(bytes);
+
+        final h = exportHeight > 0 ? exportHeight : 720;
+        final w = _evenWidthForHeight(h);
+        final watermark = _watermarkFilter();
+        final overlayNode = watermark.isEmpty
+            ? '[base][ovr]overlay=0:0[outv]'
+            : '[base][ovr]overlay=0:0,$watermark[outv]';
+        command = '-y -i ${editedFile.path} -i $overlayPath -filter_complex '
+            '"[0:v]scale=$w:$h:force_original_aspect_ratio=increase,'
+            'crop=$w:$h[base];[1:v]scale=$w:$h[ovr];'
+            '$overlayNode" -map "[outv]" -map 0:a? '
+            '-c:v libx264 -crf $exportCrf -preset fast -c:a aac -shortest '
+            '$outputPath';
+      } else {
+        command = _scaleAndCompressCommand(editedFile.path, outputPath);
+      }
+    } else {
+      command = _scaleAndCompressCommand(editedFile.path, outputPath);
+    }
+
+    log("Post-process command: $command");
+    await FFmpegKit.execute(command).then((session) async {
+      final returnCode = await session.getReturnCode();
+      if (ReturnCode.isSuccess(returnCode)) {
+        _finishExport(File(outputPath));
+      } else {
+        log("Post-process error: ${(await session.getOutput()).toString()}");
+        // Fall back to the un-processed (but correctly edited) file so the
+        // user still gets a usable export.
+        _finishExport(editedFile);
+      }
+    });
+  }
+
+  void _closeExportDialog() {
+    if (mounted && Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+  }
+
+  Widget _exportProgressDialog() {
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: AlertDialog(
+        content: ValueListenableBuilder<double>(
+          valueListenable: _exportingProgress,
+          builder: (_, value, __) {
+            final clamped = value.clamp(0.0, 1.0);
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text("Exporting video..."),
+                vSizedBox2,
+                LinearProgressIndicator(
+                  value: clamped == 0 ? null : clamped,
+                ),
+                vSizedBox1,
+                Text("${(clamped * 100).toStringAsFixed(0)}%"),
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -126,7 +369,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   }
 
   Future<bool> _showExitConfirmationDialog(BuildContext context) async {
-    return await showDialog(
+    final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Close Editor?'),
@@ -143,6 +386,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
         ],
       ),
     );
+    return confirmed ?? false;
   }
 
   @override
@@ -150,9 +394,9 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
     return GetBuilder<EditorController>(
       didChangeDependencies: (_) {
         _controller = VideoEditorController.file(
-          File(_.controller?.currentPlayablePath ?? widget.file!.path),
+          File(_.currentPlayablePath ?? widget.file!.path),
           minDuration: const Duration(seconds: 1),
-          maxDuration: const Duration(seconds: 10),
+          maxDuration: const Duration(minutes: 10),
         )..initialize().then((_) => setState(() {})).catchError((error) {
             // handle minumum duration bigger than video duration error
             Navigator.pop(context);
@@ -221,13 +465,23 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                                       //     // ),
                                       //   ],
                                       // ),
-                                      LindiStickerWidget(
-                                        controller: _.lindiController,
-                                        child: AspectRatio(
-                                          aspectRatio: aspectRatio,
-                                          child: CropGridViewer.preview(
-                                            controller: _controller,
-                                          ),
+                                      AspectRatio(
+                                        aspectRatio: aspectRatio,
+                                        child: Stack(
+                                          fit: StackFit.expand,
+                                          children: [
+                                            // Video preview sits behind the
+                                            // sticker layer so the Lindi canvas
+                                            // can be captured with a transparent
+                                            // background for export burn-in.
+                                            CropGridViewer.preview(
+                                              controller: _controller,
+                                            ),
+                                            LindiStickerWidget(
+                                              controller: _.lindiController,
+                                              child: const SizedBox.expand(),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                       CoverViewer(controller: _controller),
@@ -298,6 +552,15 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                               if (selectedOption == 7) {
                                 return _audioWidget();
                               }
+                              if (selectedOption == 8) {
+                                return _transformWidget();
+                              }
+                              if (selectedOption == 9) {
+                                return _stickerWidget();
+                              }
+                              if (selectedOption == 10) {
+                                return _greenScreenWidget();
+                              }
                               return Container();
                             },
                           ),
@@ -348,6 +611,21 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                                 "Audio",
                                 7,
                               ),
+                              _optionWidget(
+                                Icons.flip_rounded,
+                                "Transform",
+                                8,
+                              ),
+                              _optionWidget(
+                                Icons.emoji_emotions_rounded,
+                                "Stickers",
+                                9,
+                              ),
+                              _optionWidget(
+                                Icons.movie_filter_rounded,
+                                "Green Screen",
+                                10,
+                              ),
                             ],
                           ),
                         ),
@@ -365,9 +643,11 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   Widget _filterWidget() {
     return Stack(
       children: [
-        Wrap(
-          spacing: 10,
-          children: [
+        SingleChildScrollView(
+          child: Wrap(
+            spacing: 10,
+            runSpacing: 8,
+            children: [
             ElevatedButton(
               onPressed: filterOption == 0
                   ? null
@@ -405,9 +685,258 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                     },
               child: const Text("Grayscale"),
             ),
-          ],
+            ElevatedButton(
+              onPressed: filterOption == 4
+                  ? null
+                  : () {
+                      applyFilter(
+                          '-y -i ${_controller.file.path} -vf "eq=gamma_r=1.1:gamma_b=0.9:saturation=1.2"',
+                          4);
+                    },
+              child: const Text("Warm"),
+            ),
+            ElevatedButton(
+              onPressed: filterOption == 5
+                  ? null
+                  : () {
+                      applyFilter(
+                          '-y -i ${_controller.file.path} -vf "eq=gamma_b=1.1:gamma_r=0.9:saturation=1.1"',
+                          5);
+                    },
+              child: const Text("Cool"),
+            ),
+            ElevatedButton(
+              onPressed: filterOption == 6
+                  ? null
+                  : () {
+                      applyFilter(
+                          '-y -i ${_controller.file.path} -vf "eq=saturation=0.6:contrast=1.2:brightness=0.05"',
+                          6);
+                    },
+              child: const Text("Vintage"),
+            ),
+            ElevatedButton(
+              onPressed: filterOption == 7
+                  ? null
+                  : () {
+                      applyFilter(
+                          '-y -i ${_controller.file.path} -vf negate', 7);
+                    },
+              child: const Text("Invert"),
+            ),
+            ],
+          ),
         ),
         if (isApplyingFilter)
+          const Positioned.fill(
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          )
+      ],
+    );
+  }
+
+  bool isTransforming = false;
+  void applyTransform(String videoFilter, {String audioFilter = ''}) async {
+    setState(() {
+      isTransforming = true;
+    });
+    String basePath = await getOutputDirectoryPath();
+    String outputPath = "${basePath}transform.mp4";
+    String command =
+        '-y -i ${_controller.file.path} $videoFilter $audioFilter $outputPath';
+    print(command);
+    await FFmpegKit.execute(command).then((session) async {
+      final returnCode = await session.getReturnCode();
+      final output = await session.getOutput();
+      if (ReturnCode.isSuccess(returnCode)) {
+        print("Successfully transformed");
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (_) => VideoResultPopup(
+              video: File(outputPath),
+              aspectRatio: aspectRatio,
+            ),
+          );
+        }
+      } else {
+        log("Transform error: ${output.toString()}");
+        _showErrorSnackBar("Couldn't apply transform");
+      }
+    });
+    if (mounted) {
+      setState(() {
+        isTransforming = false;
+      });
+    }
+  }
+
+  Widget _transformWidget() {
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => applyTransform('-vf hflip'),
+                icon: const Icon(Icons.flip),
+                label: const Text("Flip Horizontal"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => applyTransform('-vf vflip'),
+                icon: const Icon(Icons.flip),
+                label: const Text("Flip Vertical"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => applyTransform('-vf reverse',
+                        audioFilter: '-af areverse'),
+                icon: const Icon(Icons.fast_rewind_rounded),
+                label: const Text("Reverse"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    // Fits any clip into a 9:16 frame with a blurred,
+                    // zoomed copy of itself as the background padding.
+                    : () => applyTransform(
+                        '-filter_complex "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=20:5[bg];[0:v]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2" -c:a copy'),
+                icon: const Icon(Icons.blur_on_rounded),
+                label: const Text("Blur Pad 9:16"),
+              ),
+            ],
+          ),
+        ),
+        if (isTransforming)
+          const Positioned.fill(
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          )
+      ],
+    );
+  }
+
+  /// Picks an image from the device and adds it as a draggable/resizable
+  /// sticker on top of the video preview (powered by the Lindi sticker
+  /// engine already used for text overlays).
+  Future<void> pickSticker() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      allowMultiple: false,
+    );
+    final path = result?.files.single.path;
+    if (path != null) {
+      EditorController.instance.lindiController.addWidget(
+        Image.file(
+          File(path),
+          width: 120,
+        ),
+      );
+    }
+  }
+
+  Widget _stickerWidget() {
+    return Column(
+      children: [
+        CustomText.ourText(
+          "Add image stickers on top of your video",
+        ),
+        vSizedBox2,
+        ElevatedButton.icon(
+          onPressed: pickSticker,
+          icon: const Icon(Icons.add_photo_alternate_rounded),
+          label: const Text('Add Sticker'),
+        ),
+      ],
+    );
+  }
+
+  bool isChromaKeying = false;
+
+  /// Replaces the green background of the video with a user-picked image
+  /// using FFmpeg's chromakey filter (Phase Two: green screen editing).
+  Future<void> applyGreenScreen() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      allowMultiple: false,
+    );
+    final bgPath = result?.files.single.path;
+    if (bgPath == null) return;
+
+    setState(() {
+      isChromaKeying = true;
+    });
+    final basePath = await getOutputDirectoryPath();
+    final outputPath = "${basePath}greenscreen.mp4";
+
+    // chromakey removes the green pixels, scale2ref sizes the background to
+    // the video, and overlay composites the keyed footage on top.
+    final command = '-y -i ${_controller.file.path} -i $bgPath '
+        '-filter_complex "[0:v]chromakey=green:0.3:0.1[ckout];'
+        '[1:v][ckout]scale2ref[bg][ck];[bg][ck]overlay=shortest=1[outv]" '
+        '-map "[outv]" -map 0:a? -c:v libx264 -crf 23 -preset fast '
+        '-c:a copy $outputPath';
+    print(command);
+    await FFmpegKit.execute(command).then((session) async {
+      final returnCode = await session.getReturnCode();
+      if (ReturnCode.isSuccess(returnCode)) {
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (_) => VideoResultPopup(
+              video: File(outputPath),
+              aspectRatio: aspectRatio,
+            ),
+          );
+        }
+      } else {
+        log("Green screen error: ${(await session.getOutput()).toString()}");
+        _showErrorSnackBar(
+            "Couldn't apply green screen (is the background green?)");
+      }
+    });
+    if (mounted) {
+      setState(() {
+        isChromaKeying = false;
+      });
+    }
+  }
+
+  Widget _greenScreenWidget() {
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              CustomText.ourText(
+                "Replace a green background with any image",
+              ),
+              vSizedBox1,
+              CustomText.ourText(
+                "Works best on footage shot in front of a green screen",
+                fontSize: 12,
+                color: Colors.grey,
+              ),
+              vSizedBox1,
+              ElevatedButton.icon(
+                onPressed: isChromaKeying ? null : applyGreenScreen,
+                icon: const Icon(Icons.image_rounded),
+                label: const Text('Pick Background & Apply'),
+              ),
+            ],
+          ),
+        ),
+        if (isChromaKeying)
           const Positioned.fill(
             child: Center(
               child: CircularProgressIndicator(),
@@ -420,17 +949,55 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   Widget _audioWidget() {
     return Stack(
       children: [
-        Column(
-          children: [
-            CustomText.ourText(
-              "Add your audio from your files system",
-            ),
-            vSizedBox2,
-            ElevatedButton(
-              onPressed: pickAudio,
-              child: const Text('Select Audio'),
-            ),
-          ],
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              CustomText.ourText(
+                "Add your audio from your files system",
+              ),
+              vSizedBox1,
+              ElevatedButton(
+                onPressed: pickAudio,
+                child: const Text('Select Audio'),
+              ),
+              vSizedBox1,
+              CustomText.ourText("Video volume: ${(videoVolume * 100).round()}%"),
+              Slider(
+                value: videoVolume,
+                min: 0.0,
+                max: 1.0,
+                divisions: 10,
+                label: "${(videoVolume * 100).round()}%",
+                onChanged: (val) {
+                  setState(() {
+                    videoVolume = val;
+                    isAudioMute = val == 0;
+                  });
+                  _controller.video.setVolume(val);
+                },
+              ),
+              vSizedBox1,
+              if (waveformPath != null)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.file(
+                    File(waveformPath!),
+                    height: 56,
+                    width: appWidth(context),
+                    fit: BoxFit.fill,
+                  ),
+                )
+              else
+                OutlinedButton.icon(
+                  onPressed:
+                      isGeneratingWaveform ? null : _generateWaveform,
+                  icon: const Icon(Icons.graphic_eq_rounded),
+                  label: Text(isGeneratingWaveform
+                      ? 'Generating waveform...'
+                      : 'Visualize Audio Waveform'),
+                ),
+            ],
+          ),
         ),
         if (isAudioSynchronizing)
           const Positioned.fill(
@@ -510,6 +1077,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   }
 
   final TextEditingController? textController = TextEditingController();
+  double textFontSize = 24;
   Widget _textWidget() {
     return GetBuilder<EditorController>(builder: (_) {
       return Padding(
@@ -550,6 +1118,29 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                             ],
                           ),
                         ),
+                        const SizedBox(height: 10),
+                        StatefulBuilder(
+                          builder: (context, setDialogState) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Font size: ${textFontSize.round()}'),
+                                Slider(
+                                  value: textFontSize,
+                                  min: 12,
+                                  max: 80,
+                                  divisions: 34,
+                                  label: textFontSize.round().toString(),
+                                  onChanged: (val) {
+                                    setDialogState(() {
+                                      textFontSize = val;
+                                    });
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       ],
                     ),
                     actions: [
@@ -567,6 +1158,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                               "${textController?.text.trim()}",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
+                                fontSize: textFontSize,
                                 color: _.selectedColor,
                               ),
                             ),
@@ -588,12 +1180,35 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   }
 
   bool isAudioMute = false;
+  double videoVolume = 1.0;
+  String? waveformPath;
+  bool isGeneratingWaveform = false;
+
+  /// Renders the audio waveform of the current clip and shows it in the
+  /// Audio tab.
+  Future<void> _generateWaveform() async {
+    setState(() {
+      isGeneratingWaveform = true;
+    });
+    final path = await AiVideoService.generateWaveform(_controller.file.path);
+    if (mounted) {
+      setState(() {
+        waveformPath = path;
+        isGeneratingWaveform = false;
+      });
+    }
+    if (path == null) {
+      _showErrorSnackBar("Couldn't generate the audio waveform");
+    }
+  }
   void disavleAudio() async {
     if (isAudioMute) {
-      _controller.video.setVolume(1);
+      // Restore to full volume when unmuting.
+      videoVolume = 1.0;
     } else {
-      _controller.video.setVolume(0);
+      videoVolume = 0.0;
     }
+    _controller.video.setVolume(videoVolume);
     setState(() {
       isAudioMute = !isAudioMute;
     });
@@ -769,7 +1384,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
     setState(() {
       isAudioSynchronizing = true;
     });
-    String basePath = "/storage/emulated/0/Download/";
+    String basePath = await getOutputDirectoryPath();
     String outputPath = "${basePath}audio.mp4";
 
     String command =
@@ -809,11 +1424,21 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   bool isApplyingFilter = false;
   void applyFilter(String command, int index) async {
     print("Applying filter");
+    // "Original" passes an empty command: there is nothing to render, just
+    // reset the selected filter and exit without running FFmpeg.
+    if (command.trim().isEmpty) {
+      setState(() {
+        filterOption = index;
+        isApplyingFilter = false;
+      });
+      return;
+    }
+
     setState(() {
       filterOption = index;
       isApplyingFilter = true;
     });
-    String basePath = "/storage/emulated/0/Download/";
+    String basePath = await getOutputDirectoryPath();
     String outputPath = "${basePath}filter.mp4";
 
     //high quality filter
@@ -822,12 +1447,6 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
 
     command += " $outputPath";
     print(command);
-    if (command == "") {
-      setState(() {
-        isApplyingFilter = false;
-      });
-      return;
-    }
     await FFmpegKit.execute(command).then((session) async {
       final returnCode = await session.getReturnCode();
       final state =
@@ -875,7 +1494,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
     return 0;
   }
 
-  double speed = 0.0;
+  double speed = 1.0;
   Widget _speedAdjustment() {
     return Column(
       children: [
@@ -890,13 +1509,16 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
           onChangeEnd: (val) {
             _controller.video.setPlaybackSpeed(val);
           },
-          min: -1.0,
+          min: 0.25,
           max: 2.0,
           divisions: 7,
           label: speed.toStringAsFixed(2),
         ),
         ElevatedButton(
           onPressed: () {
+            setState(() {
+              speed = 1.0;
+            });
             _controller.video.setPlaybackSpeed(1);
           },
           child: const Text("Reset to Normal"),
@@ -1002,7 +1624,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
       isAdjusting = true;
     });
     print("Applying adjustment");
-    String basePath = "/storage/emulated/0/Download/";
+    String basePath = await getOutputDirectoryPath();
     String outputPath = "${basePath}adjustment.mp4";
 
     //high quality filter
@@ -1043,25 +1665,41 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   }
 
   Widget _optionWidget(IconData icon, String title, int index) {
+    final bool isSelected = selectedOption == index;
     return InkWell(
       onTap: () {
         setState(() {
           selectedOption = index;
         });
       },
-      child: Padding(
-        padding: screenLeftRightPadding,
+      borderRadius: BorderRadius.circular(12),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Colors.yellow.withOpacity(0.15)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? Colors.yellow : Colors.transparent,
+            width: 0.8,
+          ),
+        ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            vSizedBox0,
             Icon(
               icon,
-              color: selectedOption == index ? Colors.yellow : Colors.white,
-              size: 25,
+              color: isSelected ? Colors.yellow : Colors.white,
+              size: 24,
             ),
+            vSizedBox0,
             CustomText.ourText(title,
-                fontSize: 13,
-                color: selectedOption == index ? Colors.yellow : Colors.white),
+                fontSize: 12,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                color: isSelected ? Colors.yellow : Colors.white),
           ],
         ),
       ),

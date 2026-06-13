@@ -1,6 +1,6 @@
 {
-    "name": "video_editor_mobile_app",
-    "short_name": "video_editor_mobile_app",
+    "name": "feelm",
+    "short_name": "feelm",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
