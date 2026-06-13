@@ -10,7 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:video_editor_mobile_app/di_init.dart';
 import 'package:video_editor_mobile_app/src/constant/app_theme.dart';
 import 'package:video_editor_mobile_app/src/controllers/settings_controller.dart';
-import 'package:video_editor_mobile_app/src/screens/splash/splash_screen.dart';
+import 'package:video_editor_mobile_app/src/screens/intro/intro_screen.dart';
 import 'package:video_editor_mobile_app/src/utils/app_translations.dart';
 
 void main() {
@@ -94,7 +94,7 @@ class _VideoEditorAppState extends State<VideoEditorApp> {
               child: child ?? const SizedBox.shrink(),
             );
           },
-          home: const SplashScreen(),
+          home: const IntroScreen(),
         );
       },
     );

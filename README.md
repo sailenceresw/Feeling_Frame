@@ -60,6 +60,19 @@ app and are intentionally **not** stubbed/faked:
 In-app purchases use a mock unlock; wiring real billing needs the App
 Store / Play Store SDKs and store configuration.
 
+## Branding
+
+The app opens with a publisher-style **intro animation** showing the
+*feeling frame — edit with emotion* company logo (scale-in + heartbeat pulse,
+cross-fading from white into the dark app) before the splash screen.
+
+The launcher icon is generated from `assets/images/app_logo.png`. After
+`flutter pub get`, run it once:
+
+```bash
+dart run flutter_launcher_icons
+```
+
 ## Requirements
 
 - Flutter SDK `>=3.2.6 <4.0.0`
