@@ -20,6 +20,7 @@ import '../screens/ai/object_detect_screen.dart';
 import '../screens/ai/transcribe_screen.dart';
 import '../screens/editor/video_result_popup.dart';
 import '../services/ai_video_service.dart';
+import '../utils/srt_builder.dart';
 import '../utils/storage_path.dart';
 
 class AiVideoController extends GetxController {
@@ -381,42 +382,12 @@ class AiVideoController extends GetxController {
     }
   }
 
-  String _srtTimestamp(double seconds) {
-    final d = Duration(milliseconds: (seconds * 1000).round());
-    final h = d.inHours.toString().padLeft(2, '0');
-    final m = d.inMinutes.remainder(60).toString().padLeft(2, '0');
-    final s = d.inSeconds.remainder(60).toString().padLeft(2, '0');
-    final ms = d.inMilliseconds.remainder(1000).toString().padLeft(3, '0');
-    return '$h:$m:$s,$ms';
-  }
-
   /// Groups the word timings into short caption chunks and writes an SRT file.
   Future<String?> _writeSrtFile() async {
-    if (transcribedWords.isEmpty) return null;
-    final buffer = StringBuffer();
-    int index = 1;
-    List<Map<String, dynamic>> chunk = [];
-
-    void flushChunk() {
-      if (chunk.isEmpty) return;
-      buffer
-        ..writeln(index++)
-        ..writeln('${_srtTimestamp(chunk.first['start'])} --> '
-            '${_srtTimestamp(chunk.last['end'])}')
-        ..writeln(chunk.map((w) => w['word']).join(' '))
-        ..writeln();
-      chunk = [];
-    }
-
-    for (final w in transcribedWords) {
-      chunk.add(w);
-      final span = (w['end'] as double) - (chunk.first['start'] as double);
-      if (chunk.length >= 7 || span >= 3.5) flushChunk();
-    }
-    flushChunk();
-
+    final content = buildSrt(transcribedWords);
+    if (content.isEmpty) return null;
     final path = "${await getOutputDirectoryPath()}captions.srt";
-    await File(path).writeAsString(buffer.toString());
+    await File(path).writeAsString(content);
     return path;
   }
 
