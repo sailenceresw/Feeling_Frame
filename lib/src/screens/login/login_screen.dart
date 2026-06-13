@@ -23,8 +23,8 @@ class LoginScreen extends StatelessWidget {
             alignment: Alignment.centerRight,
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
-              Colors.black,
-              BlendMode.difference,
+              Colors.black54,
+              BlendMode.darken,
             ),
           ),
         ),
@@ -39,13 +39,15 @@ class LoginScreen extends StatelessWidget {
             ),
             vSizedBox2,
             CustomText.ourText(
-              "Login",
+              "Welcome back",
               fontWeight: FontWeight.bold,
-              fontSize: 25,
+              fontSize: 26,
             ),
+            vSizedBox0,
             CustomText.ourText(
-              "Please authencate yourself with credentials",
+              "Sign in to continue editing your videos",
               fontSize: 15,
+              color: Colors.grey,
             ),
             vSizedBox2,
             Form(

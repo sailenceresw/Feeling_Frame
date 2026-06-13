@@ -245,35 +245,46 @@ class ProjectScreen extends StatelessWidget {
               //     child: const Text("Try ai")),
               InkWell(
                 onTap: () => _showNewProjectSourceSheet(context),
+                borderRadius: BorderRadius.circular(16),
                 child: Container(
                   width: appWidth(context),
-                  height: 150,
+                  height: 160,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: Colors.yellow,
-                      width: 0.5,
-                    ),
+                    borderRadius: BorderRadius.circular(16),
                     gradient: const LinearGradient(
-                      colors: [Colors.orange, Colors.orangeAccent],
+                      colors: [Color(0xFFFFB300), Color(0xFFFF7043)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.orange.withOpacity(0.35),
+                        blurRadius: 16,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
                   ),
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(
-                          Icons.add_box_outlined,
+                          Icons.add_circle_outline_rounded,
                           color: Colors.white,
+                          size: 40,
                         ),
-                        hSizedBox1,
+                        vSizedBox1,
                         CustomText.ourText(
                           "New Project",
                           fontWeight: FontWeight.bold,
-                          fontSize: 25,
+                          fontSize: 24,
                           color: Colors.white,
+                        ),
+                        vSizedBox0,
+                        CustomText.ourText(
+                          "Pick videos or record with the camera",
+                          fontSize: 13,
+                          color: Colors.white70,
                         ),
                       ],
                     ),

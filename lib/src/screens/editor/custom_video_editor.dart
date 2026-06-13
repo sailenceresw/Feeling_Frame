@@ -1594,25 +1594,41 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   }
 
   Widget _optionWidget(IconData icon, String title, int index) {
+    final bool isSelected = selectedOption == index;
     return InkWell(
       onTap: () {
         setState(() {
           selectedOption = index;
         });
       },
-      child: Padding(
-        padding: screenLeftRightPadding,
+      borderRadius: BorderRadius.circular(12),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Colors.yellow.withOpacity(0.15)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? Colors.yellow : Colors.transparent,
+            width: 0.8,
+          ),
+        ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            vSizedBox0,
             Icon(
               icon,
-              color: selectedOption == index ? Colors.yellow : Colors.white,
-              size: 25,
+              color: isSelected ? Colors.yellow : Colors.white,
+              size: 24,
             ),
+            vSizedBox0,
             CustomText.ourText(title,
-                fontSize: 13,
-                color: selectedOption == index ? Colors.yellow : Colors.white),
+                fontSize: 12,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                color: isSelected ? Colors.yellow : Colors.white),
           ],
         ),
       ),
