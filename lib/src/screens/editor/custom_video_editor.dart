@@ -172,7 +172,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   /// failures here fall back gracefully to an un-watermarked export.
   String _watermarkFilter() {
     if (SettingsController.instance.isPremium) return '';
-    return "drawtext=text='Feeling Frame':fontcolor=white@0.75:"
+    return "drawtext=text='feelm':fontcolor=white@0.75:"
         "fontsize=h/22:x=w-tw-20:y=h-th-20:box=1:boxcolor=black@0.35:"
         "boxborderw=8";
   }
