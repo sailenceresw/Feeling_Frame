@@ -33,10 +33,15 @@ Application Using AI"*. Feature ↔ proposal mapping:
 | In-app capture (report feature 2) | Record videos with the camera from "New Project" |
 | Green screen editing (Phase Two) | Chroma-key background replacement in the editor |
 | Feedback loops (report methodology) | In-app feedback panel (rating + message, stored locally) |
+| Audio waveform visualization | Waveform image rendered in the editor's Audio tab |
+| Unit testing (report methodology) | `flutter test` suite for SRT building and project persistence |
+
+The editor also includes a CapCut-style "Blur Pad 9:16" transform that fits
+any clip into a vertical frame over a blurred copy of itself.
 
 Phase Two items from the report that remain future work: keyframe animation,
-masking tools, cloud collaboration/version control, motion tracking, audio
-waveform visualization, and 3D effects.
+masking tools, cloud collaboration/version control, motion tracking, and 3D
+effects.
 
 ## Requirements
 
