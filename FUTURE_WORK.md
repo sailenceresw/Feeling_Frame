@@ -20,16 +20,25 @@ installed:
 
 ## B. Future feature enhancements (need backend / CV / ML beyond the app)
 
-From the project report's "Future Enhancements" — intentionally not stubbed,
-because faking them would misrepresent the artefact:
+From the project report's "Future Enhancements":
+
+**Partially delivered (approximate, FFmpeg-based):**
+
+- **3D effects** — a **3D Tilt** transform (perspective warp) is implemented.
+  A full 3D render pipeline (rotating cubes, depth) remains future work.
+- **Keyframe-style animation** — a **Ken Burns Zoom** (animated push-in) and
+  animated **Fade In/Out** are implemented. A full keyframe *timeline* UI
+  (arbitrary per-property keyframes) remains future work.
+
+**Genuinely infeasible in the on-device app — intentionally not stubbed,
+because faking them would misrepresent the artefact:**
 
 1. **Cloud collaboration & version control** — requires an authenticated
-   backend with real-time sync and per-user permissions.
-2. **Motion tracking** — requires an on-device computer-vision pipeline.
-3. **3D effects** — requires a 3D render pipeline.
-4. **Keyframe animation timeline** — requires a dedicated animation/render
-   engine and a timeline UI.
-5. **LSTM model training** — an ML research/training effort (scene
+   backend with real-time sync and per-user permissions. (Local project
+   rename/management is implemented as a first step.)
+2. **Real object motion tracking** — requires an on-device computer-vision /
+   ML pipeline; FFmpeg cannot track arbitrary objects.
+3. **LSTM model training** — an ML research/training effort (scene
    recognition, content prioritization), not an in-app feature.
 
 Also: the Premium upgrade currently uses a local unlock; wiring real billing
