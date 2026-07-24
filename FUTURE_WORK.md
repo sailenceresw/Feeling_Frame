@@ -8,14 +8,19 @@ DONE in the dev environment (Flutter 3.44.8 installed):
 - `flutter test` — 22/22 passing
 - `dart fix --apply` — deprecations/style auto-fixed
 
-Still to run on a real machine/device:
-1. `dart run flutter_launcher_icons` — generate the Android/iOS launcher
-   icons from `assets/images/app_logo.png`.
-2. `flutter run` on an Android device and an iOS device — verify the
-   on-device-only paths: FFmpeg filters (stabilization/vid.stab, chromakey,
-   drawtext watermark, waveform, auto-cut), ML Kit object labeling, overlay
+Also DONE:
+- `dart run flutter_launcher_icons` — Android mipmaps + iOS AppIcon set
+  generated from `assets/images/app_logo.png` and committed.
+
+Still to run on a real machine/device (the sandbox's network policy blocks
+dl.google.com, so Gradle/Android-SDK downloads and therefore `flutter build
+apk` cannot run here):
+1. `flutter build apk` / `flutter run` on an Android device and an iOS
+   device — verify the on-device-only paths: FFmpeg filters
+   (stabilization/vid.stab, chromakey, drawtext watermark, waveform,
+   auto-cut, shake-cut, adaptive colour), ML Kit object labeling, overlay
    burn-in positioning, camera capture, and gallery save/share.
-3. iOS: bump the deployment target to 15.5 (ML Kit pods) before `pod install`.
+2. iOS: bump the deployment target to 15.5 (ML Kit pods) before `pod install`.
 
 ## B. Future feature enhancements (need backend / CV / ML beyond the app)
 
