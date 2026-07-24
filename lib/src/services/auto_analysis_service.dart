@@ -34,8 +34,9 @@ class AutoAnalysisService {
     double ydif = 0, yavg = 128, satavg = 60;
 
     void flush() {
-      if (t != null) {
-        stats.add(FrameStat(t!, ydif: ydif, yavg: yavg, satavg: satavg));
+      final tt = t;
+      if (tt != null) {
+        stats.add(FrameStat(tt, ydif: ydif, yavg: yavg, satavg: satavg));
       }
     }
 
