@@ -931,6 +931,27 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                 icon: const Icon(Icons.gradient_rounded),
                 label: const Text("Fade In/Out"),
               ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    // 3D perspective tilt: pinches the top edge inward to
+                    // simulate the video rotating back in 3D space.
+                    : () => applyTransform(
+                        '-vf "perspective=x0=W*0.08:y0=0:x1=W*0.92:y1=0:x2=0:y2=H:x3=W:y3=H:interpolation=linear" -c:a copy'),
+                icon: const Icon(Icons.threed_rotation_rounded),
+                label: const Text("3D Tilt"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    // Ken Burns: a slow, animated push-in (keyframe-style
+                    // zoom) across the whole clip. Comma-free expressions so
+                    // no nested quoting is needed inside the -vf value.
+                    : () => applyTransform(
+                        '-vf "scale=1280:-2,zoompan=z=zoom+0.0008:d=1:x=iw/2-(iw/zoom/2):y=ih/2-(ih/zoom/2):s=1280x720:fps=30" -c:a copy'),
+                icon: const Icon(Icons.zoom_in_map_rounded),
+                label: const Text("Ken Burns Zoom"),
+              ),
             ],
           ),
         ),
