@@ -17,6 +17,7 @@ import 'package:video_editor_mobile_app/src/screens/ai/ai_screen.dart';
 import 'package:video_editor_mobile_app/src/screens/editor/crop_screen.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_text.dart';
 
+import '../../services/advanced_edit_service.dart';
 import '../../services/ai_video_service.dart';
 import '../../services/export_services.dart';
 import '../../utils/storage_path.dart';
@@ -359,6 +360,74 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
       },
     );
   }
+
+  void _showBusyDialog(String message) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => WillPopScope(
+        onWillPop: () async => false,
+        child: AlertDialog(
+          content: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(width: 16),
+              Expanded(child: Text(message)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Runs an advanced FFmpeg operation with a busy dialog, then shows the
+  /// result (a playable/GIF popup) or an info snackbar for non-video outputs.
+  Future<void> _runAdvancedOp(
+    Future<String?> Function() op, {
+    required String working,
+    bool showResultPopup = true,
+    String infoOnSuccess = '',
+  }) async {
+    _showBusyDialog(working);
+    String? out;
+    try {
+      out = await op();
+    } catch (e) {
+      log("Advanced op error: $e");
+    }
+    if (mounted && Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+    if (!mounted) return;
+    if (out == null) {
+      _showErrorSnackBar("Couldn't complete this operation");
+      return;
+    }
+    if (showResultPopup) {
+      showDialog(
+        context: context,
+        builder: (_) => VideoResultPopup(
+          video: File(out!),
+          aspectRatio: aspectRatio,
+        ),
+      );
+    } else {
+      _showErrorSnackBar(infoOnSuccess.isEmpty ? "Saved: $out" : infoOnSuccess);
+    }
+  }
+
+  void _exportGif() => _runAdvancedOp(
+        () => AdvancedEditService.toGif(_controller.file.path),
+        working: "Creating GIF...",
+      );
+
+  void _extractAudio() => _runAdvancedOp(
+        () => AdvancedEditService.extractAudio(_controller.file.path),
+        working: "Extracting audio...",
+        showResultPopup: false,
+        infoOnSuccess: "Audio (MP3) saved to your device",
+      );
 
   int selectedOption = 0;
   double aspectRatio = 9 / 16;
@@ -812,6 +881,31 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                         '-filter_complex "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=20:5[bg];[0:v]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2" -c:a copy'),
                 icon: const Icon(Icons.blur_on_rounded),
                 label: const Text("Blur Pad 9:16"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => _runAdvancedOp(
+                          () => AdvancedEditService.boomerang(
+                              _controller.file.path),
+                          working: "Creating boomerang...",
+                        ),
+                icon: const Icon(Icons.all_inclusive_rounded),
+                label: const Text("Boomerang"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => _runAdvancedOp(
+                          () => AdvancedEditService.fadeInOut(
+                            _controller.file.path,
+                            _controller.video.value.duration.inMilliseconds /
+                                1000.0,
+                          ),
+                          working: "Applying fade in/out...",
+                        ),
+                icon: const Icon(Icons.gradient_rounded),
+                label: const Text("Fade In/Out"),
               ),
             ],
           ),
@@ -1271,12 +1365,20 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                 icon: const Icon(Icons.save),
                 itemBuilder: (context) => [
                   PopupMenuItem(
-                    onTap: _exportCover,
-                    child: const Text('Export cover'),
-                  ),
-                  PopupMenuItem(
                     onTap: _exportVideo,
                     child: const Text('Export video'),
+                  ),
+                  PopupMenuItem(
+                    onTap: _exportGif,
+                    child: const Text('Export as GIF'),
+                  ),
+                  PopupMenuItem(
+                    onTap: _extractAudio,
+                    child: const Text('Extract audio (MP3)'),
+                  ),
+                  PopupMenuItem(
+                    onTap: _exportCover,
+                    child: const Text('Export cover'),
                   ),
                 ],
               ),

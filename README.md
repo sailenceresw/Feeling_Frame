@@ -43,7 +43,9 @@ Application Using AI"*. Feature ↔ proposal mapping:
 | Continuous user feedback | In-app feedback panel (rating + message) |
 
 The editor also includes a CapCut-style "Blur Pad 9:16" transform that fits
-any clip into a vertical frame over a blurred copy of itself.
+any clip into a vertical frame over a blurred copy of itself, plus
+**Boomerang** and **Fade In/Out** transforms, and multi-format export:
+**video, animated GIF, extracted audio (MP3)**, and cover image.
 
 ### Later work
 

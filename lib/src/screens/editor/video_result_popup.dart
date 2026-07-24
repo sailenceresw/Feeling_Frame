@@ -64,14 +64,19 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
 
   void saveVideo() async {
     String videoPath = widget.video.path;
-    bool? data = await GallerySaver.saveVideo(videoPath);
+    // GIFs must be saved via the image API, not the video API.
+    bool? data = _isGif
+        ? await GallerySaver.saveImage(videoPath)
+        : await GallerySaver.saveVideo(videoPath);
     if (data == true) {
-      // Record the edited video as a recent project so it appears on the
-      // project screen and survives app restarts.
-      await ProjectController.instance.addProject(
-        path: videoPath,
-        durationSeconds: _controller?.value.duration.inSeconds ?? 0,
-      );
+      if (!_isGif) {
+        // Record the edited video as a recent project so it appears on the
+        // project screen and survives app restarts.
+        await ProjectController.instance.addProject(
+          path: videoPath,
+          durationSeconds: _controller?.value.duration.inSeconds ?? 0,
+        );
+      }
       successToast(msg: "Saved successfully");
     } else {
       errorToast(msg: "Couldn't save");
@@ -138,7 +143,8 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
                             foregroundColor: Colors.white,
                           ),
                           onPressed: () {
-                            ShareExtend.share(widget.video.path, "video");
+                            ShareExtend.share(widget.video.path,
+                                _isGif ? "image" : "video");
                           },
                           icon: const Icon(Icons.share),
                           label: const Text("Share"),
