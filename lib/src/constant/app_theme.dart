@@ -67,7 +67,7 @@ ThemeData buildAppTheme({bool highContrast = false}) {
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(foregroundColor: accent),
     ),
-    dialogTheme: DialogTheme(
+    dialogTheme: DialogThemeData(
       backgroundColor: highContrast ? const Color(0xFF111111) : const Color(0xFF1C2C43),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
