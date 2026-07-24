@@ -557,7 +557,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
           maxDuration: const Duration(minutes: 10),
         )..initialize().then((_) => setState(() {})).catchError((error) {
             // handle minumum duration bigger than video duration error
-            Navigator.pop(context);
+            if (mounted) Navigator.pop(context);
           }, test: (e) => e is VideoMinDurationError);
       },
       builder: (_) {
@@ -1630,7 +1630,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
       if (ReturnCode.isSuccess(returnCode)) {
         print("Successfully audio applied");
         // EditorController.instance.changeVideoPlayablePath(outputPath);
-
+        if (!mounted) return;
         showDialog(
           context: context,
           builder: (_) => VideoResultPopup(
@@ -1686,7 +1686,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
       if (ReturnCode.isSuccess(returnCode)) {
         print("Successfully filter applied");
         // EditorController.instance.changeVideoPlayablePath(outputPath);
-
+        if (!mounted) return;
         showDialog(
           context: context,
           builder: (_) => VideoResultPopup(
@@ -1873,7 +1873,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
       if (ReturnCode.isSuccess(returnCode)) {
         print("Successfully adjustment applied");
         // EditorController.instance.changeVideoPlayablePath(outputPath);
-
+        if (!mounted) return;
         showDialog(
           context: context,
           builder: (_) => VideoResultPopup(
