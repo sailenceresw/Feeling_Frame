@@ -38,7 +38,7 @@ dependencies:
   get: ^4.6.6
   fluttertoast: ^8.2.4
   intl: ^0.19.0
-  ffmpeg_kit_flutter_full_gpl: ^6.0.3
+  ffmpeg_kit_flutter_new: ^4.5.2
   fraction: ^5.0.2
   video_player: ^2.8.3
   path: ^1.8.3
