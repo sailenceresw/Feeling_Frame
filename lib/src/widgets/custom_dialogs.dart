@@ -15,7 +15,7 @@ class CustomDialogs {
   }) {
     Get.dialog(
       Material(
-        color: Colors.black.withOpacity(0.2),
+        color: Colors.black.withValues(alpha: 0.2),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
