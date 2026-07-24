@@ -485,9 +485,11 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<EditorController>(
-      didChangeDependencies: (_) {
+      didChangeDependencies: (state) {
+        // In GetBuilder's lifecycle callbacks the argument is the
+        // GetBuilderState; the controller is reached via `.controller`.
         _controller = VideoEditorController.file(
-          File(_.currentPlayablePath ?? widget.file!.path),
+          File(state.controller?.currentPlayablePath ?? widget.file!.path),
           minDuration: const Duration(seconds: 1),
           maxDuration: const Duration(minutes: 10),
         )..initialize().then((_) => setState(() {})).catchError((error) {
