@@ -429,6 +429,30 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
         infoOnSuccess: "Audio (MP3) saved to your device",
       );
 
+  /// Saves the currently displayed frame as a JPEG photo.
+  void _grabFrame() async {
+    final seconds = _controller.video.value.position.inMilliseconds / 1000.0;
+    _showBusyDialog("Saving frame...");
+    String? path;
+    try {
+      path = await AdvancedEditService.grabFrame(_controller.file.path, seconds);
+    } catch (e) {
+      log("Grab frame error: $e");
+    }
+    if (mounted && Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+    if (!mounted) return;
+    if (path == null) {
+      _showErrorSnackBar("Couldn't save the frame");
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (_) => CoverResultPopup(cover: File(path!)),
+    );
+  }
+
   int selectedOption = 0;
   double aspectRatio = 9 / 16;
   updateAspectRatio(double ar) async {
@@ -1375,6 +1399,10 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                   PopupMenuItem(
                     onTap: _extractAudio,
                     child: const Text('Extract audio (MP3)'),
+                  ),
+                  PopupMenuItem(
+                    onTap: _grabFrame,
+                    child: const Text('Save current frame'),
                   ),
                   PopupMenuItem(
                     onTap: _exportCover,

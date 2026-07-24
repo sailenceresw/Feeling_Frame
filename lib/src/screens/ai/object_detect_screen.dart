@@ -17,6 +17,14 @@ class ObjectDetectScreen extends StatefulWidget {
 
 class _ObjectDetectScreenState extends State<ObjectDetectScreen> {
   @override
+  void dispose() {
+    // Release the video player created for this screen to avoid a leak.
+    AiVideoController.instance.videoPlayerController?.dispose();
+    AiVideoController.instance.videoPlayerController = null;
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {

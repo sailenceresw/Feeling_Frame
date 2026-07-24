@@ -39,5 +39,15 @@ void main() {
       // 0.5 - 1.0 would be negative; must clamp to 0.00
       expect(cmd, contains('fade=t=out:st=0.00:d=1.0'));
     });
+
+    test('grabFrameCommand seeks before input and grabs one frame', () {
+      final cmd =
+          AdvancedEditService.grabFrameCommand('in.mp4', 'f.jpg', 3.4);
+      // -ss must come before -i for a fast seek
+      expect(cmd.indexOf('-ss'), lessThan(cmd.indexOf('-i')));
+      expect(cmd, contains('-ss 3.40'));
+      expect(cmd, contains('-frames:v 1'));
+      expect(cmd, endsWith('f.jpg'));
+    });
   });
 }
