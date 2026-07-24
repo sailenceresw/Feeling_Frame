@@ -72,10 +72,9 @@ dart run flutter_launcher_icons
 
 - Flutter SDK `>=3.2.6 <4.0.0` (verified building/testing on Flutter 3.44.8)
 - Android: `minSdkVersion 24`, `compileSdkVersion 34`
-- iOS: deployment target `13.0+` — **note:** the on-device object detection
-  uses `google_mlkit_image_labeling`, whose iOS pods require a higher minimum
-  (bump the iOS deployment target to `15.5` before building for iOS). Android
-  works at the current minSdk 24.
+- iOS: deployment target `15.5+` (required by the on-device ML Kit object
+  detection; already configured in the Podfile/project). Android works at the
+  current minSdk 24.
 
 ## Getting started
 

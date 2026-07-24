@@ -20,7 +20,8 @@ apk` cannot run here):
    (stabilization/vid.stab, chromakey, drawtext watermark, waveform,
    auto-cut, shake-cut, adaptive colour), ML Kit object labeling, overlay
    burn-in positioning, camera capture, and gallery save/share.
-2. iOS: bump the deployment target to 15.5 (ML Kit pods) before `pod install`.
+2. iOS: run `pod install` (deployment target is already set to 15.5 for the
+   ML Kit pods) and build/run from Xcode or `flutter run`.
 
 ## B. Future feature enhancements (need backend / CV / ML beyond the app)
 
