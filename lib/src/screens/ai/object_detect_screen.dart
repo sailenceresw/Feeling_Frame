@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:path/path.dart';
 import 'package:video_editor_mobile_app/src/constant/dimension.dart';
 import 'package:video_editor_mobile_app/src/controllers/ai_video_controller.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_text.dart';
@@ -16,6 +15,14 @@ class ObjectDetectScreen extends StatefulWidget {
 }
 
 class _ObjectDetectScreenState extends State<ObjectDetectScreen> {
+  @override
+  void dispose() {
+    // Release the video player created for this screen to avoid a leak.
+    AiVideoController.instance.videoPlayerController?.dispose();
+    AiVideoController.instance.videoPlayerController = null;
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -39,7 +46,7 @@ class _ObjectDetectScreenState extends State<ObjectDetectScreen> {
           var controller = _.videoPlayerController;
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Object Detectection'),
+              title: const Text('Object Detection'),
             ),
             body: Padding(
               padding: screenLeftRightPadding,
@@ -74,7 +81,11 @@ class _ObjectDetectScreenState extends State<ObjectDetectScreen> {
                       width: appWidth(context),
                       child: ElevatedButton(
                         onPressed: () {
-                          _.detectObjects(basename(widget.path!));
+                          final seconds = _.videoPlayerController
+                                  ?.value.duration.inMilliseconds ??
+                              0;
+                          _.detectObjectsOnDevice(
+                              widget.path!, seconds / 1000.0);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.yellow,

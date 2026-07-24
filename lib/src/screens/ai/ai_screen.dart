@@ -133,28 +133,20 @@ class AiScreen extends StatelessWidget {
                     "No distinct scenes were found in this video",
               ),
             ),
+            _aiCard(
+              context,
+              title: "Object Detection",
+              description:
+                  "Detect objects in your video\non-device — no account or\ninternet required",
+              image: kObjectDetection,
+              onTap: () => controller.tryObjectDetect(file!),
+            ),
             vSizedBox1,
             CustomText.ourText(
               "Cloud AI (requires configuration)",
               fontWeight: FontWeight.bold,
             ),
             vSizedBox1,
-            _aiCard(
-              context,
-              title: "Object Detection",
-              description:
-                  "Detect any objects in the video\nto help with your\nvideo knowledge/study",
-              image: kObjectDetection,
-              onTap: () {
-                controller.uploadVideoToGCS(file!).then((value) {
-                  if (value) {
-                    controller.tryObjectDetect(file!);
-                  } else {
-                    errorToast(msg: "Something went wrong");
-                  }
-                });
-              },
-            ),
             _aiCard(
               context,
               title: "Transcribe Video",

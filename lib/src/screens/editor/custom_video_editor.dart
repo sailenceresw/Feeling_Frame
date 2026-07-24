@@ -1,9 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_kit_config.dart';
-import 'package:ffmpeg_kit_flutter_full_gpl/return_code.dart';
+import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit_config.dart';
+import 'package:ffmpeg_kit_flutter_new/return_code.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,7 +17,9 @@ import 'package:video_editor_mobile_app/src/screens/ai/ai_screen.dart';
 import 'package:video_editor_mobile_app/src/screens/editor/crop_screen.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_text.dart';
 
+import '../../services/advanced_edit_service.dart';
 import '../../services/ai_video_service.dart';
+import '../../services/auto_analysis_service.dart';
 import '../../services/export_services.dart';
 import '../../utils/storage_path.dart';
 import 'video_result_popup.dart';
@@ -253,7 +255,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
     final watermark = _watermarkFilter();
     if (watermark.isNotEmpty) filters.add(watermark);
     final vf = filters.isEmpty ? '' : '-vf "${filters.join(',')}" ';
-    return '-y -i $input ${vf}-c:v libx264 -crf $exportCrf '
+    return '-y -i $input $vf-c:v libx264 -crf $exportCrf '
         '-preset fast -c:a aac $output';
   }
 
@@ -360,6 +362,160 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
     );
   }
 
+  void _showBusyDialog(String message) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => WillPopScope(
+        onWillPop: () async => false,
+        child: AlertDialog(
+          content: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(width: 16),
+              Expanded(child: Text(message)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Runs an advanced FFmpeg operation with a busy dialog, then shows the
+  /// result (a playable/GIF popup) or an info snackbar for non-video outputs.
+  Future<void> _runAdvancedOp(
+    Future<String?> Function() op, {
+    required String working,
+    bool showResultPopup = true,
+    String infoOnSuccess = '',
+  }) async {
+    _showBusyDialog(working);
+    String? out;
+    try {
+      out = await op();
+    } catch (e) {
+      log("Advanced op error: $e");
+    }
+    if (mounted && Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+    if (!mounted) return;
+    if (out == null) {
+      _showErrorSnackBar("Couldn't complete this operation");
+      return;
+    }
+    if (showResultPopup) {
+      showDialog(
+        context: context,
+        builder: (_) => VideoResultPopup(
+          video: File(out!),
+          aspectRatio: aspectRatio,
+        ),
+      );
+    } else {
+      _showErrorSnackBar(infoOnSuccess.isEmpty ? "Saved: $out" : infoOnSuccess);
+    }
+  }
+
+  void _exportGif() => _runAdvancedOp(
+        () => AdvancedEditService.toGif(_controller.file.path),
+        working: "Creating GIF...",
+      );
+
+  void _extractAudio() => _runAdvancedOp(
+        () => AdvancedEditService.extractAudio(_controller.file.path),
+        working: "Extracting audio...",
+        showResultPopup: false,
+        infoOnSuccess: "Audio (MP3) saved to your device",
+      );
+
+  /// Saves the currently displayed frame as a JPEG photo.
+  void _grabFrame() async {
+    final seconds = _controller.video.value.position.inMilliseconds / 1000.0;
+    _showBusyDialog("Saving frame...");
+    String? path;
+    try {
+      path = await AdvancedEditService.grabFrame(_controller.file.path, seconds);
+    } catch (e) {
+      log("Grab frame error: $e");
+    }
+    if (mounted && Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+    if (!mounted) return;
+    if (path == null) {
+      _showErrorSnackBar("Couldn't save the frame");
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (_) => CoverResultPopup(cover: File(path!)),
+    );
+  }
+
+  void _autoEnhance() => _runAdvancedOp(
+        () => AutoAnalysisService.adaptiveEnhance(_controller.file.path),
+        working: "Analyzing & enhancing colours...",
+      );
+
+  /// AI shake-cut: analyzes per-frame motion and removes shaky sections.
+  void _autoCutShaky() async {
+    final total = _controller.video.value.duration.inMilliseconds / 1000.0;
+    _showBusyDialog("Scanning for shaky sections...");
+    String? out;
+    try {
+      out = await AutoAnalysisService.removeShakyParts(
+          _controller.file.path, total);
+    } catch (e) {
+      log("Shake cut error: $e");
+    }
+    if (mounted && Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+    if (!mounted) return;
+    if (out == null) {
+      _showErrorSnackBar("No shaky sections found to trim");
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (_) => VideoResultPopup(
+        video: File(out!),
+        aspectRatio: aspectRatio,
+      ),
+    );
+  }
+
+  /// AI auto-cut: removes silent gaps. Distinguishes "nothing to cut" from a
+  /// real failure.
+  void _autoCut() async {
+    final total = _controller.video.value.duration.inMilliseconds / 1000.0;
+    _showBusyDialog("Scanning and trimming silent parts...");
+    String? out;
+    try {
+      out = await AdvancedEditService.autoCutSilence(
+          _controller.file.path, total);
+    } catch (e) {
+      log("Auto cut error: $e");
+    }
+    if (mounted && Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+    if (!mounted) return;
+    if (out == null) {
+      _showErrorSnackBar("No silent gaps found to trim");
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (_) => VideoResultPopup(
+        video: File(out!),
+        aspectRatio: aspectRatio,
+      ),
+    );
+  }
+
   int selectedOption = 0;
   double aspectRatio = 9 / 16;
   updateAspectRatio(double ar) async {
@@ -392,14 +548,16 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<EditorController>(
-      didChangeDependencies: (_) {
+      didChangeDependencies: (state) {
+        // In GetBuilder's lifecycle callbacks the argument is the
+        // GetBuilderState; the controller is reached via `.controller`.
         _controller = VideoEditorController.file(
-          File(_.currentPlayablePath ?? widget.file!.path),
+          File(state.controller?.currentPlayablePath ?? widget.file!.path),
           minDuration: const Duration(seconds: 1),
           maxDuration: const Duration(minutes: 10),
         )..initialize().then((_) => setState(() {})).catchError((error) {
             // handle minumum duration bigger than video duration error
-            Navigator.pop(context);
+            if (mounted) Navigator.pop(context);
           }, test: (e) => e is VideoMinDurationError);
       },
       builder: (_) {
@@ -724,6 +882,11 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                     },
               child: const Text("Invert"),
             ),
+            ElevatedButton.icon(
+              onPressed: () => _autoEnhance(),
+              icon: const Icon(Icons.auto_fix_high_rounded),
+              label: const Text("Auto Enhance"),
+            ),
             ],
           ),
         ),
@@ -812,6 +975,62 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                         '-filter_complex "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=20:5[bg];[0:v]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2" -c:a copy'),
                 icon: const Icon(Icons.blur_on_rounded),
                 label: const Text("Blur Pad 9:16"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => _runAdvancedOp(
+                          () => AdvancedEditService.boomerang(
+                              _controller.file.path),
+                          working: "Creating boomerang...",
+                        ),
+                icon: const Icon(Icons.all_inclusive_rounded),
+                label: const Text("Boomerang"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => _runAdvancedOp(
+                          () => AdvancedEditService.fadeInOut(
+                            _controller.file.path,
+                            _controller.video.value.duration.inMilliseconds /
+                                1000.0,
+                          ),
+                          working: "Applying fade in/out...",
+                        ),
+                icon: const Icon(Icons.gradient_rounded),
+                label: const Text("Fade In/Out"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    // 3D perspective tilt: pinches the top edge inward to
+                    // simulate the video rotating back in 3D space.
+                    : () => applyTransform(
+                        '-vf "perspective=x0=W*0.08:y0=0:x1=W*0.92:y1=0:x2=0:y2=H:x3=W:y3=H:interpolation=linear" -c:a copy'),
+                icon: const Icon(Icons.threed_rotation_rounded),
+                label: const Text("3D Tilt"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    // Ken Burns: a slow, animated push-in (keyframe-style
+                    // zoom) across the whole clip. Comma-free expressions so
+                    // no nested quoting is needed inside the -vf value.
+                    : () => applyTransform(
+                        '-vf "scale=1280:-2,zoompan=z=zoom+0.0008:d=1:x=iw/2-(iw/zoom/2):y=ih/2-(ih/zoom/2):s=1280x720:fps=30" -c:a copy'),
+                icon: const Icon(Icons.zoom_in_map_rounded),
+                label: const Text("Ken Burns Zoom"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming ? null : () => _autoCut(),
+                icon: const Icon(Icons.content_cut_rounded),
+                label: const Text("AI Auto Cut"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming ? null : () => _autoCutShaky(),
+                icon: const Icon(Icons.vibration_rounded),
+                label: const Text("AI Remove Shaky"),
               ),
             ],
           ),
@@ -1271,12 +1490,24 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                 icon: const Icon(Icons.save),
                 itemBuilder: (context) => [
                   PopupMenuItem(
-                    onTap: _exportCover,
-                    child: const Text('Export cover'),
-                  ),
-                  PopupMenuItem(
                     onTap: _exportVideo,
                     child: const Text('Export video'),
+                  ),
+                  PopupMenuItem(
+                    onTap: _exportGif,
+                    child: const Text('Export as GIF'),
+                  ),
+                  PopupMenuItem(
+                    onTap: _extractAudio,
+                    child: const Text('Extract audio (MP3)'),
+                  ),
+                  PopupMenuItem(
+                    onTap: _grabFrame,
+                    child: const Text('Save current frame'),
+                  ),
+                  PopupMenuItem(
+                    onTap: _exportCover,
+                    child: const Text('Export cover'),
                   ),
                 ],
               ),
@@ -1399,7 +1630,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
       if (ReturnCode.isSuccess(returnCode)) {
         print("Successfully audio applied");
         // EditorController.instance.changeVideoPlayablePath(outputPath);
-
+        if (!mounted) return;
         showDialog(
           context: context,
           builder: (_) => VideoResultPopup(
@@ -1455,7 +1686,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
       if (ReturnCode.isSuccess(returnCode)) {
         print("Successfully filter applied");
         // EditorController.instance.changeVideoPlayablePath(outputPath);
-
+        if (!mounted) return;
         showDialog(
           context: context,
           builder: (_) => VideoResultPopup(
@@ -1642,7 +1873,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
       if (ReturnCode.isSuccess(returnCode)) {
         print("Successfully adjustment applied");
         // EditorController.instance.changeVideoPlayablePath(outputPath);
-
+        if (!mounted) return;
         showDialog(
           context: context,
           builder: (_) => VideoResultPopup(
@@ -1679,7 +1910,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
           color: isSelected
-              ? Colors.yellow.withOpacity(0.15)
+              ? Colors.yellow.withValues(alpha: 0.15)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(

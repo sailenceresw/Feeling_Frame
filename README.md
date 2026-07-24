@@ -28,7 +28,7 @@ Application Using AI"*. Feature ↔ proposal mapping:
 | Video stabilization | On-device two-pass vid.stab pipeline (offline) |
 | FFmpeg-automated compression | Export resolution/quality settings (CRF + downscale) |
 | "Keep the crucial sections" | Auto Highlights: scene detection keeps key moments (offline) |
-| Object recognition | Google Cloud Video Intelligence object tracking |
+| Object recognition | **On-device** ML Kit image labeling (no cloud/credentials) |
 | Instructional materials | In-app "How to use" guide |
 | In-app capture (report feature 2) | Record videos with the camera from "New Project" |
 | Green screen editing (Phase Two) | Chroma-key background replacement in the editor |
@@ -43,7 +43,9 @@ Application Using AI"*. Feature ↔ proposal mapping:
 | Continuous user feedback | In-app feedback panel (rating + message) |
 
 The editor also includes a CapCut-style "Blur Pad 9:16" transform that fits
-any clip into a vertical frame over a blurred copy of itself.
+any clip into a vertical frame over a blurred copy of itself, plus
+**Boomerang** and **Fade In/Out** transforms, and multi-format export:
+**video, animated GIF, extracted audio (MP3)**, and cover image.
 
 ### Later work
 
@@ -68,9 +70,11 @@ dart run flutter_launcher_icons
 
 ## Requirements
 
-- Flutter SDK `>=3.2.6 <4.0.0`
+- Flutter SDK `>=3.2.6 <4.0.0` (verified building/testing on Flutter 3.44.8)
 - Android: `minSdkVersion 24`, `compileSdkVersion 34`
-- iOS: deployment target `13.0+`
+- iOS: deployment target `15.5+` (required by the on-device ML Kit object
+  detection; already configured in the Podfile/project). Android works at the
+  current minSdk 24.
 
 ## Getting started
 

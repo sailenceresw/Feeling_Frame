@@ -29,7 +29,7 @@ class SettingsScreen extends StatelessWidget {
                   fontSize: 12,
                   color: Colors.grey,
                 ),
-                activeColor: Colors.yellow,
+                activeThumbColor: Colors.yellow,
               ),
               ListTile(
                 title: CustomText.ourText('text_size'.tr),

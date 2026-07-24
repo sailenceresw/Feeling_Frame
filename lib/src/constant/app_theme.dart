@@ -11,7 +11,7 @@ ThemeData buildAppTheme({bool highContrast = false}) {
   final Color surface =
       highContrast ? const Color(0xFF000000) : const Color(0xFF101A2E);
   final Color accent = highContrast ? Colors.yellowAccent : Colors.yellow;
-  final Color onSurface = Colors.white;
+  const Color onSurface = Colors.white;
 
   return ThemeData(
     useMaterial3: true,
@@ -32,7 +32,7 @@ ThemeData buildAppTheme({bool highContrast = false}) {
       backgroundColor: background,
       elevation: 0,
       centerTitle: true,
-      titleTextStyle: TextStyle(
+      titleTextStyle: const TextStyle(
         fontFamily: 'Quicksand',
         fontWeight: FontWeight.bold,
         fontSize: 18,
@@ -44,7 +44,7 @@ ThemeData buildAppTheme({bool highContrast = false}) {
       style: ElevatedButton.styleFrom(
         backgroundColor: accent,
         foregroundColor: Colors.black,
-        disabledBackgroundColor: accent.withOpacity(0.35),
+        disabledBackgroundColor: accent.withValues(alpha: 0.35),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
@@ -67,12 +67,12 @@ ThemeData buildAppTheme({bool highContrast = false}) {
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(foregroundColor: accent),
     ),
-    dialogTheme: DialogTheme(
+    dialogTheme: DialogThemeData(
       backgroundColor: highContrast ? const Color(0xFF111111) : const Color(0xFF1C2C43),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      titleTextStyle: TextStyle(
+      titleTextStyle: const TextStyle(
         fontFamily: 'Quicksand',
         fontWeight: FontWeight.bold,
         fontSize: 18,
@@ -101,7 +101,7 @@ ThemeData buildAppTheme({bool highContrast = false}) {
     ),
     listTileTheme: ListTileThemeData(iconColor: accent),
     dividerTheme: DividerThemeData(
-        color: Colors.white.withOpacity(highContrast ? 0.3 : 0.12)),
+        color: Colors.white.withValues(alpha: highContrast ? 0.3 : 0.12)),
     snackBarTheme: const SnackBarThemeData(
       backgroundColor: Color(0xFF1C2C43),
       contentTextStyle: TextStyle(
