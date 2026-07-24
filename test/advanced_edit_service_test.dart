@@ -50,4 +50,56 @@ void main() {
       expect(cmd, endsWith('f.jpg'));
     });
   });
+
+  group('Auto-cut helpers', () {
+    test('parseSilences pairs starts and ends, closing open silence at total',
+        () {
+      const log = 'silence_start: 2.0\n'
+          'silence_end: 4.0 | silence_duration: 2.0\n'
+          'silence_start: 8.5';
+      final s = AdvancedEditService.parseSilences(log, 10);
+      expect(s, [
+        [2.0, 4.0],
+        [8.5, 10.0],
+      ]);
+    });
+
+    test('keepSegmentsFromSilence inverts silences into keep segments', () {
+      final keep = AdvancedEditService.keepSegmentsFromSilence([
+        [2.0, 4.0],
+        [8.5, 10.0],
+      ], 10);
+      // keep 0..2 and 4..8.5
+      expect(keep, [
+        [0.0, 2.0],
+        [4.0, 8.5],
+      ]);
+    });
+
+    test('keepSegmentsFromSilence drops slivers shorter than minKeep', () {
+      final keep = AdvancedEditService.keepSegmentsFromSilence([
+        [0.05, 5.0],
+      ], 5.0);
+      // The 0..0.05 sliver is dropped; nothing else to keep.
+      expect(keep, isEmpty);
+    });
+
+    test('jumpCutFilter builds select/aselect with between() expressions', () {
+      final f = AdvancedEditService.jumpCutFilter([
+        [0.0, 2.0],
+        [4.0, 8.5],
+      ]);
+      expect(f, contains('select='));
+      expect(f, contains('aselect='));
+      expect(f, contains('between(t,0.000,2.000)+between(t,4.000,8.500)'));
+      expect(f, contains('setpts=N/FRAME_RATE/TB'));
+      expect(f, contains('asetpts=N/SR/TB'));
+    });
+
+    test('autoEnhanceCommand adjusts colour and keeps audio', () {
+      final cmd = AdvancedEditService.autoEnhanceCommand('in.mp4', 'out.mp4');
+      expect(cmd, contains('eq=contrast'));
+      expect(cmd, contains('-c:a copy'));
+    });
+  });
 }

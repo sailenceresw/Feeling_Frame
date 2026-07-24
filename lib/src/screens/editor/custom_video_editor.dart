@@ -453,6 +453,40 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
     );
   }
 
+  void _autoEnhance() => _runAdvancedOp(
+        () => AdvancedEditService.autoEnhance(_controller.file.path),
+        working: "Auto enhancing colours...",
+      );
+
+  /// AI auto-cut: removes silent gaps. Distinguishes "nothing to cut" from a
+  /// real failure.
+  void _autoCut() async {
+    final total = _controller.video.value.duration.inMilliseconds / 1000.0;
+    _showBusyDialog("Scanning and trimming silent parts...");
+    String? out;
+    try {
+      out = await AdvancedEditService.autoCutSilence(
+          _controller.file.path, total);
+    } catch (e) {
+      log("Auto cut error: $e");
+    }
+    if (mounted && Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+    if (!mounted) return;
+    if (out == null) {
+      _showErrorSnackBar("No silent gaps found to trim");
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (_) => VideoResultPopup(
+        video: File(out!),
+        aspectRatio: aspectRatio,
+      ),
+    );
+  }
+
   int selectedOption = 0;
   double aspectRatio = 9 / 16;
   updateAspectRatio(double ar) async {
@@ -819,6 +853,11 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                     },
               child: const Text("Invert"),
             ),
+            ElevatedButton.icon(
+              onPressed: () => _autoEnhance(),
+              icon: const Icon(Icons.auto_fix_high_rounded),
+              label: const Text("Auto Enhance"),
+            ),
             ],
           ),
         ),
@@ -953,6 +992,11 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                         '-vf "scale=1280:-2,zoompan=z=zoom+0.0008:d=1:x=iw/2-(iw/zoom/2):y=ih/2-(ih/zoom/2):s=1280x720:fps=30" -c:a copy'),
                 icon: const Icon(Icons.zoom_in_map_rounded),
                 label: const Text("Ken Burns Zoom"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming ? null : () => _autoCut(),
+                icon: const Icon(Icons.content_cut_rounded),
+                label: const Text("AI Auto Cut"),
               ),
             ],
           ),
