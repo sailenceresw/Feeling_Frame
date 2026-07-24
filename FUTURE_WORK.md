@@ -1,22 +1,21 @@
 # feelm — Later Work To Do
 
-## A. Run locally (blocked only by the lack of a Flutter SDK in the dev environment)
+## A. Local/tooling status
 
-These steps could not be executed here because no Flutter/Dart SDK was
-available. They are mechanical and should be run on a machine with Flutter
-installed:
+DONE in the dev environment (Flutter 3.44.8 installed):
+- `flutter pub get` — resolves cleanly (now incl. google_mlkit_image_labeling)
+- `flutter analyze` — 0 errors (info-level lints remain)
+- `flutter test` — 22/22 passing
+- `dart fix --apply` — deprecations/style auto-fixed
 
-1. `flutter pub get` — resolve dependencies (incl. the newly added
-   `image_picker` and `flutter_launcher_icons`).
-2. `dart run flutter_launcher_icons` — generate the Android/iOS launcher
+Still to run on a real machine/device:
+1. `dart run flutter_launcher_icons` — generate the Android/iOS launcher
    icons from `assets/images/app_logo.png`.
-3. `flutter analyze` — static analysis; fix anything it flags (the code was
-   verified statically here, but only a real compile is authoritative).
-4. `flutter test` — run the unit tests in `test/` (SRT builder, project model).
-5. `flutter run` on an Android device and an iOS device — verify the
+2. `flutter run` on an Android device and an iOS device — verify the
    on-device-only paths: FFmpeg filters (stabilization/vid.stab, chromakey,
-   drawtext watermark, waveform), overlay burn-in positioning, camera capture,
-   and gallery save/share.
+   drawtext watermark, waveform, auto-cut), ML Kit object labeling, overlay
+   burn-in positioning, camera capture, and gallery save/share.
+3. iOS: bump the deployment target to 15.5 (ML Kit pods) before `pod install`.
 
 ## B. Future feature enhancements (need backend / CV / ML beyond the app)
 

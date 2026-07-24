@@ -254,7 +254,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
     final watermark = _watermarkFilter();
     if (watermark.isNotEmpty) filters.add(watermark);
     final vf = filters.isEmpty ? '' : '-vf "${filters.join(',')}" ';
-    return '-y -i $input ${vf}-c:v libx264 -crf $exportCrf '
+    return '-y -i $input $vf-c:v libx264 -crf $exportCrf '
         '-preset fast -c:a aac $output';
   }
 
@@ -1876,7 +1876,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
           color: isSelected
-              ? Colors.yellow.withOpacity(0.15)
+              ? Colors.yellow.withValues(alpha: 0.15)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
