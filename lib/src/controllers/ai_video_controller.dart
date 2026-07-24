@@ -20,6 +20,7 @@ import '../screens/ai/object_detect_screen.dart';
 import '../screens/ai/transcribe_screen.dart';
 import '../screens/editor/video_result_popup.dart';
 import '../services/ai_video_service.dart';
+import '../services/on_device_ai_service.dart';
 import '../utils/srt_builder.dart';
 import '../utils/storage_path.dart';
 
@@ -122,6 +123,35 @@ class AiVideoController extends GetxController {
   }
 
   String? detectOperationName;
+
+  /// On-device object detection (no cloud, no credentials). Samples frames
+  /// from the video and labels them with ML Kit's bundled model.
+  Future<void> detectObjectsOnDevice(
+      String videoPath, double durationSeconds) async {
+    try {
+      CustomDialogs.fullLoadingDialog(
+        data: "Detecting objects on-device...",
+      );
+      final labels =
+          await OnDeviceAiService.detectLabels(videoPath, durationSeconds);
+      if (labels.isEmpty) {
+        detectedObjects = [];
+        detectOperationName = null;
+        errorToast(msg: "No objects detected in this video");
+      } else {
+        detectedObjects = labels;
+        // Mark as done so the screen shows results instead of the button.
+        detectOperationName = "on-device";
+      }
+      update();
+    } catch (e) {
+      log(e.toString());
+      errorToast(msg: "On-device detection failed");
+    } finally {
+      if (Get.isDialogOpen == true) Get.back();
+    }
+  }
+
   void detectObjects(String fileName) async {
     try {
       CustomDialogs.fullLoadingDialog(
