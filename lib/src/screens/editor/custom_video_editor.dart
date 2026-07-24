@@ -19,6 +19,7 @@ import 'package:video_editor_mobile_app/src/widgets/custom_text.dart';
 
 import '../../services/advanced_edit_service.dart';
 import '../../services/ai_video_service.dart';
+import '../../services/auto_analysis_service.dart';
 import '../../services/export_services.dart';
 import '../../utils/storage_path.dart';
 import 'video_result_popup.dart';
@@ -454,9 +455,37 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   }
 
   void _autoEnhance() => _runAdvancedOp(
-        () => AdvancedEditService.autoEnhance(_controller.file.path),
-        working: "Auto enhancing colours...",
+        () => AutoAnalysisService.adaptiveEnhance(_controller.file.path),
+        working: "Analyzing & enhancing colours...",
       );
+
+  /// AI shake-cut: analyzes per-frame motion and removes shaky sections.
+  void _autoCutShaky() async {
+    final total = _controller.video.value.duration.inMilliseconds / 1000.0;
+    _showBusyDialog("Scanning for shaky sections...");
+    String? out;
+    try {
+      out = await AutoAnalysisService.removeShakyParts(
+          _controller.file.path, total);
+    } catch (e) {
+      log("Shake cut error: $e");
+    }
+    if (mounted && Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+    if (!mounted) return;
+    if (out == null) {
+      _showErrorSnackBar("No shaky sections found to trim");
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (_) => VideoResultPopup(
+        video: File(out!),
+        aspectRatio: aspectRatio,
+      ),
+    );
+  }
 
   /// AI auto-cut: removes silent gaps. Distinguishes "nothing to cut" from a
   /// real failure.
@@ -997,6 +1026,11 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                 onPressed: isTransforming ? null : () => _autoCut(),
                 icon: const Icon(Icons.content_cut_rounded),
                 label: const Text("AI Auto Cut"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming ? null : () => _autoCutShaky(),
+                icon: const Icon(Icons.vibration_rounded),
+                label: const Text("AI Remove Shaky"),
               ),
             ],
           ),
