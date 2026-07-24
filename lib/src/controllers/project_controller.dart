@@ -84,6 +84,23 @@ class ProjectController extends GetxController {
 
   String _defaultTitle() => 'Project ${projects.length + 1}';
 
+  Future<void> renameProject(ProjectModel project, String newTitle) async {
+    final title = newTitle.trim();
+    if (title.isEmpty) return;
+    final index = projects.indexWhere((p) => p.path == project.path);
+    if (index == -1) return;
+    final old = projects[index];
+    projects[index] = ProjectModel(
+      path: old.path,
+      title: title,
+      createdAt: old.createdAt,
+      sizeBytes: old.sizeBytes,
+      durationSeconds: old.durationSeconds,
+    );
+    await _persist();
+    update();
+  }
+
   Future<void> deleteProject(
     ProjectModel project, {
     bool deleteFile = false,

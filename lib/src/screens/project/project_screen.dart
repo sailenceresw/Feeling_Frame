@@ -36,6 +36,34 @@ class ProjectScreen extends StatelessWidget {
     );
   }
 
+  void _renameProject(ProjectModel project) {
+    final controller = TextEditingController(text: project.title);
+    Get.dialog(
+      AlertDialog(
+        title: const Text("Rename project"),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: const InputDecoration(labelText: "Project name"),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              ProjectController.instance
+                  .renameProject(project, controller.text);
+              Get.back();
+            },
+            child: const Text("Save"),
+          ),
+        ],
+      ),
+    );
+  }
+
   /// Lets the user start a project from existing videos or capture a new
   /// one live with the camera.
   void _showNewProjectSourceSheet(BuildContext context) {
@@ -335,6 +363,7 @@ class ProjectScreen extends StatelessWidget {
                         return ListTile(
                           dense: true,
                           onTap: () => _openProject(context, project),
+                          onLongPress: () => _renameProject(project),
                           trailing: IconButton(
                             onPressed: () =>
                                 _confirmDelete(context, project),
