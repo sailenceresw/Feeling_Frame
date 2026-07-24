@@ -44,6 +44,11 @@ class AdvancedEditService {
         '-c:v libx264 -crf 23 -preset fast $output';
   }
 
+  /// Grabs a single frame at [seconds] as a high-quality JPEG (fast seek by
+  /// placing -ss before -i).
+  static String grabFrameCommand(String input, String output, double seconds) =>
+      '-y -ss ${seconds.toStringAsFixed(2)} -i $input -frames:v 1 -q:v 2 $output';
+
   // ---- Runners -------------------------------------------------------------
 
   static Future<bool> _run(String command) async {
@@ -73,5 +78,11 @@ class AdvancedEditService {
   static Future<String?> fadeInOut(String input, double totalSeconds) async {
     final out = "${await getOutputDirectoryPath()}faded.mp4";
     return await _run(fadeCommand(input, out, totalSeconds)) ? out : null;
+  }
+
+  static Future<String?> grabFrame(String input, double seconds) async {
+    final out = "${await getOutputDirectoryPath()}"
+        "frame_${seconds.toStringAsFixed(0)}s.jpg";
+    return await _run(grabFrameCommand(input, out, seconds)) ? out : null;
   }
 }
