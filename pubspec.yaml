@@ -62,6 +62,10 @@ dependencies:
 # longer uses it (same major = API-compatible with path_provider_windows etc.).
 dependency_overrides:
   win32: ^5.15.0
+  # flutter_plugin_android_lifecycle 2.0.17 (transitive) uses the removed v1
+  # embedding PluginRegistry.Registrar, which fails to compile on Flutter 3.44
+  # (v1 embedding deleted). Force a version that dropped it.
+  flutter_plugin_android_lifecycle: ^2.0.35
 
 dev_dependencies:
   flutter_test:
