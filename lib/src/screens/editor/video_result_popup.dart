@@ -64,14 +64,19 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
 
   void saveVideo() async {
     String videoPath = widget.video.path;
-    bool? data = await GallerySaver.saveVideo(videoPath);
+    // GIFs must be saved via the image API, not the video API.
+    bool? data = _isGif
+        ? await GallerySaver.saveImage(videoPath)
+        : await GallerySaver.saveVideo(videoPath);
     if (data == true) {
-      // Record the edited video as a recent project so it appears on the
-      // project screen and survives app restarts.
-      await ProjectController.instance.addProject(
-        path: videoPath,
-        durationSeconds: _controller?.value.duration.inSeconds ?? 0,
-      );
+      if (!_isGif) {
+        // Record the edited video as a recent project so it appears on the
+        // project screen and survives app restarts.
+        await ProjectController.instance.addProject(
+          path: videoPath,
+          durationSeconds: _controller?.value.duration.inSeconds ?? 0,
+        );
+      }
       successToast(msg: "Saved successfully");
     } else {
       errorToast(msg: "Couldn't save");
@@ -138,7 +143,8 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
                             foregroundColor: Colors.white,
                           ),
                           onPressed: () {
-                            ShareExtend.share(widget.video.path, "video");
+                            ShareExtend.share(widget.video.path,
+                                _isGif ? "image" : "video");
                           },
                           icon: const Icon(Icons.share),
                           label: const Text("Share"),
@@ -231,7 +237,7 @@ class FileDescription extends StatelessWidget {
       child: Container(
         width: MediaQuery.of(context).size.width - 60,
         padding: const EdgeInsets.all(10),
-        color: Colors.black.withOpacity(0.5),
+        color: Colors.black.withValues(alpha: 0.5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: description.entries
@@ -247,7 +253,7 @@ class FileDescription extends StatelessWidget {
                         text: entry.value,
                         style: TextStyle(
                           fontSize: 10,
-                          color: Colors.white.withOpacity(0.8),
+                          color: Colors.white.withValues(alpha: 0.8),
                         ),
                       ),
                     ],

@@ -38,7 +38,7 @@ dependencies:
   get: ^4.6.6
   fluttertoast: ^8.2.4
   intl: ^0.19.0
-  ffmpeg_kit_flutter_full_gpl: ^6.0.3
+  ffmpeg_kit_flutter_new: ^4.5.2
   fraction: ^5.0.2
   video_player: ^2.8.3
   path: ^1.8.3
@@ -53,7 +53,9 @@ dependencies:
   flutter_svg: ^2.0.10+1
   share_extend: ^2.0.0
   gallery_saver_updated: ^3.0.0
+  google_mlkit_image_labeling: ^0.15.0
 
+  http_parser: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
