@@ -5,6 +5,26 @@ allprojects {
     }
 }
 
+// AGP 8 requires every Android module to declare a namespace. Some older
+// Flutter plugins predate this; derive it from their manifest package so
+// they keep building. (No-op for modules that already set a namespace.)
+subprojects { p ->
+    p.plugins.withId("com.android.library") {
+        p.android {
+            if (namespace == null) {
+                def manifestFile = p.file("src/main/AndroidManifest.xml")
+                if (manifestFile.exists()) {
+                    def parsed = new groovy.xml.XmlSlurper().parse(manifestFile)
+                    def pkg = parsed.@package.text()
+                    if (pkg) {
+                        namespace = pkg
+                    }
+                }
+            }
+        }
+    }
+}
+
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
