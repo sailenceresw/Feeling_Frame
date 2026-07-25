@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fraction/fraction.dart';
 import 'package:gallery_saver_updated/gallery_saver.dart';
 import 'package:path/path.dart' as path;
-import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:video_editor_mobile_app/src/constant/dimension.dart';
 import 'package:video_editor_mobile_app/src/controllers/project_controller.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_toast.dart';
@@ -143,8 +143,9 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
                             foregroundColor: Colors.white,
                           ),
                           onPressed: () {
-                            ShareExtend.share(widget.video.path,
-                                _isGif ? "image" : "video");
+                            SharePlus.instance.share(
+                              ShareParams(files: [XFile(widget.video.path)]),
+                            );
                           },
                           icon: const Icon(Icons.share),
                           label: const Text("Share"),
