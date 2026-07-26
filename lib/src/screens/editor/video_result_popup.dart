@@ -3,9 +3,9 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:fraction/fraction.dart';
-import 'package:gallery_saver_updated/gallery_saver.dart';
+import 'package:gal/gal.dart';
 import 'package:path/path.dart' as path;
-import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:video_editor_mobile_app/src/constant/dimension.dart';
 import 'package:video_editor_mobile_app/src/controllers/project_controller.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_toast.dart';
@@ -63,13 +63,13 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
   }
 
   void saveVideo() async {
-    String videoPath = widget.video.path;
-    // GIFs must be saved via the image API, not the video API.
-    bool? data = _isGif
-        ? await GallerySaver.saveImage(videoPath)
-        : await GallerySaver.saveVideo(videoPath);
-    if (data == true) {
-      if (!_isGif) {
+    final videoPath = widget.video.path;
+    try {
+      // GIFs must be saved via the image API, not the video API.
+      if (_isGif) {
+        await Gal.putImage(videoPath);
+      } else {
+        await Gal.putVideo(videoPath);
         // Record the edited video as a recent project so it appears on the
         // project screen and survives app restarts.
         await ProjectController.instance.addProject(
@@ -78,7 +78,9 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
         );
       }
       successToast(msg: "Saved successfully");
-    } else {
+    } on GalException catch (_) {
+      errorToast(msg: "Couldn't save");
+    } catch (_) {
       errorToast(msg: "Couldn't save");
     }
   }
@@ -143,8 +145,9 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
                             foregroundColor: Colors.white,
                           ),
                           onPressed: () {
-                            ShareExtend.share(widget.video.path,
-                                _isGif ? "image" : "video");
+                            SharePlus.instance.share(
+                              ShareParams(files: [XFile(widget.video.path)]),
+                            );
                           },
                           icon: const Icon(Icons.share),
                           label: const Text("Share"),

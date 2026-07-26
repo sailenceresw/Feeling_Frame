@@ -1049,7 +1049,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   /// sticker on top of the video preview (powered by the Lindi sticker
   /// engine already used for text overlays).
   Future<void> pickSticker() async {
-    final result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker.pickFiles(
       type: FileType.image,
       allowMultiple: false,
     );
@@ -1085,7 +1085,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   /// Replaces the green background of the video with a user-picked image
   /// using FFmpeg's chromakey filter (Phase Two: green screen editing).
   Future<void> applyGreenScreen() async {
-    final result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker.pickFiles(
       type: FileType.image,
       allowMultiple: false,
     );
@@ -1597,7 +1597,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
 
 // Function to pick an audio file
   Future<void> pickAudio() async {
-    final audioFilePath = await FilePicker.platform.pickFiles(
+    final audioFilePath = await FilePicker.pickFiles(
       type: FileType.audio,
       allowMultiple: false,
     );
