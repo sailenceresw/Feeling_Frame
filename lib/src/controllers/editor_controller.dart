@@ -24,7 +24,7 @@ class EditorController extends GetxController {
   dynamic combinationMultipleProgress = 0.0;
   bool? isCombining = false;
   void pickVideo() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
+    FilePickerResult? result = await FilePicker.pickFiles(
       type: FileType.video,
       allowMultiple: true,
     );
