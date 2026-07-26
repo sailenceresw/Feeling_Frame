@@ -36,13 +36,13 @@ dependencies:
   cupertino_icons: ^1.0.2
   video_editor: ^3.0.0
   get: ^4.6.6
-  fluttertoast: ^8.2.4
+  fluttertoast: ^9.1.0
   intl: ^0.19.0
   ffmpeg_kit_flutter_new: ^4.5.2
   fraction: ^5.0.2
   video_player: ^2.8.3
   path: ^1.8.3
-  file_picker: ^6.2.0
+  file_picker: ^11.0.2
   image_picker: ^1.0.7
   permission_handler: ^11.3.0
   googleapis: ^13.1.0
@@ -51,11 +51,22 @@ dependencies:
   path_provider: ^2.1.2
   lindi_sticker_widget: ^0.1.1
   flutter_svg: ^2.0.10+1
-  share_extend: ^2.0.0
-  gallery_saver_updated: ^3.0.0
+  share_plus: ^13.3.0
+  gal: ^2.3.3
   google_mlkit_image_labeling: ^0.15.0
 
   http_parser: any
+# win32 5.2.0 (pulled transitively by the *_windows plugins) uses
+# UnmodifiableUint8ListView, removed from dart:typed_data in Dart 3.4+, which
+# breaks the Android kernel compile on modern Flutter. Force a 5.x that no
+# longer uses it (same major = API-compatible with path_provider_windows etc.).
+dependency_overrides:
+  win32: ^5.15.0
+  # flutter_plugin_android_lifecycle 2.0.17 (transitive) uses the removed v1
+  # embedding PluginRegistry.Registrar, which fails to compile on Flutter 3.44
+  # (v1 embedding deleted). Force a version that dropped it.
+  flutter_plugin_android_lifecycle: ^2.0.35
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
