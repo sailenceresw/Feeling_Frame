@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   ffmpeg_kit_flutter_new
   file_selector_windows
+  gal
   permission_handler_windows
   share_plus
   url_launcher_windows
