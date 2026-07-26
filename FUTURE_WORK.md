@@ -27,13 +27,23 @@ apk` cannot run here):
 
 From the project report's "Future Enhancements":
 
+**Delivered:**
+
+- **Keyframe timeline (animated pan & zoom)** — a CapCut-style **Keyframe
+  Animation** editor: scrub the clip, set zoom + position keyframes at chosen
+  times, and the camera interpolates smoothly between them. Rendered on-device
+  with FFmpeg `zoompan` (piecewise-linear expressions); the live preview shares
+  the same interpolation maths as the export (WYSIWYG). See
+  `KeyframeService` + `KeyframeScreen`. Per-property independent tracks
+  (e.g. rotation/opacity) remain a possible future extension.
+
 **Partially delivered (approximate, FFmpeg-based):**
 
 - **3D effects** — a **3D Tilt** transform (perspective warp) is implemented.
   A full 3D render pipeline (rotating cubes, depth) remains future work.
-- **Keyframe-style animation** — a **Ken Burns Zoom** (animated push-in) and
-  animated **Fade In/Out** are implemented. A full keyframe *timeline* UI
-  (arbitrary per-property keyframes) remains future work.
+- **Ken Burns Zoom** (animated push-in) and animated **Fade In/Out** are
+  implemented as one-tap presets (superseded for custom moves by the keyframe
+  timeline above).
 
 **Genuinely infeasible in the on-device app — intentionally not stubbed,
 because faking them would misrepresent the artefact:**
