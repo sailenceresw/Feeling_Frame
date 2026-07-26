@@ -23,6 +23,27 @@ subprojects { p ->
             }
         }
     }
+
+    // Old plugins compile Java at 1.8 while the Kotlin plugin now defaults to
+    // JVM target 17, which fails with "Inconsistent JVM-target compatibility".
+    // Force both Java and Kotlin to 17 for every Android module so they match.
+    p.afterEvaluate {
+        if (p.extensions.findByName('android') != null) {
+            p.android {
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_17
+                    targetCompatibility JavaVersion.VERSION_17
+                }
+            }
+            if (p.plugins.hasPlugin('org.jetbrains.kotlin.android')) {
+                p.android {
+                    kotlinOptions {
+                        jvmTarget = '17'
+                    }
+                }
+            }
+        }
+    }
 }
 
 rootProject.buildDir = '../build'
