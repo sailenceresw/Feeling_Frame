@@ -320,6 +320,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.15.0"
+  google_mlkit_object_detection:
+    dependency: "direct main"
+    description:
+      name: google_mlkit_object_detection
+      sha256: a97f01226d18d246639d916080b15ebf8c482046b88ccc271f8d275dafe31266
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.16.0"
   googleapis:
     dependency: "direct main"
     description:
