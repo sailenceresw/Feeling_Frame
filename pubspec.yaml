@@ -36,13 +36,13 @@ dependencies:
   cupertino_icons: ^1.0.2
   video_editor: ^3.0.0
   get: ^4.6.6
-  fluttertoast: ^8.2.4
+  fluttertoast: ^9.1.0
   intl: ^0.19.0
   ffmpeg_kit_flutter_new: ^4.5.2
   fraction: ^5.0.2
   video_player: ^2.8.3
   path: ^1.8.3
-  file_picker: ^6.2.0
+  file_picker: ^11.0.2
   image_picker: ^1.0.7
   permission_handler: ^11.3.0
   googleapis: ^13.1.0
