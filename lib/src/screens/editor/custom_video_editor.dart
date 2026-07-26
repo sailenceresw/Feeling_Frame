@@ -23,6 +23,7 @@ import '../../services/auto_analysis_service.dart';
 import '../../services/auto_frame_service.dart';
 import '../../services/export_services.dart';
 import '../../utils/storage_path.dart';
+import 'keyframe_screen.dart';
 import 'video_result_popup.dart';
 
 class CustomVideoEditor extends StatefulWidget {
@@ -1072,6 +1073,18 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                 onPressed: isTransforming ? null : () => _autoFrame(),
                 icon: const Icon(Icons.center_focus_strong_rounded),
                 label: const Text("AI Auto Frame"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                KeyframeScreen(video: _controller.file),
+                          ),
+                        ),
+                icon: const Icon(Icons.animation_rounded),
+                label: const Text("Keyframe Animation"),
               ),
             ],
           ),
