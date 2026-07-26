@@ -20,6 +20,7 @@ import 'package:video_editor_mobile_app/src/widgets/custom_text.dart';
 import '../../services/advanced_edit_service.dart';
 import '../../services/ai_video_service.dart';
 import '../../services/auto_analysis_service.dart';
+import '../../services/auto_frame_service.dart';
 import '../../services/export_services.dart';
 import '../../utils/storage_path.dart';
 import 'video_result_popup.dart';
@@ -476,6 +477,41 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
     if (!mounted) return;
     if (out == null) {
       _showErrorSnackBar("No shaky sections found to trim");
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (_) => VideoResultPopup(
+        video: File(out!),
+        aspectRatio: aspectRatio,
+      ),
+    );
+  }
+
+  /// AI Auto Frame: on-device subject detection -> reframe to the selected
+  /// aspect ratio centered on the subject.
+  void _autoFrame() async {
+    final size = _controller.video.value.size;
+    final total = _controller.video.value.duration.inMilliseconds / 1000.0;
+    _showBusyDialog("Finding the subject and reframing...");
+    String? out;
+    try {
+      out = await AutoFrameService.autoFrame(
+        _controller.file.path,
+        total,
+        size.width.round(),
+        size.height.round(),
+        targetAspect: aspectRatio,
+      );
+    } catch (e) {
+      log("Auto frame error: $e");
+    }
+    if (mounted && Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+    if (!mounted) return;
+    if (out == null) {
+      _showErrorSnackBar("No clear subject found to reframe around");
       return;
     }
     showDialog(
@@ -1031,6 +1067,11 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                 onPressed: isTransforming ? null : () => _autoCutShaky(),
                 icon: const Icon(Icons.vibration_rounded),
                 label: const Text("AI Remove Shaky"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming ? null : () => _autoFrame(),
+                icon: const Icon(Icons.center_focus_strong_rounded),
+                label: const Text("AI Auto Frame"),
               ),
             ],
           ),
