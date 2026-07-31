@@ -19,6 +19,7 @@ import 'package:video_editor_mobile_app/src/widgets/custom_text.dart';
 
 import '../../services/advanced_edit_service.dart';
 import '../../services/ai_video_service.dart';
+import '../../services/audio_service.dart';
 import '../../services/auto_analysis_service.dart';
 import '../../services/auto_frame_service.dart';
 import '../../services/export_services.dart';
@@ -68,6 +69,12 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
         ),
       );
   String? selectedAudioPath;
+
+  // ---- Background-music options (Audio tab) ----
+  double musicVolume = 0.6;
+  bool keepOriginalAudio = true;
+  bool musicFade = true;
+  bool loopMusic = true;
 
   /// Target output height in pixels; 0 keeps the source resolution.
   /// Lets users shrink HD/2K/4K/8K sources to a smaller file size.
@@ -1226,15 +1233,68 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
           child: Column(
             children: [
               CustomText.ourText(
-                "Add your audio from your files system",
+                "Add background music to your video",
               ),
               vSizedBox1,
-              ElevatedButton(
-                onPressed: pickAudio,
-                child: const Text('Select Audio'),
+              ElevatedButton.icon(
+                onPressed: isAudioSynchronizing ? null : pickAudio,
+                icon: const Icon(Icons.library_music_outlined),
+                label: Text(
+                    selectedAudioPath == null ? 'Select Music' : 'Change Music'),
+              ),
+              if (selectedAudioPath != null) ...[
+                vSizedBox1,
+                CustomText.ourText(
+                  "♪ ${selectedAudioPath!.split(Platform.pathSeparator).last}",
+                ),
+              ],
+              vSizedBox1,
+              CustomText.ourText(
+                  "Music volume: ${(musicVolume * 100).round()}%"),
+              Slider(
+                value: musicVolume,
+                min: 0.0,
+                max: 1.0,
+                divisions: 20,
+                label: "${(musicVolume * 100).round()}%",
+                onChanged: (val) => setState(() => musicVolume = val),
+              ),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                dense: true,
+                title: const Text('Keep original audio (mix)'),
+                value: keepOriginalAudio,
+                onChanged: (v) => setState(() => keepOriginalAudio = v),
+              ),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                dense: true,
+                title: const Text('Fade music in / out'),
+                value: musicFade,
+                onChanged: (v) => setState(() => musicFade = v),
+              ),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                dense: true,
+                title: const Text('Loop music to fit'),
+                value: loopMusic,
+                onChanged: (v) => setState(() => loopMusic = v),
               ),
               vSizedBox1,
-              CustomText.ourText("Video volume: ${(videoVolume * 100).round()}%"),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed:
+                      (selectedAudioPath == null || isAudioSynchronizing)
+                          ? null
+                          : _applyBackgroundMusic,
+                  icon: const Icon(Icons.music_note_rounded),
+                  label: const Text('Add Music to Video'),
+                ),
+              ),
+              vSizedBox1,
+              CustomText.ourText(
+                  "Original audio volume: ${(videoVolume * 100).round()}%"),
               Slider(
                 value: videoVolume,
                 min: 0.0,
@@ -1650,60 +1710,60 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   }
 
 // Function to pick an audio file
+  /// Lets the user choose a music file. Selecting only stores the path; the
+  /// user then tunes the options and taps "Add Music to Video" to render.
   Future<void> pickAudio() async {
     final audioFilePath = await FilePicker.pickFiles(
       type: FileType.audio,
       allowMultiple: false,
     );
-    if (audioFilePath != null) {
-      setState(() {
-        selectedAudioPath = audioFilePath.files.single.path;
-      });
-      addAudio("$selectedAudioPath");
+    final path = audioFilePath?.files.single.path;
+    if (path != null) {
+      setState(() => selectedAudioPath = path);
     }
   }
 
   bool isAudioSynchronizing = false;
-  void addAudio(String? audioFilePath) async {
-    print("Applying audio");
-    setState(() {
-      isAudioSynchronizing = true;
-    });
-    String basePath = await getOutputDirectoryPath();
-    String outputPath = "${basePath}audio.mp4";
 
-    String command =
-        '-y -i ${_controller.file.path} -i $audioFilePath -c:v copy -c:a aac -strict experimental -shortest $outputPath';
-
-    print(command);
-    await FFmpegKit.execute(command).then((session) async {
-      final returnCode = await session.getReturnCode();
-      final state =
-          FFmpegKitConfig.sessionStateToString(await session.getState());
-      final output = await session.getOutput();
-      if (ReturnCode.isSuccess(returnCode)) {
-        print("Successfully audio applied");
-        // EditorController.instance.changeVideoPlayablePath(outputPath);
-        if (!mounted) return;
-        showDialog(
-          context: context,
-          builder: (_) => VideoResultPopup(
-            video: File(outputPath),
-            aspectRatio: aspectRatio,
-          ),
-        );
-      } else if (ReturnCode.isCancel(returnCode)) {
-        print("Cancel audio");
-      } else {
-        print("Error audio");
-      }
-      log(state);
-      log(output.toString());
-      log(returnCode.toString());
-      setState(() {
-        isAudioSynchronizing = false;
-      });
-    });
+  /// Mixes the selected music over the video using the chosen options and
+  /// shows the result. The video stream is copied (no re-encode) and the clip
+  /// length is preserved regardless of the music length.
+  Future<void> _applyBackgroundMusic() async {
+    final music = selectedAudioPath;
+    if (music == null) {
+      _showErrorSnackBar("Pick a music file first");
+      return;
+    }
+    setState(() => isAudioSynchronizing = true);
+    final total = _controller.video.value.duration.inMilliseconds / 1000.0;
+    String? out;
+    try {
+      out = await AudioService.addMusic(
+        _controller.file.path,
+        music,
+        totalSeconds: total,
+        musicVolume: musicVolume,
+        originalVolume: videoVolume,
+        keepOriginal: keepOriginalAudio,
+        fade: musicFade,
+        loopMusic: loopMusic,
+      );
+    } catch (e) {
+      log("Add music error: $e");
+    }
+    if (!mounted) return;
+    setState(() => isAudioSynchronizing = false);
+    if (out == null) {
+      _showErrorSnackBar("Couldn't add the music");
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (_) => VideoResultPopup(
+        video: File(out!),
+        aspectRatio: aspectRatio,
+      ),
+    );
   }
 
   bool isApplyingFilter = false;
