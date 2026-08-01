@@ -25,6 +25,7 @@ import '../../services/auto_frame_service.dart';
 import '../../services/export_services.dart';
 import '../../utils/storage_path.dart';
 import 'keyframe_screen.dart';
+import 'speed_screen.dart';
 import 'video_result_popup.dart';
 
 class CustomVideoEditor extends StatefulWidget {
@@ -1092,6 +1093,17 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                         ),
                 icon: const Icon(Icons.animation_rounded),
                 label: const Text("Keyframe Animation"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => SpeedScreen(video: _controller.file),
+                          ),
+                        ),
+                icon: const Icon(Icons.speed_rounded),
+                label: const Text("Speed"),
               ),
             ],
           ),
