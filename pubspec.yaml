@@ -45,8 +45,6 @@ dependencies:
   file_picker: ^11.0.2
   image_picker: ^1.0.7
   permission_handler: ^11.3.0
-  googleapis: ^13.1.0
-  googleapis_auth: ^1.5.0
   http: ^1.2.0
   path_provider: ^2.1.2
   lindi_sticker_widget: ^0.1.1
@@ -55,7 +53,6 @@ dependencies:
   gal: ^2.3.3
   google_mlkit_image_labeling: ^0.15.0
 
-  http_parser: any
   google_mlkit_object_detection: ^0.16.0
 # win32 5.2.0 (pulled transitively by the *_windows plugins) uses
 # UnmodifiableUint8ListView, removed from dart:typed_data in Dart 3.4+, which
