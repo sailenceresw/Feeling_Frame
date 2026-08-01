@@ -99,25 +99,6 @@ class _ObjectDetectScreenState extends State<ObjectDetectScreen> {
                         ),
                       ),
                     )
-                  else if (_.detectedObjects.isEmpty)
-                    SizedBox(
-                      width: appWidth(context),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          _.callDetectObjectNextOperation();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.yellow,
-                        ),
-                        child: const Text(
-                          "Next Analysis",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    )
                   else if (_.detectedObjects.isNotEmpty)
                     SizedBox(
                       width: appWidth(context),
