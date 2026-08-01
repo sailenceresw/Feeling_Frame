@@ -23,6 +23,7 @@ import '../../services/audio_service.dart';
 import '../../services/auto_analysis_service.dart';
 import '../../services/auto_frame_service.dart';
 import '../../services/export_services.dart';
+import '../../services/filter_service.dart';
 import '../../utils/storage_path.dart';
 import 'keyframe_screen.dart';
 import 'speed_screen.dart';
@@ -847,91 +848,35 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
     return Stack(
       children: [
         SingleChildScrollView(
-          child: Wrap(
-            spacing: 10,
-            runSpacing: 8,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-            ElevatedButton(
-              onPressed: filterOption == 0
-                  ? null
-                  : () {
-                      applyFilter('', 0);
-                    },
-              child: const Text("Original"),
-            ),
-            ElevatedButton(
-              onPressed: filterOption == 1
-                  ? null
-                  : () {
-                      applyFilter(
-                          '-y -i ${_controller.file.path} -vf "eq=contrast=1.5:brightness=0.1:saturation=1.5:gamma=1.5:gamma_r=1.1:gamma_g=1.1:gamma_b=0.9"',
-                          1);
-                    },
-              child: const Text("Sepia Tone Effect"),
-            ),
-            ElevatedButton(
-              onPressed: filterOption == 2
-                  ? null
-                  : () {
-                      applyFilter(
-                          '-y -i ${_controller.file.path} -vf eq=saturation=30',
-                          2);
-                    },
-              child: const Text("High Saturation"),
-            ),
-            ElevatedButton(
-              onPressed: filterOption == 3
-                  ? null
-                  : () {
-                      applyFilter(
-                          '-y -i ${_controller.file.path} -vf hue=s=0', 3);
-                    },
-              child: const Text("Grayscale"),
-            ),
-            ElevatedButton(
-              onPressed: filterOption == 4
-                  ? null
-                  : () {
-                      applyFilter(
-                          '-y -i ${_controller.file.path} -vf "eq=gamma_r=1.1:gamma_b=0.9:saturation=1.2"',
-                          4);
-                    },
-              child: const Text("Warm"),
-            ),
-            ElevatedButton(
-              onPressed: filterOption == 5
-                  ? null
-                  : () {
-                      applyFilter(
-                          '-y -i ${_controller.file.path} -vf "eq=gamma_b=1.1:gamma_r=0.9:saturation=1.1"',
-                          5);
-                    },
-              child: const Text("Cool"),
-            ),
-            ElevatedButton(
-              onPressed: filterOption == 6
-                  ? null
-                  : () {
-                      applyFilter(
-                          '-y -i ${_controller.file.path} -vf "eq=saturation=0.6:contrast=1.2:brightness=0.05"',
-                          6);
-                    },
-              child: const Text("Vintage"),
-            ),
-            ElevatedButton(
-              onPressed: filterOption == 7
-                  ? null
-                  : () {
-                      applyFilter(
-                          '-y -i ${_controller.file.path} -vf negate', 7);
-                    },
-              child: const Text("Invert"),
-            ),
-            ElevatedButton.icon(
-              onPressed: () => _autoEnhance(),
-              icon: const Icon(Icons.auto_fix_high_rounded),
-              label: const Text("Auto Enhance"),
-            ),
+              CustomText.ourText(
+                "Cinematic filters — tap a look to apply it",
+              ),
+              vSizedBox1,
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (int i = 0;
+                      i < FilterService.cinematicFilters.length;
+                      i++)
+                    ChoiceChip(
+                      label: Text(FilterService.cinematicFilters[i].name),
+                      selected: filterOption == i,
+                      onSelected: isApplyingFilter
+                          ? null
+                          : (_) => applyFilter(
+                              FilterService.cinematicFilters[i].vf, i),
+                    ),
+                  ActionChip(
+                    avatar: const Icon(Icons.auto_fix_high_rounded, size: 18),
+                    label: const Text("Auto Enhance"),
+                    onPressed: isApplyingFilter ? null : () => _autoEnhance(),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -1779,11 +1724,12 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   }
 
   bool isApplyingFilter = false;
-  void applyFilter(String command, int index) async {
-    print("Applying filter");
-    // "Original" passes an empty command: there is nothing to render, just
-    // reset the selected filter and exit without running FFmpeg.
-    if (command.trim().isEmpty) {
+
+  /// Applies cinematic filter chain [vf] (from [FilterService]) at catalogue
+  /// [index]. An empty chain is the untouched "Original": just clear the
+  /// selection without re-rendering.
+  void applyFilter(String vf, int index) async {
+    if (vf.trim().isEmpty) {
       setState(() {
         filterOption = index;
         isApplyingFilter = false;
@@ -1795,43 +1741,33 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
       filterOption = index;
       isApplyingFilter = true;
     });
-    String basePath = await getOutputDirectoryPath();
-    String outputPath = "${basePath}filter.mp4";
+    final outputPath = "${await getOutputDirectoryPath()}filter.mp4";
+    final command =
+        FilterService.filterCommand(_controller.file.path, outputPath, vf);
+    log(command);
 
-    //high quality filter
-    // String command =
-    //     '-y -i ${_controller.file.path} -vf "drawtext=text=\'AMAZED\':x=100:y=100:fontsize=50:fontcolor=white,eq=saturation=10.0" -c:v libx264 -crf 18 -preset medium -c:a copy $outputPath';
-
-    command += " $outputPath";
-    print(command);
-    await FFmpegKit.execute(command).then((session) async {
+    bool ok = false;
+    try {
+      final session = await FFmpegKit.execute(command);
       final returnCode = await session.getReturnCode();
-      final state =
-          FFmpegKitConfig.sessionStateToString(await session.getState());
-      final output = await session.getOutput();
-      if (ReturnCode.isSuccess(returnCode)) {
-        print("Successfully filter applied");
-        // EditorController.instance.changeVideoPlayablePath(outputPath);
-        if (!mounted) return;
-        showDialog(
-          context: context,
-          builder: (_) => VideoResultPopup(
-            video: File(outputPath),
-            aspectRatio: aspectRatio,
-          ),
-        );
-      } else if (ReturnCode.isCancel(returnCode)) {
-        print("Cancel filter");
-      } else {
-        print("Error filter");
-      }
-      log(state);
-      log(output.toString());
-      log(returnCode.toString());
-    });
-    setState(() {
-      isApplyingFilter = false;
-    });
+      ok = ReturnCode.isSuccess(returnCode);
+      if (!ok) log("Filter failed: ${await session.getOutput()}");
+    } catch (e) {
+      log("Filter error: $e");
+    }
+    if (!mounted) return;
+    setState(() => isApplyingFilter = false);
+    if (!ok) {
+      _showErrorSnackBar("Couldn't apply this filter");
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (_) => VideoResultPopup(
+        video: File(outputPath),
+        aspectRatio: aspectRatio,
+      ),
+    );
   }
 
   double getFFmpegProgress(String ffmpegLogs, num videoDurationInSec) {
