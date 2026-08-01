@@ -28,11 +28,15 @@ import '../../utils/storage_path.dart';
 import 'ai_polish_screen.dart';
 import 'audio_cleanup_screen.dart';
 import 'blur_region_screen.dart';
+import 'border_screen.dart';
 import 'caption_studio_screen.dart';
 import 'color_adjust_screen.dart';
 import 'compress_screen.dart';
 import 'export_preset_screen.dart';
+import 'merge_screen.dart';
 import 'rotate_screen.dart';
+import 'slideshow_screen.dart';
+import 'split_screen_screen.dart';
 import 'vfx_screen.dart';
 import 'watermark_screen.dart';
 import 'keyframe_screen.dart';
@@ -1212,6 +1216,53 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                         ),
                 icon: const Icon(Icons.blur_on_rounded),
                 label: const Text("Blur Region"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                MergeScreen(video: _controller.file),
+                          ),
+                        ),
+                icon: const Icon(Icons.merge_type_rounded),
+                label: const Text("Merge Clips"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                SplitScreenScreen(video: _controller.file),
+                          ),
+                        ),
+                icon: const Icon(Icons.splitscreen_rounded),
+                label: const Text("Split Screen"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const SlideshowScreen(),
+                          ),
+                        ),
+                icon: const Icon(Icons.slideshow_rounded),
+                label: const Text("Photo Slideshow"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                BorderScreen(video: _controller.file),
+                          ),
+                        ),
+                icon: const Icon(Icons.crop_din_rounded),
+                label: const Text("Frame / Border"),
               ),
             ],
           ),
