@@ -27,9 +27,13 @@ import '../../services/filter_service.dart';
 import '../../utils/storage_path.dart';
 import 'ai_polish_screen.dart';
 import 'audio_cleanup_screen.dart';
+import 'blur_region_screen.dart';
 import 'caption_studio_screen.dart';
+import 'color_adjust_screen.dart';
 import 'compress_screen.dart';
 import 'export_preset_screen.dart';
+import 'rotate_screen.dart';
+import 'vfx_screen.dart';
 import 'watermark_screen.dart';
 import 'keyframe_screen.dart';
 import 'pip_screen.dart';
@@ -1161,6 +1165,53 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                         ),
                 icon: const Icon(Icons.branding_watermark_rounded),
                 label: const Text("Watermark"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                RotateScreen(video: _controller.file),
+                          ),
+                        ),
+                icon: const Icon(Icons.rotate_90_degrees_ccw_rounded),
+                label: const Text("Rotate & Straighten"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                ColorAdjustScreen(video: _controller.file),
+                          ),
+                        ),
+                icon: const Icon(Icons.tune_rounded),
+                label: const Text("Color Adjust"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => VfxScreen(video: _controller.file),
+                          ),
+                        ),
+                icon: const Icon(Icons.movie_creation_outlined),
+                label: const Text("Vignette & Grain"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                BlurRegionScreen(video: _controller.file),
+                          ),
+                        ),
+                icon: const Icon(Icons.blur_on_rounded),
+                label: const Text("Blur Region"),
               ),
             ],
           ),
