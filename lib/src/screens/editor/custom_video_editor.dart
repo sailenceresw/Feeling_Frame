@@ -81,6 +81,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   bool keepOriginalAudio = true;
   bool musicFade = true;
   bool loopMusic = true;
+  bool duckMusic = false;
 
   /// Target output height in pixels; 0 keeps the source resolution.
   /// Lets users shrink HD/2K/4K/8K sources to a smaller file size.
@@ -1275,6 +1276,19 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                 value: loopMusic,
                 onChanged: (v) => setState(() => loopMusic = v),
               ),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                dense: true,
+                title: const Text('Duck music under voice'),
+                subtitle: const Text(
+                  'Auto-lowers music while someone is speaking',
+                  style: TextStyle(fontSize: 11),
+                ),
+                value: duckMusic,
+                onChanged: keepOriginalAudio
+                    ? (v) => setState(() => duckMusic = v)
+                    : null,
+              ),
               vSizedBox1,
               SizedBox(
                 width: double.infinity,
@@ -1760,6 +1774,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
         keepOriginal: keepOriginalAudio,
         fade: musicFade,
         loopMusic: loopMusic,
+        duckUnderVoice: duckMusic,
       );
     } catch (e) {
       log("Add music error: $e");

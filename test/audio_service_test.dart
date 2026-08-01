@@ -63,6 +63,34 @@ void main() {
     });
   });
 
+  group('AudioService.addMusicCommand (ducking)', () {
+    test('ducks music under the voice via sidechaincompress', () {
+      final cmd = AudioService.addMusicCommand(
+        'v.mp4',
+        'song.mp3',
+        'out.mp4',
+        totalSeconds: 10.0,
+        duckUnderVoice: true,
+      );
+      expect(cmd.contains('asplit=2[o][sc]'), isTrue);
+      expect(cmd.contains('[m][sc]sidechaincompress='), isTrue);
+      expect(cmd.contains('[mduck]'), isTrue);
+      expect(cmd.contains('[o][mduck]amix=inputs=2:duration=first'), isTrue);
+    });
+
+    test('default (no duck) does not use sidechaincompress', () {
+      final cmd = AudioService.addMusicCommand('v.mp4', 's.mp3', 'o.mp4',
+          totalSeconds: 10.0);
+      expect(cmd.contains('sidechaincompress'), isFalse);
+    });
+
+    test('ducking is ignored when the original audio is replaced', () {
+      final cmd = AudioService.addMusicCommand('v.mp4', 's.mp3', 'o.mp4',
+          totalSeconds: 10.0, keepOriginal: false, duckUnderVoice: true);
+      expect(cmd.contains('sidechaincompress'), isFalse);
+    });
+  });
+
   group('AudioService.addMusicCommand (toggles)', () {
     test('fade disabled omits afade', () {
       final cmd = AudioService.addMusicCommand('v.mp4', 's.mp3', 'o.mp4',
