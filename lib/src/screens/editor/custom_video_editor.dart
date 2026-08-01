@@ -26,6 +26,7 @@ import '../../services/export_services.dart';
 import '../../services/filter_service.dart';
 import '../../utils/storage_path.dart';
 import 'audio_cleanup_screen.dart';
+import 'caption_studio_screen.dart';
 import 'keyframe_screen.dart';
 import 'pip_screen.dart';
 import 'speed_screen.dart';
@@ -1088,6 +1089,18 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                         ),
                 icon: const Icon(Icons.text_fields_rounded),
                 label: const Text("Text"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                CaptionStudioScreen(video: _controller.file),
+                          ),
+                        ),
+                icon: const Icon(Icons.closed_caption_rounded),
+                label: const Text("Captions"),
               ),
             ],
           ),
