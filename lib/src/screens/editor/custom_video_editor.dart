@@ -30,6 +30,7 @@ import 'audio_cleanup_screen.dart';
 import 'caption_studio_screen.dart';
 import 'compress_screen.dart';
 import 'export_preset_screen.dart';
+import 'watermark_screen.dart';
 import 'keyframe_screen.dart';
 import 'pip_screen.dart';
 import 'speed_screen.dart';
@@ -1148,6 +1149,18 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                         ),
                 icon: const Icon(Icons.compress_rounded),
                 label: const Text("Compress"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                WatermarkScreen(video: _controller.file),
+                          ),
+                        ),
+                icon: const Icon(Icons.branding_watermark_rounded),
+                label: const Text("Watermark"),
               ),
             ],
           ),
