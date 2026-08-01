@@ -28,6 +28,7 @@ import '../../utils/storage_path.dart';
 import 'keyframe_screen.dart';
 import 'pip_screen.dart';
 import 'speed_screen.dart';
+import 'transition_screen.dart';
 import 'video_result_popup.dart';
 
 class CustomVideoEditor extends StatefulWidget {
@@ -1061,6 +1062,18 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                         ),
                 icon: const Icon(Icons.picture_in_picture_alt_rounded),
                 label: const Text("Picture in Picture"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                TransitionScreen(video: _controller.file),
+                          ),
+                        ),
+                icon: const Icon(Icons.movie_filter_rounded),
+                label: const Text("Transition"),
               ),
             ],
           ),
