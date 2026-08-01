@@ -28,6 +28,7 @@ import '../../utils/storage_path.dart';
 import 'ai_polish_screen.dart';
 import 'audio_cleanup_screen.dart';
 import 'caption_studio_screen.dart';
+import 'export_preset_screen.dart';
 import 'keyframe_screen.dart';
 import 'pip_screen.dart';
 import 'speed_screen.dart';
@@ -1120,6 +1121,18 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                         ),
                 icon: const Icon(Icons.closed_caption_rounded),
                 label: const Text("Captions"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                ExportPresetScreen(video: _controller.file),
+                          ),
+                        ),
+                icon: const Icon(Icons.ios_share_rounded),
+                label: const Text("Social Export"),
               ),
             ],
           ),
