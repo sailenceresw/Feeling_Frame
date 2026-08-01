@@ -262,18 +262,6 @@ class ProjectScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               vSizedBox2,
-              // ElevatedButton(
-              //     onPressed: () async {
-              //       // AiVideoController.instance.analyzeVideo();
-              //       // AiVideoController.instance.callVideoIntelligence();
-              //       // AiVideoController.instance.callOperation();
-              //       final result = await FilePicker.platform.pickFiles();
-              //       if (result != null) {
-              //         AiVideoController.instance
-              //             .uploadVideoToGCS(result.files.first.path!);
-              //       }
-              //     },
-              //     child: const Text("Try ai")),
               InkWell(
                 onTap: () => _showNewProjectSourceSheet(context),
                 borderRadius: BorderRadius.circular(16),

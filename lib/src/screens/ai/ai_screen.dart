@@ -1,11 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:video_editor_mobile_app/src/constant/dimension.dart';
 import 'package:video_editor_mobile_app/src/controllers/ai_video_controller.dart';
 import 'package:video_editor_mobile_app/src/services/ai_video_service.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_text.dart';
-import 'package:video_editor_mobile_app/src/widgets/custom_toast.dart';
 
 import '../../constant/medias.dart';
+import '../editor/caption_studio_screen.dart';
 
 class AiScreen extends StatelessWidget {
   const AiScreen({this.file, super.key});
@@ -141,27 +143,17 @@ class AiScreen extends StatelessWidget {
               image: kObjectDetection,
               onTap: () => controller.tryObjectDetect(file!),
             ),
-            vSizedBox1,
-            CustomText.ourText(
-              "Cloud AI (requires configuration)",
-              fontWeight: FontWeight.bold,
-            ),
-            vSizedBox1,
             _aiCard(
               context,
-              title: "Transcribe Video",
+              title: "Captions",
               description:
-                  "Transcribe any video with your\nprior language instantly\n on your screen",
+                  "Add subtitles on-device — type,\npaste a script, or auto-generate,\nthen burn them in",
               image: kVoice,
-              onTap: () {
-                controller.uploadVideoToGCS(file!).then((value) {
-                  if (value) {
-                    controller.tryTranscribe(file!);
-                  } else {
-                    errorToast(msg: "Something went wrong");
-                  }
-                });
-              },
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => CaptionStudioScreen(video: File(file!)),
+                ),
+              ),
             ),
           ],
         ),
