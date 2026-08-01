@@ -28,6 +28,7 @@ import '../../utils/storage_path.dart';
 import 'keyframe_screen.dart';
 import 'pip_screen.dart';
 import 'speed_screen.dart';
+import 'text_screen.dart';
 import 'transition_screen.dart';
 import 'video_result_popup.dart';
 
@@ -1074,6 +1075,17 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                         ),
                 icon: const Icon(Icons.movie_filter_rounded),
                 label: const Text("Transition"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => TextScreen(video: _controller.file),
+                          ),
+                        ),
+                icon: const Icon(Icons.text_fields_rounded),
+                label: const Text("Text"),
               ),
             ],
           ),
