@@ -32,7 +32,9 @@ import 'border_screen.dart';
 import 'caption_studio_screen.dart';
 import 'color_adjust_screen.dart';
 import 'compress_screen.dart';
+import 'crop_region_screen.dart';
 import 'export_preset_screen.dart';
+import 'fade_screen.dart';
 import 'gif_studio_screen.dart';
 import 'loop_screen.dart';
 import 'meme_screen.dart';
@@ -42,6 +44,7 @@ import 'slideshow_screen.dart';
 import 'split_screen_screen.dart';
 import 'thumbnail_designer_screen.dart';
 import 'vfx_screen.dart';
+import 'volume_screen.dart';
 import 'watermark_screen.dart';
 import 'keyframe_screen.dart';
 import 'pip_screen.dart';
@@ -1316,6 +1319,46 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                         ),
                 icon: const Icon(Icons.sentiment_very_satisfied),
                 label: const Text("Meme"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                CropRegionScreen(video: _controller.file),
+                          ),
+                        ),
+                icon: const Icon(Icons.crop_rounded),
+                label: const Text("Crop"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => FadeScreen(
+                              video: _controller.file,
+                              aspectRatio: aspectRatio,
+                            ),
+                          ),
+                        ),
+                icon: const Icon(Icons.gradient_rounded),
+                label: const Text("Intro/Outro Fade"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => VolumeScreen(
+                              video: _controller.file,
+                              aspectRatio: aspectRatio,
+                            ),
+                          ),
+                        ),
+                icon: const Icon(Icons.volume_up_rounded),
+                label: const Text("Volume"),
               ),
             ],
           ),
