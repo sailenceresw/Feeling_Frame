@@ -33,10 +33,14 @@ import 'caption_studio_screen.dart';
 import 'color_adjust_screen.dart';
 import 'compress_screen.dart';
 import 'export_preset_screen.dart';
+import 'gif_studio_screen.dart';
+import 'loop_screen.dart';
+import 'meme_screen.dart';
 import 'merge_screen.dart';
 import 'rotate_screen.dart';
 import 'slideshow_screen.dart';
 import 'split_screen_screen.dart';
+import 'thumbnail_designer_screen.dart';
 import 'vfx_screen.dart';
 import 'watermark_screen.dart';
 import 'keyframe_screen.dart';
@@ -1263,6 +1267,55 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                         ),
                 icon: const Icon(Icons.crop_din_rounded),
                 label: const Text("Frame / Border"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                GifStudioScreen(video: _controller.file),
+                          ),
+                        ),
+                icon: const Icon(Icons.gif_box_rounded),
+                label: const Text("GIF Studio"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => ThumbnailDesignerScreen(
+                                video: _controller.file),
+                          ),
+                        ),
+                icon: const Icon(Icons.image_rounded),
+                label: const Text("Thumbnail"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => LoopScreen(
+                              video: _controller.file,
+                              aspectRatio: aspectRatio,
+                            ),
+                          ),
+                        ),
+                icon: const Icon(Icons.loop_rounded),
+                label: const Text("Loop / Ping-pong"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => MemeScreen(video: _controller.file),
+                          ),
+                        ),
+                icon: const Icon(Icons.sentiment_very_satisfied),
+                label: const Text("Meme"),
               ),
             ],
           ),
