@@ -25,6 +25,7 @@ import '../../services/auto_frame_service.dart';
 import '../../services/export_services.dart';
 import '../../services/filter_service.dart';
 import '../../utils/storage_path.dart';
+import 'audio_cleanup_screen.dart';
 import 'keyframe_screen.dart';
 import 'pip_screen.dart';
 import 'speed_screen.dart';
@@ -1284,6 +1285,24 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                           : _applyBackgroundMusic,
                   icon: const Icon(Icons.music_note_rounded),
                   label: const Text('Add Music to Video'),
+                ),
+              ),
+              vSizedBox1,
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: isAudioSynchronizing
+                      ? null
+                      : () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => AudioCleanupScreen(
+                                video: _controller.file,
+                                aspectRatio: aspectRatio,
+                              ),
+                            ),
+                          ),
+                  icon: const Icon(Icons.graphic_eq_rounded),
+                  label: const Text('Audio Cleanup (noise / loudness)'),
                 ),
               ),
               vSizedBox1,
