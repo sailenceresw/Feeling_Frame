@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../services/caption_service.dart';
+import '../../services/stt_service.dart';
+import '../../services/stt_sherpa.dart';
 import 'video_result_popup.dart';
 
 /// On-device caption studio: type / paste / import timed captions, preview them
@@ -29,6 +31,9 @@ class _CaptionStudioScreenState extends State<CaptionStudioScreen> {
   String _color = 'white';
   String _position = CaptionService.bottom;
   bool _rendering = false;
+  bool _aiBusy = false;
+  double? _modelProgress;
+  SherpaSpeechRecognizer? _recognizer;
 
   static const _colorMap = {
     'white': Colors.white,
@@ -64,6 +69,7 @@ class _CaptionStudioScreenState extends State<CaptionStudioScreen> {
   void dispose() {
     _controller?.removeListener(_tick);
     _controller?.dispose();
+    _recognizer?.dispose();
     super.dispose();
   }
 
@@ -262,6 +268,75 @@ class _CaptionStudioScreenState extends State<CaptionStudioScreen> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(m)));
   }
 
+  /// On-device AI: transcribe the clip's speech and fill the caption timeline.
+  /// Downloads the ~40 MB model once (with confirmation) on first use.
+  Future<void> _autoGenerate() async {
+    final recognizer = _recognizer ??= SherpaSpeechRecognizer(
+      onModelProgress: (f) {
+        if (mounted) setState(() => _modelProgress = f);
+      },
+    );
+
+    if (!await recognizer.isReady()) {
+      if (!mounted) return;
+      final ok = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Download AI captions model?'),
+          content: const Text(
+            'On-device speech-to-text needs a one-time ~40 MB model download. '
+            'It then runs fully offline — nothing is uploaded.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Download'),
+            ),
+          ],
+        ),
+      );
+      if (ok != true) return;
+      setState(() {
+        _aiBusy = true;
+        _modelProgress = 0;
+      });
+      final got = await recognizer.ensureModel();
+      if (!mounted) return;
+      if (!got) {
+        setState(() => _aiBusy = false);
+        _snack('Model download failed — check your connection');
+        return;
+      }
+    }
+
+    setState(() {
+      _aiBusy = true;
+      _modelProgress = null;
+    });
+    List<CaptionSegment>? segs;
+    try {
+      segs = await SttService.transcribeToCaptions(widget.video.path, recognizer);
+    } catch (e) {
+      log('Auto-caption error: $e');
+    }
+    if (!mounted) return;
+    setState(() => _aiBusy = false);
+    if (segs == null || segs.isEmpty) {
+      _snack('No speech detected');
+      return;
+    }
+    setState(() {
+      _segments
+        ..clear()
+        ..addAll(segs!);
+    });
+    _snack('Generated ${segs.length} captions');
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = _controller;
@@ -271,6 +346,11 @@ class _CaptionStudioScreenState extends State<CaptionStudioScreen> {
         title: const Text('Captions'),
         actions: [
           IconButton(
+            tooltip: 'Auto-generate (on-device AI)',
+            onPressed: (_rendering || _aiBusy) ? null : _autoGenerate,
+            icon: const Icon(Icons.auto_awesome),
+          ),
+          IconButton(
             tooltip: 'Import SRT',
             onPressed: _rendering ? null : _importSrt,
             icon: const Icon(Icons.file_upload_outlined),
@@ -279,14 +359,43 @@ class _CaptionStudioScreenState extends State<CaptionStudioScreen> {
       ),
       body: !ready
           ? const Center(child: CircularProgressIndicator())
-          : Column(
+          : Stack(
               children: [
-                _preview(c),
-                _styleBar(),
-                Expanded(child: _segmentList()),
-                _bottomBar(),
+                Column(
+                  children: [
+                    _preview(c),
+                    _styleBar(),
+                    Expanded(child: _segmentList()),
+                    _bottomBar(),
+                  ],
+                ),
+                if (_aiBusy) _aiOverlay(),
               ],
             ),
+    );
+  }
+
+  Widget _aiOverlay() {
+    final p = _modelProgress;
+    return Positioned.fill(
+      child: ColoredBox(
+        color: Colors.black54,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(value: p),
+              const SizedBox(height: 12),
+              Text(
+                p != null
+                    ? 'Downloading model… ${(p * 100).round()}%'
+                    : 'Transcribing on-device…',
+                style: const TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

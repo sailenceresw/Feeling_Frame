@@ -57,6 +57,10 @@ dependencies:
 
   http_parser: any
   google_mlkit_object_detection: ^0.16.0
+  # On-device speech-to-text engine (ONNX Runtime; no FFmpeg dependency, so it
+  # does not conflict with ffmpeg_kit). archive extracts the downloaded model.
+  sherpa_onnx: ^1.13.4
+  archive: ^3.6.1
 # win32 5.2.0 (pulled transitively by the *_windows plugins) uses
 # UnmodifiableUint8ListView, removed from dart:typed_data in Dart 3.4+, which
 # breaks the Android kernel compile on modern Flutter. Force a 5.x that no
