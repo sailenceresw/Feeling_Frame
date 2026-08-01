@@ -25,6 +25,7 @@ import '../../services/auto_frame_service.dart';
 import '../../services/export_services.dart';
 import '../../services/filter_service.dart';
 import '../../utils/storage_path.dart';
+import 'ai_polish_screen.dart';
 import 'audio_cleanup_screen.dart';
 import 'caption_studio_screen.dart';
 import 'keyframe_screen.dart';
@@ -940,6 +941,24 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
             spacing: 10,
             runSpacing: 10,
             children: [
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurple,
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => AiPolishScreen(
+                              video: _controller.file,
+                              aspectRatio: aspectRatio,
+                            ),
+                          ),
+                        ),
+                icon: const Icon(Icons.auto_awesome),
+                label: const Text("AI Polish"),
+              ),
               ElevatedButton.icon(
                 onPressed: isTransforming
                     ? null
