@@ -45,6 +45,7 @@ class AudioService {
     bool fade = true,
     double fadeSeconds = 1.0,
     bool loopMusic = true,
+    bool duckUnderVoice = false,
   }) {
     final mv = musicVolume.clamp(0.0, 4.0);
     final ov = originalVolume.clamp(0.0, 4.0);
@@ -59,7 +60,14 @@ class AudioService {
     }
 
     final String filter;
-    if (keepOriginal) {
+    if (keepOriginal && duckUnderVoice) {
+      // Duck the music whenever the original audio (voice) is present, using
+      // the voice as the sidechain, then mix the (unducked) voice back on top.
+      filter = '[0:a]volume=${fmt(ov)},asplit=2[o][sc];$music_[m];'
+          '[m][sc]sidechaincompress='
+          'threshold=0.02:ratio=6:attack=5:release=250[mduck];'
+          '[o][mduck]amix=inputs=2:duration=first:dropout_transition=0[a]';
+    } else if (keepOriginal) {
       filter = '[0:a]volume=${fmt(ov)}[o];$music_[m];'
           '[o][m]amix=inputs=2:duration=first:dropout_transition=0[a]';
     } else {
@@ -93,6 +101,7 @@ class AudioService {
     bool keepOriginal = true,
     bool fade = true,
     bool loopMusic = true,
+    bool duckUnderVoice = false,
   }) async {
     final out = '${await getOutputDirectoryPath()}with_music.mp4';
 
@@ -106,6 +115,7 @@ class AudioService {
       keepOriginal: keepOriginal,
       fade: fade,
       loopMusic: loopMusic,
+      duckUnderVoice: duckUnderVoice,
     ))) {
       return out;
     }
