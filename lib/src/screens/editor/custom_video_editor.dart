@@ -44,6 +44,7 @@ import 'slideshow_screen.dart';
 import 'split_screen_screen.dart';
 import 'thumbnail_designer_screen.dart';
 import 'vfx_screen.dart';
+import 'voiceover_screen.dart';
 import 'volume_screen.dart';
 import 'watermark_screen.dart';
 import 'keyframe_screen.dart';
@@ -1359,6 +1360,20 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
                         ),
                 icon: const Icon(Icons.volume_up_rounded),
                 label: const Text("Volume"),
+              ),
+              ElevatedButton.icon(
+                onPressed: isTransforming
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => VoiceoverScreen(
+                              video: _controller.file,
+                              aspectRatio: aspectRatio,
+                            ),
+                          ),
+                        ),
+                icon: const Icon(Icons.record_voice_over_rounded),
+                label: const Text("Voiceover (TTS)"),
               ),
             ],
           ),
