@@ -82,8 +82,8 @@ class SherpaSpeechRecognizer implements SpeechRecognizer {
       }
 
       // .tar.bz2 -> tar -> flat files.
-      final tarBytes = const BZip2Decoder().decodeBytes(bytes);
-      final archive = const TarDecoder().decodeBytes(tarBytes);
+      final tarBytes = BZip2Decoder().decodeBytes(bytes);
+      final archive = TarDecoder().decodeBytes(tarBytes);
       for (final entry in archive) {
         if (!entry.isFile) continue;
         final name = entry.name.split('/').last;
