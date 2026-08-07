@@ -12,6 +12,7 @@ import 'package:video_editor_mobile_app/src/constant/app_theme.dart';
 import 'package:video_editor_mobile_app/src/controllers/settings_controller.dart';
 import 'package:video_editor_mobile_app/src/screens/intro/intro_screen.dart';
 import 'package:video_editor_mobile_app/src/utils/app_translations.dart';
+import 'package:video_editor_mobile_app/src/utils/ffmpeg_diagnostics.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +35,7 @@ class _VideoEditorAppState extends State<VideoEditorApp> {
     FFmpegKitConfig.init().then((value) async {
       // FFmpegKitConfig.setLogLevel(0);
       FFmpegKitConfig.enableLogs();
+      FfmpegDiagnostics.enable();
       await prepareAssets();
       registerApplicationFonts();
     });

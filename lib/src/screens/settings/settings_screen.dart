@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:video_editor_mobile_app/src/constant/dimension.dart';
 import 'package:video_editor_mobile_app/src/controllers/settings_controller.dart';
 import 'package:video_editor_mobile_app/src/screens/legal/privacy_screen.dart';
 import 'package:video_editor_mobile_app/src/screens/premium/premium_screen.dart';
 import 'package:video_editor_mobile_app/src/utils/app_translations.dart';
+import 'package:video_editor_mobile_app/src/utils/ffmpeg_diagnostics.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_text.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -90,6 +92,21 @@ class SettingsScreen extends StatelessWidget {
                   "feelm • v1.0.0",
                   fontSize: 12,
                   color: Colors.grey,
+                ),
+              ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.bug_report_outlined),
+                title: CustomText.ourText('Share diagnostics'),
+                subtitle: CustomText.ourText(
+                  "If an edit fails, share the technical log so it can be fixed",
+                  fontSize: 12,
+                  color: Colors.grey,
+                  maxLines: 2,
+                ),
+                trailing: const Icon(Icons.share),
+                onTap: () => SharePlus.instance.share(
+                  ShareParams(text: FfmpegDiagnostics.text),
                 ),
               ),
             ],
