@@ -112,7 +112,7 @@ class _ColorAdjustScreenState extends State<ColorAdjustScreen> {
                       child: AspectRatio(
                         aspectRatio:
                             c.value.aspectRatio == 0 ? 1 : c.value.aspectRatio,
-                        child: VideoPlayer(c),
+                        child: _livePreview(VideoPlayer(c)),
                       ),
                     ),
                   ),
@@ -151,6 +151,58 @@ class _ColorAdjustScreenState extends State<ColorAdjustScreen> {
               ],
             ),
     );
+  }
+
+  /// Applies the current brightness/contrast/saturation/warmth to [child] live
+  /// via chained colour matrices — an approximate real-time preview of what the
+  /// FFmpeg export will produce.
+  Widget _livePreview(Widget child) {
+    const lumR = 0.2126, lumG = 0.7152, lumB = 0.0722;
+    final b = _brightness, c = _contrast, s = _saturation, w = _warmth;
+    final inv = 1 - s;
+    final co = 128 * (1 - c);
+    Widget out = child;
+    // brightness (additive)
+    out = ColorFiltered(
+      colorFilter: ColorFilter.matrix(<double>[
+        1, 0, 0, 0, b * 255,
+        0, 1, 0, 0, b * 255,
+        0, 0, 1, 0, b * 255,
+        0, 0, 0, 1, 0,
+      ]),
+      child: out,
+    );
+    // contrast (scale around mid-grey)
+    out = ColorFiltered(
+      colorFilter: ColorFilter.matrix(<double>[
+        c, 0, 0, 0, co,
+        0, c, 0, 0, co,
+        0, 0, c, 0, co,
+        0, 0, 0, 1, 0,
+      ]),
+      child: out,
+    );
+    // saturation (luma-preserving)
+    out = ColorFiltered(
+      colorFilter: ColorFilter.matrix(<double>[
+        inv * lumR + s, inv * lumG, inv * lumB, 0, 0,
+        inv * lumR, inv * lumG + s, inv * lumB, 0, 0,
+        inv * lumR, inv * lumG, inv * lumB + s, 0, 0,
+        0, 0, 0, 1, 0,
+      ]),
+      child: out,
+    );
+    // warmth (+red / -blue, or the reverse)
+    out = ColorFiltered(
+      colorFilter: ColorFilter.matrix(<double>[
+        1, 0, 0, 0, w * 30,
+        0, 1, 0, 0, 0,
+        0, 0, 1, 0, -w * 30,
+        0, 0, 0, 1, 0,
+      ]),
+      child: out,
+    );
+    return out;
   }
 
   Widget _slider(String label, double value, double min, double max,
