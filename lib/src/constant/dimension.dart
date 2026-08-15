@@ -1,5 +1,3 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 
 const double vBox0 = 5.0;
@@ -31,10 +29,6 @@ const SizedBox hSizedBox2 = SizedBox(width: hBox2);
 const SizedBox hSizedBox3 = SizedBox(width: hBox3);
 const SizedBox hSizedBox4 = SizedBox(width: hBox4);
 
-//only use it outside the widget with no ctx for responsive height and it wont work for widget
-var kHeight = ui.window.physicalSize.height / ui.window.devicePixelRatio;
-//only use it outside the widget with no ctx for responsive width and it wont work for widget
-var kWidth = ui.window.physicalSize.width / ui.window.devicePixelRatio;
 //only use it inside the widget body for responsive height
 appHeight(BuildContext context) {
   return MediaQuery.of(context).size.height;

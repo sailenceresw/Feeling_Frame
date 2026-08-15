@@ -632,12 +632,17 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
           }, test: (e) => e is VideoMinDurationError);
       },
       builder: (_) {
-        return WillPopScope(
-          onWillPop: () async {
-            // Show confirmation dialog
-            bool confirm = await _showExitConfirmationDialog(context);
-            // Return true if the user confirmed, false otherwise
-            return confirm;
+        return PopScope(
+          // Block the automatic pop, then ask for confirmation and pop
+          // manually if the user agrees (the PopScope replacement for the
+          // old conditional WillPopScope).
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) async {
+            if (didPop) return;
+            final confirm = await _showExitConfirmationDialog(context);
+            if (confirm && context.mounted) {
+              Navigator.of(context).pop();
+            }
           },
           child: Scaffold(
             resizeToAvoidBottomInset: false,

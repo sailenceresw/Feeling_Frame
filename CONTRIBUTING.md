@@ -13,7 +13,7 @@ the project is built and tested on Flutter 3.44.8.
 flutter pub get
 
 # Static analysis (this is exactly what CI runs)
-flutter analyze --no-fatal-infos --no-fatal-warnings lib test
+flutter analyze --no-fatal-infos lib test
 
 # Unit tests (205 tests today, all passing)
 flutter test

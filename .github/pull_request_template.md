@@ -13,7 +13,7 @@ example `Closes #31`.
 
 ## Checks
 
-- [ ] `flutter analyze --no-fatal-infos --no-fatal-warnings lib test` passes
+- [ ] `flutter analyze --no-fatal-infos lib test` passes
 - [ ] `flutter test` passes
 - [ ] For an FFmpeg change, I added or updated the command-builder unit test
 - [ ] `git grep -nE "BEGIN PRIVATE KEY|AIza" -- lib` is empty (no secrets)
