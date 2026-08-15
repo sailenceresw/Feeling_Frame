@@ -628,7 +628,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
           maxDuration: const Duration(minutes: 10),
         )..initialize().then((_) => setState(() {})).catchError((error) {
             // handle minumum duration bigger than video duration error
-            if (mounted) Navigator.pop(context);
+            if (context.mounted) Navigator.pop(context);
           }, test: (e) => e is VideoMinDurationError);
       },
       builder: (_) {
