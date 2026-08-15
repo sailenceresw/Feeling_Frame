@@ -351,8 +351,8 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
   }
 
   Widget _exportProgressDialog() {
-    return WillPopScope(
-      onWillPop: () async => false,
+    return PopScope(
+      canPop: false,
       child: AlertDialog(
         content: ValueListenableBuilder<double>(
           valueListenable: _exportingProgress,
@@ -402,8 +402,8 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => WillPopScope(
-        onWillPop: () async => false,
+      builder: (_) => PopScope(
+        canPop: false,
         child: AlertDialog(
           content: Row(
             mainAxisSize: MainAxisSize.min,
