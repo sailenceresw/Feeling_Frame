@@ -34,7 +34,6 @@ class _ObjectDetectScreenState extends State<ObjectDetectScreen> {
       },
       child: GetBuilder<AiVideoController>(
         initState: (__) {
-          print(widget.path);
           AiVideoController.instance.videoPlayerController =
               VideoPlayerController.file(File("${widget.path}"))
                 ..initialize().then((value) {
