@@ -25,12 +25,12 @@ class _ObjectDetectScreenState extends State<ObjectDetectScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) {
         AiVideoController.instance.videoPlayerController?.pause();
         AiVideoController.instance.detectOperationName = null;
         AiVideoController.instance.update();
-        return true;
       },
       child: GetBuilder<AiVideoController>(
         initState: (__) {
