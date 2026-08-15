@@ -1,0 +1,51 @@
+name: Feature request
+description: Propose a new editing tool, AI capability, or improvement
+labels: ["type:feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Check the open issues first. The roadmap already tracks larger items
+        such as real auth, on-device speech recognition, in-app billing, and a
+        keyframe timeline.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What are you trying to do that the app does not support today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed approach
+      description: >
+        If this is an FFmpeg based effect, note the filter or command you have
+        in mind. If it needs on-device ML or a backend, say so, since that
+        changes the scope a lot.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - editor (a tool/effect)
+        - ai (on-device or cloud)
+        - auth
+        - monetization
+        - platform (Android/iOS/build)
+        - ci
+        - docs
+        - other
+    validations:
+      required: true
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints
+      options:
+        - label: Core editing must keep working offline (no forced network or account).
+          required: true
+        - label: If this is FFmpeg logic, it can ship with a unit test for the command builder.
+          required: false

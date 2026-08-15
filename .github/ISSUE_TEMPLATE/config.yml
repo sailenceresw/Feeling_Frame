@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/sailenceresw/Feeling_Frame/security/policy
+    about: Do not file security problems as public issues. Read SECURITY.md and use private reporting.
+  - name: Question or discussion
+    url: https://github.com/sailenceresw/Feeling_Frame/discussions
+    about: For usage questions and open-ended ideas rather than a specific bug or feature.
