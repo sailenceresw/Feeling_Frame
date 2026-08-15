@@ -54,6 +54,7 @@ dependencies:
   google_mlkit_image_labeling: ^0.15.0
 
   google_mlkit_object_detection: ^0.16.0
+  flutter_tts: ^4.2.5
 # win32 5.2.0 (pulled transitively by the *_windows plugins) uses
 # UnmodifiableUint8ListView, removed from dart:typed_data in Dart 3.4+, which
 # breaks the Android kernel compile on modern Flutter. Force a 5.x that no
