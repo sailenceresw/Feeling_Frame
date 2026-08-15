@@ -126,7 +126,6 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
           child: LayoutBuilder(
             builder: (context, cons) {
               final w = cons.maxWidth;
-              final h = cons.maxHeight;
               final logo = _logo;
               final wmW = w * _size;
               final margin = w * 0.03;

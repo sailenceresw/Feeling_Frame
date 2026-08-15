@@ -48,7 +48,7 @@ class CustomTextFormField extends StatelessWidget {
   final Widget? prefix;
   final Widget? suffixInside;
 
-  CustomTextFormField({
+  const CustomTextFormField({
     Key? key,
     this.formKey,
     this.suffixInside,
