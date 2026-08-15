@@ -36,7 +36,7 @@ class EditorController extends GetxController {
       selectedVideoPaths
         ..clear()
         ..addAll(result.paths.map((path) => path!).toList());
-      print(selectedVideoPaths);
+      log("$selectedVideoPaths");
       // Use the filePaths list to do something with the selected video files
       // Build the FFmpeg command to concatenate the videos
       if (selectedVideoPaths.isNotEmpty) {
@@ -107,11 +107,11 @@ class EditorController extends GetxController {
             FFmpegKitConfig.sessionStateToString(await session.getState());
         final output = await session.getOutput();
         if (ReturnCode.isSuccess(returnCode)) {
-          print("Successfully converted to ts file");
+          log("Successfully converted to ts file");
         } else if (ReturnCode.isCancel(returnCode)) {
-          print("Cancel converted to ts file");
+          log("Cancel converted to ts file");
         } else {
-          print("Error converted to ts file");
+          log("Error converted to ts file");
         }
         log(state);
         log(output.toString());
@@ -123,10 +123,10 @@ class EditorController extends GetxController {
     String concatCommand = "concat:${tempFiles.join('|')}";
     // await FFmpegKit.execute(
     //     "-i \"$concatCommand\" -c copy -bsf:a aac_adtstoasc $outputFilePath");
-    print(concatCommand);
+    log(concatCommand);
     String command =
         '-y -i "$concatCommand" -c copy -bsf:a aac_adtstoasc ${basePath + outputPath}';
-    print(command);
+    log(command);
 
     FFmpegKit.execute(command).then((session) async {
       final returnCode = await session.getReturnCode();
@@ -134,7 +134,7 @@ class EditorController extends GetxController {
           FFmpegKitConfig.sessionStateToString(await session.getState());
       final output = await session.getOutput();
       if (ReturnCode.isSuccess(returnCode)) {
-        print("Succesfully merged");
+        log("Succesfully merged");
         Get.back();
         isCombining = false;
         update();

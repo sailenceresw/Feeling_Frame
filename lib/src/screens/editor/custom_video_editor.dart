@@ -924,12 +924,12 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
     String outputPath = "${basePath}transform.mp4";
     String command =
         '-y -i ${_controller.file.path} $videoFilter $audioFilter $outputPath';
-    print(command);
+    log(command);
     await FFmpegKit.execute(command).then((session) async {
       final returnCode = await session.getReturnCode();
       final output = await session.getOutput();
       if (ReturnCode.isSuccess(returnCode)) {
-        print("Successfully transformed");
+        log("Successfully transformed");
         if (mounted) {
           showDialog(
             context: context,
@@ -1433,7 +1433,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
         '[1:v][ckout]scale2ref[bg][ck];[bg][ck]overlay=shortest=1[outv]" '
         '-map "[outv]" -map 0:a? -c:v libx264 -crf 23 -preset fast '
         '-c:a copy $outputPath';
-    print(command);
+    log(command);
     await FFmpegKit.execute(command).then((session) async {
       final returnCode = await session.getReturnCode();
       if (ReturnCode.isSuccess(returnCode)) {
@@ -2258,7 +2258,7 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
     setState(() {
       isAdjusting = true;
     });
-    print("Applying adjustment");
+    log("Applying adjustment");
     String basePath = await getOutputDirectoryPath();
     String outputPath = "${basePath}adjustment.mp4";
 
@@ -2268,14 +2268,14 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
     String command =
         '-y -i ${_controller.file.path} -vf "eq=saturation=$saturation:brightness=$brightness:contrast=$contrast" -c:a copy $outputPath';
 
-    print(command);
+    log(command);
     await FFmpegKit.execute(command).then((session) async {
       final returnCode = await session.getReturnCode();
       final state =
           FFmpegKitConfig.sessionStateToString(await session.getState());
       final output = await session.getOutput();
       if (ReturnCode.isSuccess(returnCode)) {
-        print("Successfully adjustment applied");
+        log("Successfully adjustment applied");
         // EditorController.instance.changeVideoPlayablePath(outputPath);
         if (!mounted) return;
         showDialog(
@@ -2286,9 +2286,9 @@ class _CustomVideoEditorState extends State<CustomVideoEditor> {
           ),
         );
       } else if (ReturnCode.isCancel(returnCode)) {
-        print("Cancel filter");
+        log("Cancel filter");
       } else {
-        print("Error filter");
+        log("Error filter");
       }
       log(state);
       log(output.toString());
