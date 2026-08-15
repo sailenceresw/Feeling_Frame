@@ -49,15 +49,20 @@ class SettingsScreen extends StatelessWidget {
               ),
               const Divider(),
               _sectionTitle('language'.tr),
-              ...AppTranslations.supportedLanguages.entries.map(
-                (entry) => RadioListTile<String>(
-                  value: entry.key,
-                  groupValue: settings.localeCode,
-                  onChanged: (code) {
-                    if (code != null) settings.setLocale(code);
-                  },
-                  title: CustomText.ourText(entry.value),
-                  activeColor: Colors.yellow,
+              RadioGroup<String>(
+                groupValue: settings.localeCode,
+                onChanged: (code) {
+                  if (code != null) settings.setLocale(code);
+                },
+                child: Column(
+                  children: AppTranslations.supportedLanguages.entries
+                      .map(
+                        (entry) => RadioListTile<String>(
+                          value: entry.key,
+                          title: CustomText.ourText(entry.value),
+                        ),
+                      )
+                      .toList(),
                 ),
               ),
               const Divider(),
