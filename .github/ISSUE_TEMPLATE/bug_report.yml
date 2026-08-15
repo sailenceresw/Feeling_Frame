@@ -1,0 +1,77 @@
+name: Bug report
+description: Something in the app or the editor tools does not work as expected
+labels: ["type:bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. feelm is Android and iOS only, so please include
+        the platform and device. Do not paste any Google Cloud credentials.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you see, and what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: List the exact steps, including the source clip if relevant.
+      placeholder: |
+        1. Open a project with ...
+        2. Go to the ... tool
+        3. Tap ...
+    validations:
+      required: true
+  - type: input
+    id: tool
+    attributes:
+      label: Which screen or tool
+      description: For example Trim, Auto Cut, Captions, Object Detection, Export.
+    validations:
+      required: false
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Android
+        - iOS
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device and OS version
+      placeholder: Pixel 6, Android 14
+    validations:
+      required: true
+  - type: input
+    id: flutter
+    attributes:
+      label: Flutter version
+      description: Output of `flutter --version`.
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: >
+        Relevant `flutter run` output. For an editing failure, include the
+        FFmpeg session output the app logs. This is rendered as code, no
+        backticks needed.
+      render: shell
+    validations:
+      required: false
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and this is not a duplicate.
+          required: true
+        - label: This is not a security report (those go through SECURITY.md).
+          required: true

@@ -20,6 +20,9 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
+          # Pinned to the version the project is verified against (see README),
+          # so CI is reproducible instead of tracking whatever stable is today.
+          flutter-version: 3.44.8
           channel: stable
           cache: true
 

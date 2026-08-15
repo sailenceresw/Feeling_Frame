@@ -1,82 +1,30 @@
-# Feeling_Frame
+<div align="center">
 
-A Flutter video editor mobile app that runs on **both Android and iOS**. It
-supports trimming, cropping, rotation, **flip (horizontal/vertical) and
-reverse** transforms, filters (Sepia, High Saturation, Grayscale, Warm, Cool,
-Vintage, Invert), color adjustments, playback speed, **volume control**, text
-overlays (with adjustable font size and color) that are **burned into the
-exported video**, **image sticker overlays**, aspect-ratio changes, audio
-replacement, cover selection, multi-video merging, editing of clips up to
-**10 minutes**, **export with a live progress indicator and selectable
-resolution/quality** (downscale HD/2K/4K/8K sources to 1440p/1080p/720p/480p
-with high/balanced/small-size compression to dramatically reduce file size), a
-persistent **Recent Projects** list, and optional AI
-features (object detection and speech transcription) powered by Google Cloud
-Video Intelligence.
+<img src="assets/images/app_logo.png" width="96" alt="feelm app icon" />
 
-## Project theme: AI-automated video editing
+# feelm
 
-This app is the artefact for the proposal *"Automated Video Editing Mobile
-Application Using AI"*. Feature ↔ proposal mapping:
+On-device video editor for Android and iOS, built with Flutter and FFmpeg, with offline AI tools.
 
-| Proposal theme | Implementation |
-| --- | --- |
-| Cross-platform Flutter app (Android + iOS) | Single codebase, both platforms configured |
-| Speech identification | Google Cloud Video Intelligence speech transcription |
-| Caption production | Word-level timings → auto-generated SRT, burned into the video |
-| Noise reduction | On-device FFmpeg FFT denoiser + high-pass filter (offline) |
-| Video stabilization | On-device two-pass vid.stab pipeline (offline) |
-| FFmpeg-automated compression | Export resolution/quality settings (CRF + downscale) |
-| "Keep the crucial sections" | Auto Highlights: scene detection keeps key moments (offline) |
-| Object recognition | **On-device** ML Kit image labeling (no cloud/credentials) |
-| Instructional materials | In-app "How to use" guide |
-| In-app capture (report feature 2) | Record videos with the camera from "New Project" |
-| Green screen editing (Phase Two) | Chroma-key background replacement in the editor |
-| Feedback loops (report methodology) | In-app feedback panel (rating + message, stored locally) |
-| Audio waveform visualization | Waveform image rendered in the editor's Audio tab |
-| Unit testing (report methodology) | `flutter test` suite for SRT building and project persistence |
-| Accessibility (WCAG) | Settings: high-contrast theme + app-wide text-size scaling |
-| Localization / globalization | 5 languages (EN/ES/HI/NE/FR) via a settings language picker |
-| AI integration refinement | Selectable transcription language (8 locales) |
-| Monetization | Premium screen with plans; free exports get a watermark, premium removes it |
-| Security & privacy | No bundled credentials; explicit-consent cloud features; in-app privacy policy |
-| Continuous user feedback | In-app feedback panel (rating + message) |
+[![CI](https://github.com/sailenceresw/Feeling_Frame/actions/workflows/flutter.yml/badge.svg)](https://github.com/sailenceresw/Feeling_Frame/actions/workflows/flutter.yml)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
+![Flutter 3.44.8](https://img.shields.io/badge/Flutter-3.44.8-02569B?logo=flutter&logoColor=white)
+![FFmpeg full-gpl](https://img.shields.io/badge/FFmpeg-full--gpl-007808?logo=ffmpeg&logoColor=white)
+![Tests 205](https://img.shields.io/badge/tests-205_passing-brightgreen)
 
-The editor also includes a CapCut-style "Blur Pad 9:16" transform that fits
-any clip into a vertical frame over a blurred copy of itself, plus
-**Boomerang** and **Fade In/Out** transforms, and multi-format export:
-**video, animated GIF, extracted audio (MP3)**, and cover image.
+[Quickstart](#quickstart) · [Screenshots](#screenshots) · [Features](#features) · [AI features](#ai-features) · [Architecture](docs/ARCHITECTURE.md) · [Roadmap](#roadmap) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md)
 
-### Later work
+</div>
 
-Remaining tasks — both the SDK-dependent steps to run locally and the larger
-deferred features (cloud collaboration/version control, motion tracking, 3D
-effects, keyframe timeline, LSTM training) — are tracked in
-[`FUTURE_WORK.md`](FUTURE_WORK.md).
+feelm is a Flutter app that edits video on the device. Trimming, effects,
+overlays, and export run through FFmpeg locally. The AI tools (object detection,
+noise reduction, stabilization, auto-highlights) run on-device with no account
+or network. It is a solo, pre-release project: the login is a demo, and premium
+is a local flag, both called out below.
 
-## Branding
+## Quickstart
 
-The app is **feelm** (published under the *feeling frame* brand). It opens
-with a publisher-style **intro animation** showing the *feeling frame — edit
-with emotion* company logo (scale-in + heartbeat pulse, cross-fading from
-white into the dark app), followed by the **feelm** splash screen.
-
-The launcher icon is generated from `assets/images/app_logo.png`. After
-`flutter pub get`, run it once:
-
-```bash
-dart run flutter_launcher_icons
-```
-
-## Requirements
-
-- Flutter SDK `>=3.2.6 <4.0.0` (verified building/testing on Flutter 3.44.8)
-- Android: `minSdkVersion 24`, `compileSdkVersion 34`
-- iOS: deployment target `15.5+` (required by the on-device ML Kit object
-  detection; already configured in the Podfile/project). Android works at the
-  current minSdk 24.
-
-## Getting started
+Prerequisite: the Flutter SDK. Built and tested on Flutter 3.44.8.
 
 ```bash
 flutter pub get
@@ -84,37 +32,145 @@ flutter pub get
 # Android
 flutter run
 
-# iOS
+# iOS (macOS only)
 cd ios && pod install && cd ..
 flutter run
 ```
 
-## Login credentials
+Sign in with the demo login below, tap New Project, pick a clip, and edit.
+
+## Screenshots
+
+Captured from the app running in a phone viewport.
+
+<table>
+  <tr>
+    <td><img src="docs/media/login.png" width="200" alt="Login screen" /></td>
+    <td><img src="docs/media/dashboard.png" width="200" alt="Project dashboard" /></td>
+    <td><img src="docs/media/settings.png" width="200" alt="Settings" /></td>
+    <td><img src="docs/media/premium.png" width="200" alt="Premium plans" /></td>
+  </tr>
+  <tr>
+    <td align="center">Login</td>
+    <td align="center">Dashboard</td>
+    <td align="center">Settings</td>
+    <td align="center">Premium</td>
+  </tr>
+</table>
+
+## Features
+
+Editing tools, grouped by what they do. Each tool has its own screen under
+`lib/src/screens/editor/` and a service under `lib/src/services/`.
+
+- Cut and reframe: trim, crop, rotate, speed, loop, fade in and out.
+- Compose: merge multiple clips, picture in picture, split screen, slideshow,
+  transitions.
+- Look: color adjust, VFX, borders, region blur, watermark, and filter presets
+  (Sepia, Grayscale, Warm, Cool, Vintage, Invert, and more).
+- Text and graphics: text overlays with font size and color, a caption studio,
+  a thumbnail designer, meme captions, and a GIF studio.
+- Audio: volume control and audio cleanup.
+- Export: choose resolution (down to 480p) and quality to shrink file size, with
+  a live progress indicator. Overlays are burned into the exported file.
+- Multi-format output: video, animated GIF, extracted audio (MP3), and a cover
+  image.
+
+A persistent Recent Projects list, five UI languages, a high-contrast theme,
+and app-wide text scaling are in Settings.
+
+For how these fit together, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+## AI features
+
+Reached from AI mode in the editor.
+
+On-device, offline, no account:
+
+- Object detection with ML Kit image labeling.
+- Noise reduction, video stabilization, and auto-highlights (scene detection).
+- Auto Frame reframes toward a detected subject.
+- Captions can be typed, pasted, or imported from SRT, then burned in.
+
+<details>
+<summary>Optional Google Cloud transcription</summary>
+
+Auto speech transcription can use Google Cloud Video Intelligence. Nothing is
+bundled and the app works without it. Pass a service account at run time and
+never commit it:
+
+```bash
+flutter run --dart-define=GCP_SERVICE_ACCOUNT_JSON="$(cat service_account.json)"
+```
+
+On-device auto-generated captions are not wired yet: the speech pipeline exists
+but no recognizer model ships. See the roadmap.
+
+</details>
+
+## Demo login
+
+The login is not real authentication yet. It accepts one hardcoded account and
+routes into the app. This is tracked in
+[issue #31](https://github.com/sailenceresw/Feeling_Frame/issues/31) and will be
+replaced before real users.
 
 ```
 Email    : test@gmail.com
 Password : 123456
 ```
 
-## AI features (optional)
+## Requirements
 
-The Google Cloud service-account credentials are **no longer hardcoded** in the
-source. To enable the AI object-detection and transcription features, pass the
-service-account JSON at build/run time with a `--dart-define`:
+- Flutter SDK `>=3.2.6 <4.0.0`, verified on 3.44.8.
+- Android: `minSdkVersion 24`, `compileSdkVersion 34`.
+- iOS: deployment target 15.5, required by the on-device ML Kit pods.
 
-```bash
-flutter run --dart-define=GCP_SERVICE_ACCOUNT_JSON="$(cat service_account.json)"
-```
+## Where exports go
 
-If the credentials are not provided, the rest of the app works normally and the
-AI screens show a clear "not configured" message instead of failing silently.
+- Android: the public Download folder, falling back to app storage.
+- iOS: the app documents directory, reachable through the Files app.
 
-> Never commit credentials or private keys to the repository.
+## Roadmap
 
-## Exported files
+Open work is tracked in
+[GitHub issues](https://github.com/sailenceresw/Feeling_Frame/issues), grouped
+by phase labels `v0.1-hardening`, `v0.2-on-device-ai`, `v0.3-validation`, and
+`v1.0-release`. Hard gates before real users carry the `gate:before-users`
+label. Longer notes on deferred features live in [FUTURE_WORK.md](FUTURE_WORK.md).
 
-- **Android:** processed videos are written to the public `Download` folder
-  (falling back to app storage if unavailable).
-- **iOS:** processed videos are written to the app's documents directory and are
-  accessible through the Files app (file sharing is enabled).
-</content>
+## Contributing and policies
+
+- [CONTRIBUTING.md](CONTRIBUTING.md) has setup, conventions, and what will be
+  declined.
+- [SECURITY.md](SECURITY.md) has the private disclosure route and known
+  weaknesses.
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) applies to participation here.
+
+## License
+
+AGPL-3.0. See [LICENSE](LICENSE). The app links the full-GPL FFmpeg build
+through `ffmpeg_kit_flutter_new`, so a copyleft, GPL-compatible license is
+required; a permissive license would conflict.
+
+<details>
+<summary>Troubleshooting and notes</summary>
+
+- First iOS build is slow. `ffmpeg_kit_flutter_new` ships large native
+  binaries, so the first `pod install` and build take a while.
+- ML Kit raises the iOS floor. The object detection pods need iOS 15.5, so older
+  simulators will not run.
+- Regenerate launcher icons after changing `assets/images/app_logo.png`:
+
+  ```bash
+  dart run flutter_launcher_icons
+  ```
+
+- Web is not a supported target. The project compiles for web, but FFmpeg and ML
+  Kit have no web implementation and the video-pick flow returns bytes rather
+  than a path, so editing does not function in a browser.
+- Two `dependency_overrides` in `pubspec.yaml` (`win32` and
+  `flutter_plugin_android_lifecycle`) are needed to build on current Flutter.
+  Each has a comment explaining why.
+
+</details>
