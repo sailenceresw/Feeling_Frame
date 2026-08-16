@@ -40,13 +40,13 @@ class LoginScreen extends StatelessWidget {
             ),
             vSizedBox2,
             CustomText.ourText(
-              "Welcome back",
+              "Welcome",
               fontWeight: FontWeight.bold,
               fontSize: 26,
             ),
             vSizedBox0,
             CustomText.ourText(
-              "Sign in to continue editing your videos",
+              "Continue in demo mode to start editing videos",
               fontSize: 15,
               color: Colors.grey,
             ),
@@ -63,19 +63,15 @@ class LoginScreen extends StatelessWidget {
                   backgroundColor: Colors.yellow,
                 ),
                 onPressed: () {
-                  if (LoginController.instance.formKey.currentState!
-                      .validate()) {
-                    LoginController.instance.login();
-                  } else {
-                    warningToast(msg: "Please validate all fields");
-                  }
+                  // Form fields are optional in demo mode; always allow continue.
+                  LoginController.instance.login();
                 },
                 icon: const Icon(
-                  Icons.login,
+                  Icons.play_arrow,
                   color: Colors.black,
                 ),
                 label: const Text(
-                  "Login",
+                  "Continue (demo)",
                   style: TextStyle(
                     color: Colors.black,
                   ),
@@ -86,7 +82,7 @@ class LoginScreen extends StatelessWidget {
             Align(
               alignment: Alignment.bottomCenter,
               child: CustomText.ourText(
-                "Copyright @ 2024, By logging you accept \nTerms & Conditions and Privacy Policies",
+                "Demo mode — no account required. By continuing you accept\nTerms & Conditions and Privacy Policies",
                 textAlign: TextAlign.center,
                 fontSize: 13,
               ),
