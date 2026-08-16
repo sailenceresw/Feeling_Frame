@@ -10,36 +10,22 @@ class LoginFormWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Demo mode: fields are optional. User can leave them blank and still continue.
     return Column(
       children: [
         CustomTextFormField(
-          hintText: "Enter email",
+          hintText: "Email (optional)",
           labelText: "Email",
           prefixIcon: Icons.email,
           controller: LoginController.instance.emailController,
-          validator: (val) {
-            if (val.toString().isEmpty) {
-              return "Email can't be empty";
-            }
-            if (!val.toString().isEmail) {
-              return "Enter valid email";
-            }
-            return null;
-          },
         ),
         vSizedBox2,
         CustomTextFormField(
-          hintText: "Enter password",
+          hintText: "Password (optional)",
           labelText: "Password",
           prefixIcon: Icons.lock,
           controller: LoginController.instance.passwordController,
-          validator: (val) {
-            if (val.toString().isEmpty) {
-              return "Password can't be empty";
-            }
-
-            return null;
-          },
+          obscureText: true,
         ),
       ],
     );
