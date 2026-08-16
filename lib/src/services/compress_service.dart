@@ -1,8 +1,4 @@
-import 'dart:developer';
-
-import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_new/return_code.dart';
-
+import '../utils/ffmpeg_cmd.dart';
 import '../utils/storage_path.dart';
 
 /// How aggressively to compress (maps to an x264 CRF — higher = smaller file).
@@ -51,17 +47,8 @@ class CompressService {
     int height = 0,
   }) {
     final vf = height > 0 ? '-vf scale=-2:$height ' : '';
-    return '-y -i $input $vf'
-        '-c:v libx264 -crf $crf -preset fast -c:a aac -b:a 128k $output';
-  }
-
-  static Future<bool> _run(String command) async {
-    log('CompressService command: $command');
-    final session = await FFmpegKit.execute(command);
-    final rc = await session.getReturnCode();
-    if (ReturnCode.isSuccess(rc)) return true;
-    log('CompressService failed: ${await session.getOutput()}');
-    return false;
+    return '-y -i ${FfmpegCmd.q(input)} $vf'
+        '-c:v libx264 -crf $crf -preset fast -c:a aac -b:a 128k ${FfmpegCmd.q(output)}';
   }
 
   /// Compresses [input] at [quality], optionally capping the resolution to
@@ -76,8 +63,10 @@ class CompressService {
     final crf = crfFor(quality);
     final height = targetHeight(sourceHeight, maxHeight);
     final out = '${await getOutputDirectoryPath()}compressed.mp4';
-    return await _run(compressCommand(input, out, crf: crf, height: height))
-        ? out
-        : null;
+    final ok = await FfmpegCmd.run(
+      compressCommand(input, out, crf: crf, height: height),
+      tag: 'Compress',
+    );
+    return ok ? out : null;
   }
 }

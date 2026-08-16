@@ -1,3 +1,5 @@
+import '../utils/ffmpeg_cmd.dart';
+
 /// A named cinematic colour-grade. [vf] is the FFmpeg `-vf` filter chain that
 /// produces the look (empty for the untouched original).
 class CinematicFilter {
@@ -61,7 +63,8 @@ class FilterService {
 
   /// The FFmpeg command that bakes filter chain [vf] into [input], writing
   /// [output]. Audio is copied; only the video is re-encoded.
+  /// Paths are quoted so Android gallery/cache paths with spaces work.
   static String filterCommand(String input, String output, String vf) =>
-      '-y -i $input -vf "$vf" '
-      '-c:v libx264 -crf 20 -preset fast -c:a copy $output';
+      '-y -i ${FfmpegCmd.q(input)} -vf "$vf" '
+      '-c:v libx264 -crf 20 -preset fast -c:a copy ${FfmpegCmd.q(output)}';
 }
