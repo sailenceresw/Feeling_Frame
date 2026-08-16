@@ -4,10 +4,13 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:fraction/fraction.dart';
 import 'package:gal/gal.dart';
+import 'package:get/get.dart';
 import 'package:path/path.dart' as path;
 import 'package:share_plus/share_plus.dart';
 import 'package:video_editor_mobile_app/src/constant/dimension.dart';
+import 'package:video_editor_mobile_app/src/controllers/editor_controller.dart';
 import 'package:video_editor_mobile_app/src/controllers/project_controller.dart';
+import 'package:video_editor_mobile_app/src/screens/editor/custom_video_editor.dart';
 import 'package:video_editor_mobile_app/src/widgets/custom_toast.dart';
 import 'package:video_player/video_player.dart';
 
@@ -85,6 +88,26 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
     }
   }
 
+  /// Replace the working clip in the editor with this result so further edits
+  /// build on it. Closes the popup and reopens the editor on the new file.
+  void useInEditor() {
+    if (_isGif) {
+      successToast(msg: "GIFs can't be loaded as the working video");
+      return;
+    }
+    final file = widget.video;
+    EditorController.instance.editingVideoFile = file;
+    EditorController.instance.changeVideoPlayablePath(file.path);
+
+    // Close this dialog, then replace any open editor route with a fresh one
+    // so the timeline / preview actually show the processed file.
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+    Get.off(() => CustomVideoEditor(file: file));
+    successToast(msg: "Applied — continue editing");
+  }
+
   @override
   void dispose() {
     if (_isGif) {
@@ -101,7 +124,7 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
     return Padding(
       padding: const EdgeInsets.all(30),
       child: Center(
-        child: _controller != null && _controller!.value.isInitialized
+        child: _controller != null && _controller!.value.isInitialized || _isGif
             ? Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -136,6 +159,21 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
                     ],
                   ),
                   vSizedBox1,
+                  // Primary action: keep working on this result.
+                  if (!_isGif)
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.yellow,
+                          foregroundColor: Colors.black,
+                        ),
+                        onPressed: useInEditor,
+                        icon: const Icon(Icons.edit_rounded),
+                        label: const Text("Use in editor"),
+                      ),
+                    ),
+                  if (!_isGif) vSizedBox1,
                   Row(
                     children: [
                       Expanded(
