@@ -13,26 +13,22 @@ class LoginController extends GetxController {
 
   final formKey = GlobalKey<FormState>();
 
+  /// Demo / offline entry. No real authentication is performed.
+  /// Always proceeds to ProjectScreen after a short delay so the UX stays the same.
   void login() async {
-    CustomDialogs.fullLoadingDialog(data: "Logging, please wait...");
+    CustomDialogs.fullLoadingDialog(data: "Entering demo mode...");
 
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
 
-    if (emailController.text.trim() == "test@gmail.com" &&
-        passwordController.text.trim() == "123456") {
-      CustomDialogs.cancelDialog();
-      Get.offAll(() => const ProjectScreen());
-      successToast(msg: "Successfully logged in");
-    } else {
-      CustomDialogs.cancelDialog();
-      errorToast(msg: "Credentials not matched");
-    }
+    CustomDialogs.cancelDialog();
+    Get.offAll(() => const ProjectScreen());
+    successToast(msg: "Demo mode — no account required");
   }
 
   void logout() {
     emailController.clear();
     passwordController.clear();
     Get.offAll(() => const LoginScreen());
-    successToast(msg: "Logged out successfully");
+    successToast(msg: "Returned to start screen");
   }
 }
