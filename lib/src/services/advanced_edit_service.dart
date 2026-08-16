@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter_new/return_code.dart';
 
+import '../utils/ffmpeg_cmd.dart';
 import '../utils/storage_path.dart';
 
 /// Advanced editing operations built on FFmpeg. Command construction is kept
@@ -15,18 +16,18 @@ class AdvancedEditService {
   /// Exports the video as an animated GIF (12fps, 480px wide, palette-free
   /// quick path).
   static String gifCommand(String input, String output) =>
-      '-y -i $input -vf "fps=12,scale=480:-1:flags=lanczos" -loop 0 $output';
+      '-y -i ${FfmpegCmd.q(input)} -vf "fps=12,scale=480:-1:flags=lanczos" -loop 0 ${FfmpegCmd.q(output)}';
 
   /// Extracts the audio track to an MP3 file.
   static String extractAudioCommand(String input, String output) =>
-      '-y -i $input -vn -acodec libmp3lame -q:a 2 $output';
+      '-y -i ${FfmpegCmd.q(input)} -vn -acodec libmp3lame -q:a 2 ${FfmpegCmd.q(output)}';
 
   /// Boomerang: plays the clip forward then reversed (video only, like the
   /// popular social effect).
   static String boomerangCommand(String input, String output) =>
-      '-y -i $input -filter_complex '
+      '-y -i ${FfmpegCmd.q(input)} -filter_complex '
       '"[0:v]reverse[r];[0:v][r]concat=n=2:v=1:a=0[v]" '
-      '-map "[v]" -c:v libx264 -crf 23 -preset fast -an $output';
+      '-map "[v]" -c:v libx264 -crf 23 -preset fast -an ${FfmpegCmd.q(output)}';
 
   /// Fade in and out on both video and audio. [totalSeconds] is the clip
   /// length; the out-fade starts [fade] seconds before the end.
@@ -38,23 +39,23 @@ class AdvancedEditService {
   }) {
     final outStart = (totalSeconds - fade).clamp(0.0, double.maxFinite);
     final start = outStart.toStringAsFixed(2);
-    return '-y -i $input '
+    return '-y -i ${FfmpegCmd.q(input)} '
         '-vf "fade=t=in:st=0:d=$fade,fade=t=out:st=$start:d=$fade" '
         '-af "afade=t=in:st=0:d=$fade,afade=t=out:st=$start:d=$fade" '
-        '-c:v libx264 -crf 23 -preset fast $output';
+        '-c:v libx264 -crf 23 -preset fast ${FfmpegCmd.q(output)}';
   }
 
   /// Grabs a single frame at [seconds] as a high-quality JPEG (fast seek by
   /// placing -ss before -i).
   static String grabFrameCommand(String input, String output, double seconds) =>
-      '-y -ss ${seconds.toStringAsFixed(2)} -i $input -frames:v 1 -q:v 2 $output';
+      '-y -ss ${seconds.toStringAsFixed(2)} -i ${FfmpegCmd.q(input)} -frames:v 1 -q:v 2 ${FfmpegCmd.q(output)}';
 
   /// One-tap automatic colour/contrast enhance.
   static String autoEnhanceCommand(String input, String output) =>
-      '-y -i $input -vf '
+      '-y -i ${FfmpegCmd.q(input)} -vf '
       '"eq=contrast=1.06:brightness=0.03:saturation=1.12:gamma=1.02,'
       'unsharp=3:3:0.4:3:3:0.0" '
-      '-c:v libx264 -crf 20 -preset fast -c:a copy $output';
+      '-c:v libx264 -crf 20 -preset fast -c:a copy ${FfmpegCmd.q(output)}';
 
   // ---- Auto-cut (silence-based jump cut) -----------------------------------
 
@@ -62,7 +63,7 @@ class AdvancedEditService {
   /// are then parsed from its log output.
   static String silenceDetectCommand(String input,
           {int noiseDb = -30, double minSilence = 0.5}) =>
-      '-i $input -af silencedetect=noise=${noiseDb}dB:d=$minSilence -f null -';
+      '-i ${FfmpegCmd.q(input)} -af silencedetect=noise=${noiseDb}dB:d=$minSilence -f null -';
 
   /// Parses `silence_start`/`silence_end` pairs from silencedetect log output.
   /// A silence that runs to the end of the file (no matching end) is closed at
@@ -119,19 +120,13 @@ class AdvancedEditService {
 
   static String jumpCutCommand(
           String input, String output, List<List<double>> keep) =>
-      '-y -i $input -filter_complex "${jumpCutFilter(keep)}" '
-      '-map "[v]" -map "[a]" -c:v libx264 -crf 20 -preset fast $output';
+      '-y -i ${FfmpegCmd.q(input)} -filter_complex "${jumpCutFilter(keep)}" '
+      '-map "[v]" -map "[a]" -c:v libx264 -crf 20 -preset fast ${FfmpegCmd.q(output)}';
 
   // ---- Runners -------------------------------------------------------------
 
-  static Future<bool> _run(String command) async {
-    log("AdvancedEditService command: $command");
-    final session = await FFmpegKit.execute(command);
-    final rc = await session.getReturnCode();
-    if (ReturnCode.isSuccess(rc)) return true;
-    log("AdvancedEditService failed: ${await session.getOutput()}");
-    return false;
-  }
+  static Future<bool> _run(String command) =>
+      FfmpegCmd.run(command, tag: 'AdvancedEdit');
 
   static Future<String?> toGif(String input) async {
     final out = "${await getOutputDirectoryPath()}export.gif";
