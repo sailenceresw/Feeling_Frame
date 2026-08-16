@@ -23,18 +23,23 @@ class _ObjectDetectScreenState extends State<ObjectDetectScreen> {
     super.dispose();
   }
 
+  void _onPop() {
+    AiVideoController.instance.videoPlayerController?.pause();
+    AiVideoController.instance.detectOperationName = null;
+    AiVideoController.instance.update();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        AiVideoController.instance.videoPlayerController?.pause();
-        AiVideoController.instance.detectOperationName = null;
-        AiVideoController.instance.update();
-        return true;
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          _onPop();
+        }
       },
       child: GetBuilder<AiVideoController>(
         initState: (__) {
-          print(widget.path);
           AiVideoController.instance.videoPlayerController =
               VideoPlayerController.file(File("${widget.path}"))
                 ..initialize().then((value) {
