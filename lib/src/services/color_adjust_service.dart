@@ -1,8 +1,4 @@
-import 'dart:developer';
-
-import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_new/return_code.dart';
-
+import '../utils/ffmpeg_cmd.dart';
 import '../utils/storage_path.dart';
 
 /// Manual colour grading: brightness, contrast, saturation and warmth.
@@ -56,17 +52,8 @@ class ColorAdjustService {
       saturation: saturation,
       warmth: warmth,
     );
-    return '-y -i $input -vf "$vf" '
-        '-c:v libx264 -crf 20 -preset fast -c:a copy $output';
-  }
-
-  static Future<bool> _run(String command) async {
-    log('ColorAdjustService command: $command');
-    final session = await FFmpegKit.execute(command);
-    final rc = await session.getReturnCode();
-    if (ReturnCode.isSuccess(rc)) return true;
-    log('ColorAdjustService failed: ${await session.getOutput()}');
-    return false;
+    return '-y -i ${FfmpegCmd.q(input)} -vf "$vf" '
+        '-c:v libx264 -crf 20 -preset fast -c:a copy ${FfmpegCmd.q(output)}';
   }
 
   static Future<String?> apply(
@@ -77,15 +64,17 @@ class ColorAdjustService {
     double warmth = 0.0,
   }) async {
     final out = '${await getOutputDirectoryPath()}color_adjusted.mp4';
-    return await _run(colorCommand(
-      input,
-      out,
-      brightness: brightness,
-      contrast: contrast,
-      saturation: saturation,
-      warmth: warmth,
-    ))
-        ? out
-        : null;
+    final ok = await FfmpegCmd.run(
+      colorCommand(
+        input,
+        out,
+        brightness: brightness,
+        contrast: contrast,
+        saturation: saturation,
+        warmth: warmth,
+      ),
+      tag: 'ColorAdjust',
+    );
+    return ok ? out : null;
   }
 }
