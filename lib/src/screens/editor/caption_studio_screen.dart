@@ -10,6 +10,10 @@ import 'video_result_popup.dart';
 
 /// On-device caption studio: type / paste / import timed captions, preview them
 /// live over the video, style them, and burn them in — no cloud, no upload.
+///
+/// Auto-generate (speech → captions) is wired through [SttService] +
+/// [SpeechRecognizer]. A concrete on-device engine (sherpa-onnx) lives in
+/// PR #16 / issue #36 and is device-validated before merge.
 class CaptionStudioScreen extends StatefulWidget {
   const CaptionStudioScreen({super.key, required this.video});
 
@@ -223,6 +227,32 @@ class _CaptionStudioScreenState extends State<CaptionStudioScreen> {
     }
   }
 
+  /// Placeholder for the on-device SpeechRecognizer path (issue #36 / PR #16).
+  /// When the sherpa-onnx engine is merged, this will call
+  /// SttService.transcribeToCaptions and fill [_segments].
+  Future<void> _autoGenerate() async {
+    await showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Auto-generate captions'),
+        content: const Text(
+          'On-device speech recognition (Whisper tiny via sherpa-onnx) is '
+          'implemented in draft PR #16 and tracked by issue #36.\n\n'
+          'It downloads a ~40 MB model on first use, runs fully offline, and '
+          'fills the caption timeline. Once validated on a device it will be '
+          'merged here.\n\n'
+          'Until then you can still type, paste a script, or import an SRT.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Got it'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _burn() async {
     if (_segments.isEmpty) {
       _snack('Add at least one caption first');
@@ -270,6 +300,11 @@ class _CaptionStudioScreenState extends State<CaptionStudioScreen> {
       appBar: AppBar(
         title: const Text('Captions'),
         actions: [
+          IconButton(
+            tooltip: 'Auto-generate (on-device AI)',
+            onPressed: _rendering ? null : _autoGenerate,
+            icon: const Icon(Icons.auto_awesome),
+          ),
           IconButton(
             tooltip: 'Import SRT',
             onPressed: _rendering ? null : _importSrt,
@@ -408,7 +443,8 @@ class _CaptionStudioScreenState extends State<CaptionStudioScreen> {
           padding: EdgeInsets.all(24),
           child: Text(
             'No captions yet.\nAdd one at the playhead, paste a script, or '
-            'import an SRT.',
+            'import an SRT.\n\n'
+            'Auto-generate (on-device speech) is coming — see the sparkle icon.',
             textAlign: TextAlign.center,
           ),
         ),
