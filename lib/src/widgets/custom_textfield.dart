@@ -1,54 +1,54 @@
 import 'package:flutter/material.dart';
 
 class CustomTextFormField extends StatelessWidget {
-  TextEditingController? controller;
-  dynamic formKey;
-  String? hintText;
-  TextInputType textInputType;
-  String? labelText;
-  Widget? suffix;
-  bool? isEnabled;
-  bool readOnly;
-  bool obscureText;
+  final TextEditingController? controller;
+  final dynamic formKey;
+  final String? hintText;
+  final TextInputType textInputType;
+  final String? labelText;
+  final Widget? suffix;
+  final bool? isEnabled;
+  final bool readOnly;
+  final bool obscureText;
 
   final Function? validator;
-  bool onlyText;
-  bool onlyNumber;
-  int? maxLine;
-  int? minLine;
-  int? maxLength;
-  String? prefixText;
-  bool? filled;
-  Color? fillColor;
-  IconData? prefixIcon;
-  Function()? onTap;
-  Function? onChanged;
-  Function? onFieldSubmitted;
-  String? initialValue;
-  bool? isSearch;
-  bool? autoFocus;
-  AutovalidateMode? autovalidateMode;
-  List<String> autoFillHint;
-  bool searchString;
-  bool fullNameString;
-  bool allowMultipleSpace;
-  bool? showBorder;
-  TextInputAction? textInputAction;
-  double borderRadius;
-  double? hintTextSize;
-  FontWeight? hintTextWeight;
-  double? enteredTextSize;
-  FontWeight? enteredTextWeight;
-  TextAlign? textAlignment;
-  bool? notFromFormType = false;
-  bool? allowDouble;
-  bool? onlyPhoneNumber;
-  dynamic prefixIconSize;
-  bool? isPrefixText;
-  Widget? prefix;
-  Widget? suffixInside;
+  final bool onlyText;
+  final bool onlyNumber;
+  final int? maxLine;
+  final int? minLine;
+  final int? maxLength;
+  final String? prefixText;
+  final bool? filled;
+  final Color? fillColor;
+  final IconData? prefixIcon;
+  final Function()? onTap;
+  final Function? onChanged;
+  final Function? onFieldSubmitted;
+  final String? initialValue;
+  final bool? isSearch;
+  final bool? autoFocus;
+  final AutovalidateMode? autovalidateMode;
+  final List<String> autoFillHint;
+  final bool searchString;
+  final bool fullNameString;
+  final bool allowMultipleSpace;
+  final bool? showBorder;
+  final TextInputAction? textInputAction;
+  final double borderRadius;
+  final double? hintTextSize;
+  final FontWeight? hintTextWeight;
+  final double? enteredTextSize;
+  final FontWeight? enteredTextWeight;
+  final TextAlign? textAlignment;
+  final bool? notFromFormType;
+  final bool? allowDouble;
+  final bool? onlyPhoneNumber;
+  final dynamic prefixIconSize;
+  final bool? isPrefixText;
+  final Widget? prefix;
+  final Widget? suffixInside;
 
-  CustomTextFormField({
+  const CustomTextFormField({
     Key? key,
     this.formKey,
     this.suffixInside,
