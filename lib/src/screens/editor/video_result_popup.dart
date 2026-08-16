@@ -68,13 +68,10 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
   void saveVideo() async {
     final videoPath = widget.video.path;
     try {
-      // GIFs must be saved via the image API, not the video API.
       if (_isGif) {
         await Gal.putImage(videoPath);
       } else {
         await Gal.putVideo(videoPath);
-        // Record the edited video as a recent project so it appears on the
-        // project screen and survives app restarts.
         await ProjectController.instance.addProject(
           path: videoPath,
           durationSeconds: _controller?.value.duration.inSeconds ?? 0,
@@ -99,8 +96,6 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
     EditorController.instance.editingVideoFile = file;
     EditorController.instance.changeVideoPlayablePath(file.path);
 
-    // Close this dialog, then replace any open editor route with a fresh one
-    // so the timeline / preview actually show the processed file.
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop();
     }
@@ -119,12 +114,15 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
     super.dispose();
   }
 
+  bool get _ready =>
+      _isGif || (_controller != null && _controller!.value.isInitialized);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(30),
       child: Center(
-        child: _controller != null && _controller!.value.isInitialized || _isGif
+        child: _ready
             ? Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -159,7 +157,6 @@ class _VideoResultPopupState extends State<VideoResultPopup> {
                     ],
                   ),
                   vSizedBox1,
-                  // Primary action: keep working on this result.
                   if (!_isGif)
                     SizedBox(
                       width: double.infinity,
