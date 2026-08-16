@@ -1,8 +1,4 @@
-import 'dart:developer';
-
-import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_new/return_code.dart';
-
+import '../utils/ffmpeg_cmd.dart';
 import '../utils/storage_path.dart';
 
 /// Changes the playback speed of a clip (slow-motion or fast-forward) with
@@ -59,21 +55,12 @@ class SpeedService {
   }) {
     final video = 'setpts=PTS/${fmt(speed)}';
     if (!keepAudio) {
-      return '-y -i $input -filter_complex "[0:v]$video[v]" '
-          '-map "[v]" -c:v libx264 -crf 20 -preset fast -an $output';
+      return '-y -i ${FfmpegCmd.q(input)} -filter_complex "[0:v]$video[v]" '
+          '-map "[v]" -c:v libx264 -crf 20 -preset fast -an ${FfmpegCmd.q(output)}';
     }
-    return '-y -i $input -filter_complex '
+    return '-y -i ${FfmpegCmd.q(input)} -filter_complex '
         '"[0:v]$video[v];[0:a]${atempoChain(speed)}[a]" '
-        '-map "[v]" -map "[a]" -c:v libx264 -crf 20 -preset fast $output';
-  }
-
-  static Future<bool> _run(String command) async {
-    log('SpeedService command: $command');
-    final session = await FFmpegKit.execute(command);
-    final rc = await session.getReturnCode();
-    if (ReturnCode.isSuccess(rc)) return true;
-    log('SpeedService failed: ${await session.getOutput()}');
-    return false;
+        '-map "[v]" -map "[a]" -c:v libx264 -crf 20 -preset fast ${FfmpegCmd.q(output)}';
   }
 
   /// Retimes [input] to [speed]x and returns the output path (or null). If
@@ -85,11 +72,15 @@ class SpeedService {
     bool keepAudio = true,
   }) async {
     final out = '${await getOutputDirectoryPath()}speed_${fmt(speed)}x.mp4';
-    if (await _run(speedCommand(input, out, speed, keepAudio: keepAudio))) {
+    if (await FfmpegCmd.run(
+        speedCommand(input, out, speed, keepAudio: keepAudio),
+        tag: 'Speed')) {
       return out;
     }
     if (keepAudio) {
-      if (await _run(speedCommand(input, out, speed, keepAudio: false))) {
+      if (await FfmpegCmd.run(
+          speedCommand(input, out, speed, keepAudio: false),
+          tag: 'Speed')) {
         return out;
       }
     }
