@@ -26,6 +26,8 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      # Currently fails only on errors. Once analyzer debt (#38) is fully cleared
+      # drop the --no-fatal-* flags so warnings also fail the build.
       - name: Analyze (fail on errors only)
         run: flutter analyze --no-fatal-infos --no-fatal-warnings lib test
 
@@ -41,3 +43,8 @@ jobs:
           name: feelm-debug-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
           retention-days: 14
+
+  # TODO (#42): add a macos-latest job that runs
+  #   flutter build ios --no-codesign
+  # after pod install. Keep it gated to pull_request + main pushes
+  # and cache the pods to control CI minutes.
